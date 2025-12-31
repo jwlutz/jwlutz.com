@@ -1,0 +1,59 @@
+[
+  {
+    "id": "ucla-dining",
+    "title": "UCLA Dining Recommendation System",
+    "description": "A constraint optimization system for generating personalized meal plans based on students' nutritional goals and dining hall menus.",
+    "tech": ["Python", "FastAPI", "PostgreSQL", "Google OR-Tools", "Go"],
+    "highlights": [
+      "Constraint optimization for 4,000+ menu items",
+      "Real-time menu scraping with Go"
+    ],
+    "github": null,
+    "live": null,
+    "image": null,
+    "featured": true,
+    "codeStatus": "Code not public"
+  },
+  {
+    "id": "ai-web-scraper",
+    "title": "AI Web Scraper Chrome Extension",
+    "description": "A Chrome extension with AI-powered data extraction and intelligent cleaning, supporting multiple export formats.",
+    "tech": ["TypeScript", "JavaScript", "Chrome Extension MV3", "Claude API"],
+    "highlights": [
+      "AI-powered data extraction and cleaning",
+      "CSV, XLSX, JSON export support"
+    ],
+    "github": "https://github.com/jwlutz/chrome-ext-web-scraper",
+    "live": "https://chromewebstore.google.com/detail/yoinkai/afmmfhkdbnebcpidjfgjpkblmocpmbmm",
+    "image": "/chrome_extension.png",
+    "featured": true
+  },
+  {
+    "id": "backtesting-engine",
+    "title": "Quantitative Backtesting Engine",
+    "description": "A research-grade backtesting framework for quantitative trading strategies with realistic execution simulation.",
+    "tech": ["Python", "pandas", "NumPy"],
+    "highlights": [
+      "Validated within 1-3% of established frameworks",
+      "Point-in-time data architecture to prevent lookahead bias"
+    ],
+    "github": "https://github.com/jwlutz/thats_my_quantv1",
+    "live": null,
+    "image": null,
+    "featured": true
+  },
+  {
+    "id": "ai-code-editor",
+    "title": "AI Code Editor",
+    "description": "An intelligent code editor powered by Google Gemini for AI-assisted coding, refactoring, and code generation.",
+    "tech": ["Python", "Gemini API"],
+    "highlights": [
+      "AI-powered code generation and refactoring",
+      "Integrated with Google Gemini"
+    ],
+    "github": "https://github.com/jwlutz/ai_code_editor",
+    "live": null,
+    "image": null,
+    "featured": true
+  }
+]

@@ -1,0 +1,28 @@
+[
+  {
+    "id": "lutz-consulting",
+    "company": "Lutz Consulting Group",
+    "role": "Founder",
+    "period": "Nov 2024 – Present",
+    "location": "Las Vegas, NV",
+    "description": [
+      "Provide technical consulting and full-stack development to e-commerce businesses, startups, and content studios.",
+      "Engineered end-to-end inventory system to process 40,000+ items using computer vision/OCR pipeline, AWS S3 storage, and Supabase validation workflows.",
+      "Drove 3x increase in client online sales through website redesign, achieving 4-figure weekly revenue and 100% uptime.",
+      "Onboarded non-technical users to new system through training and documentation."
+    ]
+  },
+  {
+    "id": "new-york-life",
+    "company": "New York Life",
+    "role": "Data Analyst Intern",
+    "period": "June 2024 – Aug 2024",
+    "location": "New York, NY",
+    "description": [
+      "Reverse-engineered database migration schemas across DHD production PostgreSQL instances, mapping complex data transformations and identifying millions of stale records.",
+      "Built RAG-enabled underwriting chatbot prototype using company underwriting manual as knowledge base.",
+      "Finalist in company-wide AI Innovation Competition for prototyping RAG-enabled chatbot plugin for Tableau dashboards, querying 10+ years of nationwide office data.",
+      "Designed A/B testing framework to expose LLM agreeableness bias in chatbot responses."
+    ]
+  }
+]
