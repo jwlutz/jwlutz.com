@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <g fill="#d4785a" transform="translate(50,50)">
+    <!-- 12 tapered rays -->
+    <path d="M0,-45 L4,-12 L0,-8 L-4,-12 Z"/>
+    <path d="M0,-45 L4,-12 L0,-8 L-4,-12 Z" transform="rotate(30)"/>
+    <path d="M0,-45 L4,-12 L0,-8 L-4,-12 Z" transform="rotate(60)"/>
+    <path d="M0,-45 L4,-12 L0,-8 L-4,-12 Z" transform="rotate(90)"/>
+    <path d="M0,-45 L4,-12 L0,-8 L-4,-12 Z" transform="rotate(120)"/>
+    <path d="M0,-45 L4,-12 L0,-8 L-4,-12 Z" transform="rotate(150)"/>
+    <path d="M0,-45 L4,-12 L0,-8 L-4,-12 Z" transform="rotate(180)"/>
+    <path d="M0,-45 L4,-12 L0,-8 L-4,-12 Z" transform="rotate(210)"/>
+    <path d="M0,-45 L4,-12 L0,-8 L-4,-12 Z" transform="rotate(240)"/>
+    <path d="M0,-45 L4,-12 L0,-8 L-4,-12 Z" transform="rotate(270)"/>
+    <path d="M0,-45 L4,-12 L0,-8 L-4,-12 Z" transform="rotate(300)"/>
+    <path d="M0,-45 L4,-12 L0,-8 L-4,-12 Z" transform="rotate(330)"/>
+    <circle cx="0" cy="0" r="10"/>
+  </g>
+</svg>

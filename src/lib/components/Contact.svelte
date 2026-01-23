@@ -5,13 +5,15 @@
 	let { profile }: { profile: Profile } = $props();
 </script>
 
-<section id="contact" class="py-24">
+<section id="contact" class="py-32">
 	<div class="max-w-[1200px] mx-auto px-6">
-		<div class="animate-on-scroll text-center" use:inview>
+		<div class="section-header-sticky text-center">
 			<p class="section-label">Contact</p>
 			<h2 class="section-heading">Get in touch</h2>
+		</div>
 
-			<a href="mailto:{profile.email}" class="btn-primary mb-8 mt-8">
+		<div class="text-center mt-8">
+			<a href="mailto:{profile.email}" class="btn-primary">
 				<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 					<path
 						stroke-linecap="round"
@@ -20,7 +22,7 @@
 						d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
 					/>
 				</svg>
-				{profile.email}
+				Send Email
 			</a>
 
 			<div class="flex justify-center gap-6 mt-8">

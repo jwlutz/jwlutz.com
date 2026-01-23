@@ -5,14 +5,14 @@
 	let { experiences }: { experiences: ExperienceItem[] } = $props();
 </script>
 
-<section id="experience" class="py-24">
+<section id="experience" class="py-32">
 	<div class="max-w-[1200px] mx-auto px-6">
-		<div class="animate-on-scroll text-center mb-16" use:inview>
+		<div class="section-header-sticky text-center">
 			<p class="section-label">Background</p>
 			<h2 class="section-heading">Experience</h2>
 		</div>
 
-		<div class="max-w-3xl mx-auto space-y-6">
+		<div class="max-w-3xl mx-auto mt-8 space-y-6">
 			{#each experiences as exp, i}
 				<div
 					class="animate-on-scroll"
@@ -22,9 +22,20 @@
 					<article class="experience-card">
 						<div class="flex flex-col md:flex-row md:items-start md:justify-between gap-2 mb-4">
 							<div>
-								<h3 class="font-semibold text-lg text-[var(--color-text-primary)]">
-									{exp.company}
-								</h3>
+								{#if exp.id === 'lutz-consulting'}
+									<a href="/consulting" class="group">
+										<h3 class="font-semibold text-lg text-[var(--color-text-primary)] group-hover:text-[var(--color-accent)] transition-colors inline-flex items-center gap-2">
+											{exp.company}
+											<svg class="w-4 h-4 opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+												<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+											</svg>
+										</h3>
+									</a>
+								{:else}
+									<h3 class="font-semibold text-lg text-[var(--color-text-primary)]">
+										{exp.company}
+									</h3>
+								{/if}
 								<p class="text-[var(--color-accent)] font-medium">{exp.role}</p>
 							</div>
 							<div class="md:text-right">
