@@ -19,6 +19,19 @@
   --max-width-content: 1200px;
 }
 
+/* Dark mode variables */
+html.dark {
+  --color-background: #0a0a0a;
+  --color-surface: #141414;
+  --color-surface-hover: #1f1f1f;
+  --color-accent: #10b981;
+  --color-accent-secondary: #3b82f6;
+  --color-accent-hover: #34d399;
+  --color-text-primary: #fafafa;
+  --color-text-secondary: #a1a1aa;
+  --color-border: #262626;
+}
+
 html {
   scroll-behavior: smooth;
   scroll-padding-top: 80px;
@@ -31,6 +44,18 @@ body {
   color: var(--color-text-primary);
   font-family: var(--font-family-sans);
   min-height: 100vh;
+  overflow-x: hidden;
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+html.dark body {
+  background: #0a0a0a;
+  background-image: none;
+  background-attachment: scroll;
+}
+
+main {
+  overflow: visible; /* Allow 3D keyboard to extend */
 }
 
 ::selection {
@@ -75,6 +100,30 @@ body {
   margin-bottom: 3rem;
 }
 
+/* Sticky Section Headers */
+.section-header-sticky {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  padding: 1.5rem 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.section-header-sticky .section-heading {
+  margin-bottom: 0;
+}
+
+.section-header-sticky::after {
+  content: '';
+  width: 60px;
+  height: 3px;
+  background: linear-gradient(90deg, var(--color-accent), var(--color-accent-secondary));
+  border-radius: 2px;
+  margin-top: 1rem;
+}
+
 @media (min-width: 768px) {
   .section-heading {
     font-size: 2.5rem;
@@ -90,8 +139,20 @@ body {
   overflow: hidden;
   min-width: 380px;
   max-width: 420px;
+  height: 520px;
   flex-shrink: 0;
   position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+@media (max-width: 768px) {
+  .project-card {
+    min-width: 100%;
+    max-width: 100%;
+    height: auto;
+    min-height: 420px;
+  }
 }
 
 .project-card::before {
@@ -129,7 +190,7 @@ body {
 }
 
 .tech-tag:hover {
-  background-color: color-mix(in srgb, var(--color-accent) 10%, white);
+  background-color: color-mix(in srgb, var(--color-accent) 10%, var(--color-surface));
   color: var(--color-accent);
   border-color: var(--color-accent);
 }
@@ -169,7 +230,7 @@ body {
 .btn-secondary:hover {
   border-color: var(--color-accent);
   color: var(--color-accent);
-  background-color: color-mix(in srgb, var(--color-accent) 5%, white);
+  background-color: color-mix(in srgb, var(--color-accent) 10%, var(--color-surface));
 }
 
 /* Navigation */

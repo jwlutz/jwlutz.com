@@ -25,5 +25,15 @@
 		"tailwindcss": "^4.1.18",
 		"typescript": "^5.9.3",
 		"vite": "^7.2.6"
+	},
+	"dependencies": {
+		"@splinetool/runtime": "^1.12.29",
+		"@threlte/core": "^8.3.1",
+		"@threlte/extras": "^9.7.1",
+		"@types/three": "^0.182.0",
+		"gsap": "^3.14.2",
+		"mermaid": "^11.12.2",
+		"svelte-motion": "^0.12.2",
+		"three": "^0.182.0"
 	}
 }

@@ -8,7 +8,9 @@ export interface Project {
 	live: string | null;
 	image: string | null;
 	featured?: boolean;
+	featuredTag?: string;
 	codeStatus?: string;
+	liveText?: string;
 }
 
 export interface ExperienceItem {
@@ -28,9 +30,11 @@ export interface Skills {
 
 export interface Profile {
 	name: string;
+	titles: string[];
 	tagline: string;
 	subtitle: string;
 	location: string;
+	photo: string;
 	email: string;
 	social: {
 		github: string;

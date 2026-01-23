@@ -1,8 +1,10 @@
 {
   "name": "Jack Lutz",
-  "tagline": "Building Systems that Scale, and Finding Answers that Matter.",
+  "titles": ["AI Engineer", "Data Scientist", "Software Engineer"],
+  "tagline": "I Build Systems that Scale, and Answer Questions that Matter.",
   "subtitle": "Stats & Data Science @ UCLA '27",
   "location": "Las Vegas, NV",
+  "photo": "/headshot.jpg",
   "email": "jwlutz65@gmail.com",
   "social": {
     "github": "https://github.com/jwlutz",
