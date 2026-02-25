@@ -46,6 +46,36 @@
     "codeStatus": "Code not public"
   },
   {
+    "id": "backtesting-engine",
+    "title": "Quantitative Backtesting Engine",
+    "description": "A research-grade backtesting framework for quantitative trading strategies with realistic execution simulation and point-in-time data architecture.",
+    "tech": ["Python", "pandas", "NumPy"],
+    "highlights": [
+      "Transaction-based tracking with DCA & partial exits",
+      "18/20 strategies within 5% of Backtrader results",
+      "Composable entry/exit rules (Calculation + Condition pattern)"
+    ],
+    "github": "https://github.com/jwlutz/thats_my_quantv1",
+    "live": null,
+    "image": "/backtesting-engine.png"
+  },
+  {
+    "id": "wiki-speedrun",
+    "title": "Wikipedia Speedrun Benchmark",
+    "description": "A benchmark comparing AI agents playing the Wikipedia Speedrun game - navigating between Wikipedia articles using only page links in as few clicks as possible.",
+    "tech": ["Python", "Hugging Face", "Docker", "Embeddings"],
+    "highlights": [
+      "15 AI agents benchmarked across 35 problems (420+ games)",
+      "Embedding-based agents achieve 94% win rate at zero cost",
+      "Interactive demo lets you play or watch AI agents compete"
+    ],
+    "github": "https://github.com/jwlutz/wiki_speedrun",
+    "live": "https://huggingface.co/spaces/jwlutz/wiki-speedrun",
+    "image": "/wiki-speedrun.png",
+    "featuredTag": "Live Demo",
+    "liveText": "Hugging Face Space"
+  },
+  {
     "id": "ai-web-scraper",
     "title": "Web Scraper Chrome Extension",
     "description": "A Chrome extension with AI-powered data extraction and intelligent cleaning, supporting multiple export formats.",
@@ -59,20 +89,6 @@
     "image": "/chrome_extension.png",
     "featuredTag": "Extension Available",
     "liveText": "Extension Download"
-  },
-  {
-    "id": "backtesting-engine",
-    "title": "Quantitative Backtesting Engine",
-    "description": "A research-grade backtesting framework for quantitative trading strategies with realistic execution simulation and point-in-time data architecture.",
-    "tech": ["Python", "pandas", "NumPy"],
-    "highlights": [
-      "Transaction-based tracking with DCA & partial exits",
-      "18/20 strategies within 5% of Backtrader results",
-      "Composable entry/exit rules (Calculation + Condition pattern)"
-    ],
-    "github": "https://github.com/jwlutz/thats_my_quantv1",
-    "live": null,
-    "image": "/backtesting-engine.png"
   },
   {
     "id": "claude-code-framework",

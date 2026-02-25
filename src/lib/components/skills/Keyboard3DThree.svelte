@@ -1,6 +1,8 @@
 <script lang="ts">
 	import { onMount, onDestroy } from 'svelte';
 	import { browser } from '$app/environment';
+	import { get } from 'svelte/store';
+	import { prefersReducedMotion } from '$lib/stores/mediaQuery';
 	import {
 		KEYBOARD_SKILLS_ARRAY,
 		KEYBOARD_SKILLS,
@@ -32,6 +34,8 @@
 	let observer: IntersectionObserver | null = null;
 	let clock: any = null;
 	let isDragging = false;
+	let unsubscribeReducedMotion: (() => void) | null = null;
+	let reducedMotionEnabled = false;
 
 	// Audio
 	let audioContext: AudioContext | null = null;
@@ -141,9 +145,28 @@
 			controls.maxPolarAngle = Math.PI / 2.2;
 			controls.target.set(0, 0, 0);
 
-			// Track dragging state for click vs drag detection
-			controls.addEventListener('start', () => { isDragging = false; });
+			// Auto-rotate when idle (respects reduced motion)
+			reducedMotionEnabled = get(prefersReducedMotion);
+			controls.autoRotate = !reducedMotionEnabled;
+			controls.autoRotateSpeed = 0.5;
+
+			// Pause auto-rotate during interaction, resume after
+			controls.addEventListener('start', () => {
+				isDragging = false;
+				controls.autoRotate = false;
+			});
 			controls.addEventListener('change', () => { isDragging = true; });
+			controls.addEventListener('end', () => {
+				if (!reducedMotionEnabled) {
+					controls.autoRotate = true;
+				}
+			});
+
+			// Subscribe to reduced motion changes
+			unsubscribeReducedMotion = prefersReducedMotion.subscribe(value => {
+				reducedMotionEnabled = value;
+				if (controls) controls.autoRotate = !value;
+			});
 
 			// Ambient light - brighter for vibrant colors
 			const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
@@ -500,6 +523,12 @@
 		// Update controls for smooth damping
 		controls?.update();
 
+		// Subtle floating animation (respects reduced motion)
+		if (keyboardGroup && !reducedMotionEnabled) {
+			const elapsed = clock?.getElapsedTime() || 0;
+			keyboardGroup.position.y = Math.sin(elapsed * 0.8) * 0.1;
+		}
+
 		keycapMeshes.forEach((data) => {
 			const diff = data.targetY - data.group.position.y;
 			if (Math.abs(diff) > 0.001) {
@@ -528,6 +557,7 @@
 	onDestroy(() => {
 		if (!browser) return;
 		observer?.disconnect();
+		unsubscribeReducedMotion?.();
 		if (animationId) cancelAnimationFrame(animationId);
 		canvas?.removeEventListener('mousemove', onMouseMove);
 		canvas?.removeEventListener('click', onClick);
