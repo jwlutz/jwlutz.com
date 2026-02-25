@@ -27,3 +27,5 @@ nul
 src/_archive/
 .claude
 .vibe
+rubiks/
+.playwright-mcp/
