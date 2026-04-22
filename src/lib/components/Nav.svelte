@@ -98,7 +98,7 @@
 					</button>
 				{/each}
 				<a
-					href="/resume.pdf"
+					href="/Jack_Lutz_Resume.pdf"
 					target="_blank"
 					rel="noopener noreferrer"
 					class="font-medium transition-colors {isDarkMode
@@ -160,7 +160,7 @@
 					</svg>
 				</a>
 				<a
-					href="/resume.pdf"
+					href="/Jack_Lutz_Resume.pdf"
 					target="_blank"
 					rel="noopener noreferrer"
 					class="transition-colors {isDarkMode ? 'text-[#71717a] hover:text-white' : 'text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]'}"
@@ -211,7 +211,7 @@
 						</button>
 					{/each}
 					<a
-						href="/resume.pdf"
+						href="/Jack_Lutz_Resume.pdf"
 						target="_blank"
 						rel="noopener noreferrer"
 						class="text-left font-medium transition-colors {isDarkMode

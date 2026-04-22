@@ -2,5 +2,5 @@ import { redirect } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async () => {
-	redirect(302, '/resume.pdf');
+	redirect(302, '/Jack_Lutz_Resume.pdf');
 };
