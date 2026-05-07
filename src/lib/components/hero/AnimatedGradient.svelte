@@ -197,4 +197,16 @@
 	.simplified .blob-4 {
 		opacity: 0.2;
 	}
+
+	/* Mobile: reduce blur radius (GPU-expensive) and drop the smaller accent blobs */
+	@media (max-width: 768px) {
+		.gradient-blob {
+			filter: blur(40px);
+		}
+
+		.blob-3,
+		.blob-4 {
+			display: none;
+		}
+	}
 </style>

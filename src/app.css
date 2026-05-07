@@ -48,6 +48,14 @@ body {
   transition: background 0.3s ease, color 0.3s ease;
 }
 
+/* iOS Safari has long-standing jank issues with background-attachment: fixed.
+   Use scroll on mobile instead — visual difference is minimal. */
+@media (max-width: 768px) {
+  body {
+    background-attachment: scroll;
+  }
+}
+
 html.dark body {
   background: #0a0a0a;
   background-image: none;

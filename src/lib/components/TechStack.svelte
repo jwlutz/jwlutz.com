@@ -73,6 +73,18 @@
 		overflow: visible;
 	}
 
+	@media (max-width: 768px) {
+		.skills-section {
+			min-height: 0;
+			padding: 3rem 0;
+		}
+
+		/* Marquee background is GPU-heavy on mobile; hide entirely */
+		.marquee-bg {
+			display: none;
+		}
+	}
+
 	/* Marquee Background */
 	.marquee-bg {
 		position: absolute;
