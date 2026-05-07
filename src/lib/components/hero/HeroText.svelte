@@ -33,7 +33,15 @@
 	</div>
 
 	<div class="photo-wrapper">
-		<img src={profile.photo} alt={profile.name} class="photo" />
+		<img
+			src={profile.photo}
+			alt={profile.name}
+			class="photo"
+			fetchpriority="high"
+			decoding="async"
+			width="220"
+			height="280"
+		/>
 	</div>
 </div>
 

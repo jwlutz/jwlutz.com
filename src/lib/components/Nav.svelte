@@ -53,7 +53,7 @@
 				<!-- Mobile Menu Button (left side on mobile) -->
 				<button
 					onclick={() => (mobileMenuOpen = !mobileMenuOpen)}
-					class="md:hidden p-2 -ml-2 transition-colors {isDarkMode ? 'text-[#71717a] hover:text-white' : 'text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]'}"
+					class="lg:hidden p-2 -ml-2 transition-colors {isDarkMode ? 'text-[#71717a] hover:text-white' : 'text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]'}"
 					aria-label="Toggle menu"
 				>
 					{#if mobileMenuOpen}
@@ -86,7 +86,7 @@
 			</div>
 
 			<!-- Desktop Nav -->
-			<div class="hidden md:flex items-center gap-8">
+			<div class="hidden lg:flex items-center gap-8">
 				{#each navItems as item}
 					<button
 						onclick={() => navigateToSection(item.id)}
@@ -118,7 +118,7 @@
 			</div>
 
 			<!-- Social Links (desktop only) -->
-			<div class="hidden md:flex items-center gap-4">
+			<div class="hidden lg:flex items-center gap-4">
 				<a
 					href={profile.social.github}
 					target="_blank"
@@ -198,7 +198,7 @@
 
 		<!-- Mobile Menu -->
 		{#if mobileMenuOpen}
-			<div class="md:hidden mt-4 pb-4 border-t pt-4 {isDarkMode ? 'border-[#262626]' : 'border-[var(--color-border)]'}">
+			<div class="lg:hidden mt-4 pb-4 border-t pt-4 {isDarkMode ? 'border-[#262626]' : 'border-[var(--color-border)]'}">
 				<div class="flex flex-col gap-4">
 					{#each navItems as item}
 						<button

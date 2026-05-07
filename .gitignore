@@ -29,3 +29,4 @@ src/_archive/
 .vibe
 rubiks/
 .playwright-mcp/
+scripts/.mobile-audit/

@@ -4,10 +4,17 @@
 	import { Nav, Footer, profile } from '$lib';
 	import { darkMode } from '$lib/stores/darkMode';
 	import { onMount } from 'svelte';
+	import { injectAnalytics } from '@vercel/analytics/sveltekit';
+	import { injectSpeedInsights } from '@vercel/speed-insights/sveltekit';
 
 	let { children } = $props();
 
 	let activeSection = $state('home');
+
+	onMount(() => {
+		injectAnalytics();
+		injectSpeedInsights();
+	});
 
 	// Apply dark mode class to document
 	$effect(() => {
