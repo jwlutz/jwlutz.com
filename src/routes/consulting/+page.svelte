@@ -1,9 +1,20 @@
 <script lang="ts">
-	import { profile } from '$lib';
+	import { profile, consulting as consultingData } from '$lib';
 	import { onMount } from 'svelte';
 	import { Motion } from 'svelte-motion';
-	import mermaid from 'mermaid';
 	import { darkMode } from '$lib/stores/darkMode';
+
+	// Mermaid is dynamically imported on first diagram expansion to keep it out of the initial bundle.
+	let mermaid: typeof import('mermaid').default | null = null;
+	async function ensureMermaid(isDark: boolean) {
+		if (!mermaid) {
+			mermaid = (await import('mermaid')).default;
+			initMermaid(isDark);
+		}
+	}
+
+	// All page copy lives in /content.yaml at the repo root.
+	const { hero, services, work: workCopy, cta } = consultingData;
 
 	let ready = $state(false);
 	let pipelineExpanded = $state(false);
@@ -169,16 +180,20 @@ flowchart TB
 		}
 	};
 
-	const ecommerceTech = ['Python', 'OpenCV', 'AWS S3', 'Supabase', 'OpenAI', 'Streamlit', 'Lightspeed'];
-	const feedmeTech = ['Python', 'TypeScript', 'Go', 'FastAPI', 'Supabase', 'OpenAI', 'OR-Tools', 'Grafana'];
-	const chatbotTech = ['Python', 'OpenAI', 'AWS'];
-	const websiteTech = ['Shopify', 'Lightspeed', 'Squarespace', 'WordPress', 'Vercel', 'Next.js', 'Svelte', 'React', 'Framer'];
+	// SVG path content for service category icons, keyed by the `icon` field in consulting.json
+	const serviceIcons: Record<string, string> = {
+		home: '<path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/><path d="M9 22V12h6v10"/>',
+		stack: '<path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>',
+		sparkle: '<circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/>',
+		dashboard: '<rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/>'
+	};
 
 	function checkMobile() {
 		isMobile = window.innerWidth < 900;
 	}
 
 	function initMermaid(isDark: boolean) {
+		if (!mermaid) return;
 		const themeVariables = isDark
 			? {
 					primaryColor: '#10b981',
@@ -234,11 +249,9 @@ flowchart TB
 		lastDarkModeState = $darkMode;
 		window.addEventListener('resize', handleResize);
 
-		initMermaid($darkMode);
-
-		// Subscribe to dark mode changes to re-render charts
+		// Subscribe to dark mode changes to re-render charts (only after mermaid is loaded)
 		const unsubscribe = darkMode.subscribe((isDark) => {
-			if (lastDarkModeState !== null && lastDarkModeState !== isDark) {
+			if (lastDarkModeState !== null && lastDarkModeState !== isDark && mermaid) {
 				initMermaid(isDark);
 				// Re-render charts if they're visible
 				if (mermaidRendered) {
@@ -280,8 +293,9 @@ flowchart TB
 	async function renderEcommerce() {
 		if (mermaidContainer) {
 			try {
+				await ensureMermaid($darkMode);
 				renderCount++;
-				const { svg } = await mermaid.render(`ecommerce-diagram-${renderCount}`, ecommerceDiagram);
+				const { svg } = await mermaid!.render(`ecommerce-diagram-${renderCount}`, ecommerceDiagram);
 				mermaidContainer.innerHTML = svg;
 				mermaidRendered = true;
 			} catch (e) {
@@ -293,8 +307,9 @@ flowchart TB
 	async function renderFeedme() {
 		if (feedmeContainer) {
 			try {
+				await ensureMermaid($darkMode);
 				renderCount++;
-				const { svg } = await mermaid.render(`feedme-diagram-${renderCount}`, feedmeDiagram);
+				const { svg } = await mermaid!.render(`feedme-diagram-${renderCount}`, feedmeDiagram);
 				feedmeContainer.innerHTML = svg;
 				feedmeRendered = true;
 			} catch (e) {
@@ -315,36 +330,7 @@ flowchart TB
 		}
 	});
 
-	const work = [
-		{
-			id: 'ecommerce',
-			title: 'Ecom Inventory Cleanup System',
-			desc: 'Built a CV/OCR pipeline to clean up inventory for a business with untagged products. Employees took photos that fed into a computer vision pipeline, where AI-generated product data was validated and inserted into their POS and ecom systems. Client went from weeks of manual data entry to same-day processing.',
-			tags: ['Python', 'Computer Vision', 'Supabase'],
-			expandable: true
-		},
-		{
-			id: 'feedme',
-			title: 'FeedMe - UCLA Dining Startup',
-			desc: 'Generates personalized meal plans for students using their school\'s dining hall menus. Factors in nutritional goals, dietary restrictions, and preferences.',
-			tags: ['Python', 'FastAPI', 'Google OR-Tools', 'Go'],
-			expandable: true
-		},
-		{
-			id: 'chatbot',
-			title: 'AI Underwriting Chatbot',
-			desc: 'RAG-powered chatbot for New York Life that queries their underwriting manual. Made it to the finals of their company-wide AI competition.',
-			tags: ['Python', 'OpenAI', 'AWS'],
-			expandable: false
-		},
-		{
-			id: 'website',
-			title: 'Ecom Storefront Designs',
-			desc: 'Full redesigns and facelifts for ecommerce businesses. Multiple platforms, modern frameworks, conversion-focused.',
-			tags: ['Shopify', 'Lightspeed', 'Vercel', 'Next.js', 'Svelte', 'React', 'Framer'],
-			expandable: true
-		}
-	];
+	const work = workCopy.items;
 </script>
 
 <div class="page">
@@ -365,12 +351,10 @@ flowchart TB
 				let:motion
 			>
 				<div use:motion class="hero-content">
-					<h1>Lutz Consulting Group</h1>
-					<p>
-						We'll solve your problems<br/>wherever you are in your tech journey.
-					</p>
+					<h1>{hero.title}</h1>
+					<p>{@html hero.subtitle.replace(/\n/g, '<br/>')}</p>
 					<a href="mailto:{profile.email}" class="btn-primary">
-						Email me
+						{hero.ctaLabel}
 					</a>
 				</div>
 			</Motion>
@@ -380,89 +364,37 @@ flowchart TB
 	<!-- Services -->
 	<section id="services" class="services">
 		<div class="section-header">
-			<span class="label">Services</span>
-			<h2>What I Can Build for You</h2>
+			<span class="label">{services.label}</span>
+			<h2>{services.heading}</h2>
 		</div>
 
 		<div class="services-grid">
-			<Motion initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} let:motion>
-				<div use:motion class="service-card">
-					<div class="service-icon-large">
-						<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-							<path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/>
-							<path d="M9 22V12h6v10"/>
-						</svg>
+			{#each services.items as item, i}
+				<Motion initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: i * 0.1 }} let:motion>
+					<div use:motion class="service-card">
+						<div class="service-icon-large">
+							<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+								{@html serviceIcons[item.icon] || ''}
+							</svg>
+						</div>
+						<h3>{item.title}</h3>
+						<p>{item.description}</p>
+						<ul class="service-features">
+							{#each item.features as feature}
+								<li>{feature}</li>
+							{/each}
+						</ul>
 					</div>
-					<h3>E-commerce & Storefronts</h3>
-					<p>Full redesigns and facelifts for online stores. Shopify, Lightspeed, custom builds, whatever platform fits your business.</p>
-					<ul class="service-features">
-						<li>Shopify & Lightspeed</li>
-						<li>Custom storefronts</li>
-						<li>Inventory systems</li>
-					</ul>
-				</div>
-			</Motion>
-
-			<Motion initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.1 }} let:motion>
-				<div use:motion class="service-card">
-					<div class="service-icon-large">
-						<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-							<path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
-						</svg>
-					</div>
-					<h3>Automation & Integrations</h3>
-					<p>Connect your tools. Automate the boring stuff. Data pipelines, webhooks, scheduled jobs that run while you sleep.</p>
-					<ul class="service-features">
-						<li>API integrations</li>
-						<li>Data pipelines</li>
-						<li>Scheduled tasks</li>
-					</ul>
-				</div>
-			</Motion>
-
-			<Motion initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.2 }} let:motion>
-				<div use:motion class="service-card">
-					<div class="service-icon-large">
-						<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-							<circle cx="12" cy="12" r="3"/>
-							<path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/>
-						</svg>
-					</div>
-					<h3>AI & Machine Learning</h3>
-					<p>Chatbots, document processing, predictions. ML that actually works in production, not just demos that break in the real world.</p>
-					<ul class="service-features">
-						<li>RAG & chatbots</li>
-						<li>Computer vision</li>
-						<li>Custom models</li>
-					</ul>
-				</div>
-			</Motion>
-
-			<Motion initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.3 }} let:motion>
-				<div use:motion class="service-card">
-					<div class="service-icon-large">
-						<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-							<rect x="3" y="3" width="18" height="18" rx="2"/>
-							<path d="M3 9h18M9 21V9"/>
-						</svg>
-					</div>
-					<h3>Web Apps & Dashboards</h3>
-					<p>Custom tools that replace your spreadsheet chaos. Inventory management, admin panels, customer portals, built to fit your workflow.</p>
-					<ul class="service-features">
-						<li>Real-time data sync</li>
-						<li>Role-based access</li>
-						<li>Mobile-friendly</li>
-					</ul>
-				</div>
-			</Motion>
+				</Motion>
+			{/each}
 		</div>
 	</section>
 
 	<!-- Work -->
 	<section id="work" class="work">
 		<div class="section-header">
-			<span class="label">Recent Work</span>
-			<h2>Some Things I've Built</h2>
+			<span class="label">{workCopy.label}</span>
+			<h2>{workCopy.heading}</h2>
 		</div>
 
 		<div class="work-grid">
@@ -490,60 +422,11 @@ flowchart TB
 						>
 							<div class="card-content">
 								<h3>{project.title}</h3>
-								<p>{project.desc}</p>
-								<!-- Tech icons (always visible) -->
-								{#if project.id === 'ecommerce'}
+								<p>{project.description}</p>
+								{#if project.tech?.length}
 									<div class="tech-stack-inline">
 										<div class="tech-icons">
-											{#each ecommerceTech as tech}
-												<div class="tech-icon-wrapper">
-													<span class="tech-tooltip">{tech}</span>
-													<div class="tech-icon" style="background: {techIcons[tech]?.color || '#666'}">
-														<svg viewBox="0 0 24 24" fill="currentColor">
-															{@html techIcons[tech]?.icon || ''}
-														</svg>
-													</div>
-												</div>
-											{/each}
-										</div>
-									</div>
-								{/if}
-								{#if project.id === 'feedme'}
-									<div class="tech-stack-inline">
-										<div class="tech-icons">
-											{#each feedmeTech as tech}
-												<div class="tech-icon-wrapper">
-													<span class="tech-tooltip">{tech}</span>
-													<div class="tech-icon" style="background: {techIcons[tech]?.color || '#666'}">
-														<svg viewBox="0 0 24 24" fill="currentColor">
-															{@html techIcons[tech]?.icon || ''}
-														</svg>
-													</div>
-												</div>
-											{/each}
-										</div>
-									</div>
-								{/if}
-								{#if project.id === 'chatbot'}
-									<div class="tech-stack-inline">
-										<div class="tech-icons">
-											{#each chatbotTech as tech}
-												<div class="tech-icon-wrapper">
-													<span class="tech-tooltip">{tech}</span>
-													<div class="tech-icon" style="background: {techIcons[tech]?.color || '#666'}">
-														<svg viewBox="0 0 24 24" fill="currentColor">
-															{@html techIcons[tech]?.icon || ''}
-														</svg>
-													</div>
-												</div>
-											{/each}
-										</div>
-									</div>
-								{/if}
-								{#if project.id === 'website'}
-									<div class="tech-stack-inline">
-										<div class="tech-icons">
-											{#each websiteTech as tech}
+											{#each project.tech as tech}
 												<div class="tech-icon-wrapper">
 													<span class="tech-tooltip">{tech}</span>
 													<div class="tech-icon" style="background: {techIcons[tech]?.color || '#666'}">
@@ -578,23 +461,19 @@ flowchart TB
 							</div>
 						{/if}
 
-						{#if project.id === 'website'}
+						{#if project.id === 'website' && project.examples}
 							<div class="pipeline-container" class:visible={websiteExpanded}>
 								<div class="examples-section">
-									<span class="examples-label">See some examples</span>
+									<span class="examples-label">{project.examplesLabel ?? 'See some examples'}</span>
 									<div class="example-links">
-										<a href="https://thesparklingshoe.com" target="_blank" rel="noopener noreferrer" class="example-link">
-											<span>The Sparkling Shoe</span>
-											<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-												<path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3"/>
-											</svg>
-										</a>
-										<a href="https://www.thedancestore.com" target="_blank" rel="noopener noreferrer" class="example-link">
-											<span>The Dance Store</span>
-											<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-												<path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3"/>
-											</svg>
-										</a>
+										{#each project.examples as ex}
+											<a href={ex.url} target="_blank" rel="noopener noreferrer" class="example-link">
+												<span>{ex.label}</span>
+												<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+													<path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3"/>
+												</svg>
+											</a>
+										{/each}
 									</div>
 								</div>
 							</div>
@@ -609,10 +488,10 @@ flowchart TB
 	<section id="cta" class="cta">
 		<Motion initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }} let:motion>
 			<div use:motion class="cta-content">
-				<h2>Got a Project?</h2>
-				<p>Tell me what you're trying to build. I'll let you know if I can help.</p>
+				<h2>{cta.heading}</h2>
+				<p>{cta.subheading}</p>
 				<a href="mailto:{profile.email}" class="btn-primary btn-lg">
-					Email me
+					{cta.ctaLabel}
 				</a>
 			</div>
 		</Motion>

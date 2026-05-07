@@ -17,13 +17,6 @@ export { inview } from './actions/inview';
 // Types
 export type { Project, ExperienceItem, Skills as SkillsData, Profile } from './types';
 
-// Data
-import projectsData from './data/projects.json';
-import experienceData from './data/experience.json';
-import skillsData from './data/skills.json';
-import profileData from './data/profile.json';
-
-export const projects = projectsData;
-export const experience = experienceData;
-export const skills = skillsData;
-export const profile = profileData;
+// All site content (profile, skills, projects, experience, consulting) is
+// sourced from /content.yaml at the repo root. See src/lib/content.ts.
+export { profile, skills, projects, experience, consulting } from './content';
