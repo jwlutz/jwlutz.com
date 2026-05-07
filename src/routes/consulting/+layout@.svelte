@@ -5,12 +5,14 @@
 
 	let { children } = $props();
 	let isDarkMode = $derived($darkMode);
+	let mobileMenuOpen = $state(false);
 
 	function scrollTo(id: string) {
 		const el = document.getElementById(id);
 		if (el) {
 			el.scrollIntoView({ behavior: 'smooth' });
 		}
+		mobileMenuOpen = false;
 	}
 
 	// Apply dark mode class to document
@@ -37,33 +39,62 @@
 <div class="layout" class:dark={isDarkMode}>
 	<div class="nav-wrapper">
 		<nav class:dark={isDarkMode}>
-			<a href="/consulting" class="logo">LCG</a>
-			<div class="nav-links">
-				<button onclick={() => scrollTo('hero')}>Home</button>
-				<button onclick={() => scrollTo('services')}>Services</button>
-				<button onclick={() => scrollTo('work')}>Projects</button>
-			</div>
-			<div class="nav-buttons">
-				<a href="/" class="cta-secondary">Portfolio</a>
-				<button onclick={() => scrollTo('cta')} class="cta">Get in touch</button>
-				<!-- Theme Toggle -->
+			<div class="nav-row">
 				<button
-					onclick={toggleDarkMode}
-					class="theme-toggle"
-					class:dark={isDarkMode}
-					aria-label="Toggle dark mode"
+					class="hamburger"
+					class:open={mobileMenuOpen}
+					onclick={() => (mobileMenuOpen = !mobileMenuOpen)}
+					aria-label="Toggle menu"
+					aria-expanded={mobileMenuOpen}
 				>
-					<svg class="sun-icon" fill="currentColor" viewBox="0 0 24 24">
-						<path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/>
-					</svg>
-					<span class="toggle-track">
-						<span class="toggle-thumb"></span>
-					</span>
-					<svg class="moon-icon" fill="currentColor" viewBox="0 0 24 24">
-						<path d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
-					</svg>
+					{#if mobileMenuOpen}
+						<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+							<path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+						</svg>
+					{:else}
+						<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+							<path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/>
+						</svg>
+					{/if}
 				</button>
+				<a href="/consulting" class="logo">LCG</a>
+				<div class="nav-links">
+					<button onclick={() => scrollTo('hero')}>Home</button>
+					<button onclick={() => scrollTo('services')}>Services</button>
+					<button onclick={() => scrollTo('work')}>Projects</button>
+				</div>
+				<div class="nav-buttons">
+					<a href="/" class="cta-secondary">Portfolio</a>
+					<button onclick={() => scrollTo('cta')} class="cta">Get in touch</button>
+					<!-- Theme Toggle -->
+					<button
+						onclick={toggleDarkMode}
+						class="theme-toggle"
+						class:dark={isDarkMode}
+						aria-label="Toggle dark mode"
+					>
+						<svg class="sun-icon" fill="currentColor" viewBox="0 0 24 24">
+							<path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/>
+						</svg>
+						<span class="toggle-track">
+							<span class="toggle-thumb"></span>
+						</span>
+						<svg class="moon-icon" fill="currentColor" viewBox="0 0 24 24">
+							<path d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
+						</svg>
+					</button>
+				</div>
 			</div>
+
+			{#if mobileMenuOpen}
+				<div class="mobile-menu" class:dark={isDarkMode}>
+					<button onclick={() => scrollTo('hero')}>Home</button>
+					<button onclick={() => scrollTo('services')}>Services</button>
+					<button onclick={() => scrollTo('work')}>Projects</button>
+					<button onclick={() => scrollTo('cta')}>Get in touch</button>
+					<a href="/" onclick={() => (mobileMenuOpen = false)}>Portfolio</a>
+				</div>
+			{/if}
 		</nav>
 	</div>
 
@@ -155,9 +186,6 @@
 	nav {
 		max-width: 1200px;
 		margin: 0 auto;
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
 		padding: 0.75rem 1.5rem;
 		background: rgba(255, 255, 255, 0.8);
 		backdrop-filter: blur(16px);
@@ -170,6 +198,64 @@
 	nav.dark {
 		background: rgba(10, 10, 10, 0.9);
 		border-color: #262626;
+	}
+
+	.nav-row {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 0.75rem;
+	}
+
+	.hamburger {
+		display: none;
+		align-items: center;
+		justify-content: center;
+		background: none;
+		border: none;
+		padding: 0.4rem;
+		margin: -0.4rem 0 -0.4rem -0.4rem;
+		color: var(--color-text-secondary);
+		cursor: pointer;
+		border-radius: 6px;
+		transition: color 0.15s, background 0.15s;
+	}
+
+	.hamburger:hover {
+		color: var(--color-text-primary);
+		background: rgba(128, 128, 128, 0.08);
+	}
+
+	.mobile-menu {
+		display: none;
+		flex-direction: column;
+		gap: 0.25rem;
+		margin-top: 0.75rem;
+		padding-top: 0.75rem;
+		border-top: 1px solid var(--color-border);
+	}
+
+	.mobile-menu.dark {
+		border-top-color: #262626;
+	}
+
+	.mobile-menu button,
+	.mobile-menu a {
+		text-align: left;
+		background: none;
+		border: none;
+		font-size: 0.95rem;
+		font-weight: 500;
+		color: var(--color-text-secondary);
+		padding: 0.6rem 0.25rem;
+		cursor: pointer;
+		text-decoration: none;
+		transition: color 0.15s;
+	}
+
+	.mobile-menu button:hover,
+	.mobile-menu a:hover {
+		color: var(--color-text-primary);
 	}
 
 	.logo {
@@ -372,6 +458,27 @@
 		color: var(--color-text-primary);
 	}
 
+	@media (max-width: 768px) {
+		.hamburger {
+			display: inline-flex;
+		}
+
+		.nav-links {
+			display: none;
+		}
+
+		/* Hide desktop CTAs in the row; surface them in the mobile menu instead.
+		   Theme toggle stays accessible. */
+		.nav-buttons .cta,
+		.nav-buttons .cta-secondary {
+			display: none;
+		}
+
+		.mobile-menu {
+			display: flex;
+		}
+	}
+
 	@media (max-width: 640px) {
 		.nav-wrapper {
 			padding: 0.75rem 1rem;
@@ -379,20 +486,6 @@
 
 		nav {
 			padding: 0.5rem 1rem;
-		}
-
-		.nav-links {
-			display: none;
-		}
-
-		.nav-buttons {
-			gap: 0.5rem;
-		}
-
-		.cta,
-		.cta-secondary {
-			padding: 0.4rem 0.75rem;
-			font-size: 0.75rem;
 		}
 
 		footer {

@@ -111,7 +111,8 @@ main {
 /* Sticky Section Headers */
 .section-header-sticky {
   position: sticky;
-  top: 0;
+  /* Match scroll-padding-top so headers don't slide under the fixed nav. */
+  top: 80px;
   z-index: 40;
   padding: 1.5rem 0;
   display: flex;
@@ -135,6 +136,15 @@ main {
 @media (min-width: 768px) {
   .section-heading {
     font-size: 2.5rem;
+  }
+}
+
+/* Sections use Tailwind's py-32 (8rem) which is too much vertical air on phones.
+   Override to py-16 (4rem) below the md breakpoint. */
+@media (max-width: 767px) {
+  section.py-32 {
+    padding-top: 4rem;
+    padding-bottom: 4rem;
   }
 }
 

@@ -163,5 +163,21 @@
 			width: 160px;
 			height: 200px;
 		}
+
+		.tagline {
+			font-size: 1.05rem;
+		}
+	}
+
+	@media (max-width: 480px) {
+		.hero-card {
+			padding: 1.5rem;
+			gap: 1.5rem;
+		}
+
+		.photo {
+			width: 130px;
+			height: 165px;
+		}
 	}
 </style>
