@@ -11,6 +11,8 @@ export interface Project {
 	featuredTag?: string;
 	codeStatus?: string;
 	liveText?: string;
+	gradient?: string;
+	imageFit?: 'cover' | 'contain';
 }
 
 export interface ExperienceItem {

@@ -6,13 +6,15 @@
 	let { projects }: { projects: Project[] } = $props();
 
 	let carouselRef: HTMLDivElement;
-	let currentIndex = $state(1);
+	// Start centered on DSA from Scratch (index 2 in projects.json).
+	const initialIndex = 2;
+	let currentIndex = $state(initialIndex);
 
 	onMount(() => {
 		setTimeout(() => {
 			if (carouselRef) {
 				const cardWidth = 420 + 24;
-				carouselRef.scrollLeft = cardWidth;
+				carouselRef.scrollLeft = cardWidth * initialIndex;
 			}
 		}, 100);
 	});
