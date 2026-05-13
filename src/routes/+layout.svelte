@@ -4,12 +4,14 @@
 	import { Nav, Footer, profile } from '$lib';
 	import { darkMode } from '$lib/stores/darkMode';
 	import { onMount } from 'svelte';
+	import { page } from '$app/stores';
 	import { injectAnalytics } from '@vercel/analytics/sveltekit';
 	import { injectSpeedInsights } from '@vercel/speed-insights/sveltekit';
 
 	let { children } = $props();
 
 	let activeSection = $state('home');
+	let isConsulting = $derived($page.url.pathname.startsWith('/consulting'));
 
 	onMount(() => {
 		injectAnalytics();
@@ -48,8 +50,8 @@
 
 <svelte:window onscroll={handleScroll} />
 
-<!-- Dark mode background with grid lines -->
-{#if $darkMode}
+<!-- Dark mode background with grid lines (consulting layout renders its own) -->
+{#if $darkMode && !isConsulting}
 	<div class="dark-bg">
 		<div class="gradient-orb orb-1"></div>
 		<div class="gradient-orb orb-2"></div>
@@ -57,13 +59,17 @@
 	</div>
 {/if}
 
-<Nav {activeSection} {profile} />
+{#if !isConsulting}
+	<Nav {activeSection} {profile} />
+{/if}
 
 <main>
 	{@render children()}
 </main>
 
-<Footer />
+{#if !isConsulting}
+	<Footer />
+{/if}
 
 <style>
 	/* Dark mode background */

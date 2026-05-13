@@ -419,7 +419,8 @@ consulting:
         examplesLabel: See some examples
         examples:
           - { label: The Sparkling Shoe, url: https://thesparklingshoe.com }
-          - { label: The Dance Store,    url: https://www.thedancestore.com }
+          - { label: Candella Labs,      url: https://candella.dev }
+          - { label: mindlsn,            url: https://mindlsn.com }
 
   cta:
     heading: Got a Project?

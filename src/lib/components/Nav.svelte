@@ -13,6 +13,12 @@
 	// Check current page
 	let isHomepage = $derived($page.url.pathname === '/');
 	let isConsulting = $derived($page.url.pathname.startsWith('/consulting'));
+
+	// Close the mobile menu whenever the route changes (e.g. clicking Consulting)
+	$effect(() => {
+		$page.url.pathname;
+		mobileMenuOpen = false;
+	});
 	// Use global dark mode store
 	let isDarkMode = $derived($darkMode);
 
@@ -214,6 +220,7 @@
 						href="/Jack_Lutz_Resume.pdf"
 						target="_blank"
 						rel="noopener noreferrer"
+						onclick={() => (mobileMenuOpen = false)}
 						class="text-left font-medium transition-colors {isDarkMode
 							? 'text-[#a1a1aa] hover:text-white'
 							: 'text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]'}"
@@ -222,6 +229,7 @@
 					</a>
 					<a
 						href="/consulting"
+						onclick={() => (mobileMenuOpen = false)}
 						class="text-left font-medium transition-colors {isDarkMode
 							? 'text-[#a1a1aa] hover:text-white'
 							: 'text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]'}"
