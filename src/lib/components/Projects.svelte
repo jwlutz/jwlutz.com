@@ -2,6 +2,7 @@
 	import { onMount } from 'svelte';
 	import ProjectCard from './ProjectCard.svelte';
 	import type { Project } from '$lib/types';
+	import { track } from '$lib/analytics';
 
 	let { projects }: { projects: Project[] } = $props();
 
@@ -42,19 +43,20 @@
 		return () => carouselRef?.removeEventListener('scroll', onScroll);
 	});
 
-	function scrollTo(index: number) {
+	function scrollTo(index: number, source: 'arrow' | 'dot' = 'dot') {
 		centerCard(index, 'smooth');
 		currentIndex = index;
+		track('carousel_navigate', { source });
 	}
 
 	function next() {
 		const newIndex = (currentIndex + 1) % projects.length;
-		scrollTo(newIndex);
+		scrollTo(newIndex, 'arrow');
 	}
 
 	function prev() {
 		const newIndex = (currentIndex - 1 + projects.length) % projects.length;
-		scrollTo(newIndex);
+		scrollTo(newIndex, 'arrow');
 	}
 </script>
 

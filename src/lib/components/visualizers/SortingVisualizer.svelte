@@ -8,6 +8,7 @@
 		type SortStep,
 		type SortGenerator
 	} from '$lib/sorting';
+	import { track } from '$lib/analytics';
 
 	// Props
 	let { comparisonMode = false }: { comparisonMode?: boolean } = $props();
@@ -230,6 +231,21 @@ def heapify(arr, n, i):
 	let audioContext: AudioContext | null = null;
 	let isPaused = $state(false);
 
+	let completionReported = false;
+	$effect(() => {
+		if (panel1.isDone && !completionReported) {
+			completionReported = true;
+			track('visualizer_completed', {
+				type: 'sorting',
+				algorithm: algorithm1,
+				size: barCount,
+				duration_s: Math.round(panel1.elapsedTime / 1000)
+			});
+		} else if (!panel1.isDone) {
+			completionReported = false;
+		}
+	});
+
 	// Canvas refs
 	let canvas1: HTMLCanvasElement;
 	let canvas2: HTMLCanvasElement;
@@ -303,6 +319,7 @@ def heapify(arr, n, i):
 			const algo1 = SORTING_ALGORITHMS[algorithm1];
 			panel1.generator = algo1([...panel1.array]);
 			panel1.startTime = performance.now();
+			track('visualizer_started', { type: 'sorting', algorithm: algorithm1, size: barCount });
 		}
 		panel1.isSorting = true;
 

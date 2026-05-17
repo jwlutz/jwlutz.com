@@ -6,6 +6,7 @@
 	"scripts": {
 		"dev": "bun --bun vite dev",
 		"dev:host": "bun --bun vite dev --host",
+		"build:diagrams": "bun --bun scripts/build-diagrams.mjs",
 		"build": "bun --bun vite build",
 		"preview": "bun --bun vite preview",
 		"prepare": "svelte-kit sync || echo ''",
@@ -34,7 +35,6 @@
 		"@vercel/analytics": "^2.0.1",
 		"@vercel/speed-insights": "^2.0.0",
 		"js-yaml": "^4.1.1",
-		"mermaid": "^11.12.2",
 		"three": "^0.182.0"
 	}
 }

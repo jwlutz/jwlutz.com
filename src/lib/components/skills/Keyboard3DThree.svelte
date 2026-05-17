@@ -29,6 +29,7 @@
 	let controls: any = null;
 	let keyboardGroup: any = null;
 	let keycapMeshes: Map<string, any> = new Map();
+	let sharedGeometries: any[] = []; // disposed once at unmount
 	let raycaster: any = null;
 	let mouse: any = null;
 	let animationId: number | null = null;
@@ -218,10 +219,19 @@
 			base.receiveShadow = true;
 			base.castShadow = true;
 			keyboardGroup.add(base);
+			sharedGeometries.push(baseGeometry);
 
 			// Starting position
 			const startX = -(totalWidth / 2) + BOARD_PADDING + KEY_SIZE / 2;
 			const startZ = -(totalDepth / 2) + BOARD_PADDING + KEY_SIZE / 2;
+
+			// Geometries are identical across all keycaps — create once and share.
+			// Each keycap still gets its own material (color/emissive vary per skill).
+			const keycapGeometry = new RoundedBoxGeometry(KEY_SIZE * 0.96, KEY_HEIGHT, KEY_SIZE * 0.96, 6, 0.1);
+			const topSurfaceGeometry = new THREE.PlaneGeometry(KEY_SIZE * 0.88, KEY_SIZE * 0.88);
+			const logoSize = KEY_SIZE * 0.65;
+			const logoGeometry = new THREE.PlaneGeometry(logoSize, logoSize);
+			sharedGeometries.push(keycapGeometry, topSurfaceGeometry, logoGeometry);
 
 			// Create keycaps
 			for (const skill of KEYBOARD_SKILLS_ARRAY) {
@@ -250,7 +260,6 @@
 				}
 
 				// Keycap body - bigger keys that fill the space
-				const keycapGeometry = new RoundedBoxGeometry(KEY_SIZE * 0.96, KEY_HEIGHT, KEY_SIZE * 0.96, 6, 0.1);
 				const keycapMaterial = new THREE.MeshStandardMaterial({
 					color: vibrantColor,
 					metalness: 0.2,
@@ -265,7 +274,6 @@
 				keycapGroup.add(keycap);
 
 				// Glossy top surface for the keycap - bright and shiny
-				const topSurfaceGeometry = new THREE.PlaneGeometry(KEY_SIZE * 0.88, KEY_SIZE * 0.88);
 				const topSurfaceMaterial = new THREE.MeshStandardMaterial({
 					color: vibrantColor,
 					metalness: 0.3,
@@ -278,9 +286,7 @@
 				topSurface.position.y = KEY_HEIGHT + 0.002;
 				keycapGroup.add(topSurface);
 
-				// Logo on top - bigger size
-				const logoSize = KEY_SIZE * 0.65;
-				const logoGeometry = new THREE.PlaneGeometry(logoSize, logoSize);
+				// Logo on top
 				const logoMaterial = new THREE.MeshBasicMaterial({
 					transparent: true,
 					opacity: 1,
@@ -594,15 +600,19 @@
 		canvas?.removeEventListener('mouseleave', onMouseLeave);
 		window.removeEventListener('resize', onResize);
 		controls?.dispose();
+		// Materials and textures are per-keycap — dispose those via traversal.
+		// Skip geometry here because keycap/top/logo geometries are shared.
 		keycapMeshes.forEach(({ group }) => {
 			group.traverse((obj: any) => {
-				if (obj.geometry) obj.geometry.dispose();
 				if (obj.material) {
 					if (obj.material.map) obj.material.map.dispose();
 					obj.material.dispose();
 				}
 			});
 		});
+		// Dispose the shared geometries exactly once.
+		sharedGeometries.forEach((g) => g.dispose());
+		sharedGeometries = [];
 		renderer?.dispose();
 		audioContext?.close();
 	});

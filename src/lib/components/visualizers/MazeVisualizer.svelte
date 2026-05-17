@@ -15,6 +15,7 @@
 		type SolveGenerator,
 		type SolveStep
 	} from '$lib/maze';
+	import { track } from '$lib/analytics';
 
 	// Props
 	let { comparisonMode = false }: { comparisonMode?: boolean } = $props();
@@ -320,6 +321,21 @@ def astar_solve(grid, start, end):
 	let audioContext: AudioContext | null = null;
 	let isPaused = $state(false);
 
+	let completionReported = false;
+	$effect(() => {
+		if (panel1.isDone && !completionReported) {
+			completionReported = true;
+			track('visualizer_completed', {
+				type: 'maze',
+				algorithm: `${genAlgorithm}+${solveAlgorithm1}`,
+				size: GRID_SIZES[gridSizeName],
+				duration_s: Math.round(panel1.elapsedTime / 1000)
+			});
+		} else if (!panel1.isDone) {
+			completionReported = false;
+		}
+	});
+
 	// Canvas refs
 	let canvas1: HTMLCanvasElement;
 	let canvas2: HTMLCanvasElement;
@@ -385,6 +401,12 @@ def astar_solve(grid, start, end):
 		// Start fresh
 		const gridSize = GRID_SIZES[gridSizeName];
 		const genFunc = GENERATION_ALGORITHMS[genAlgorithm];
+
+		track('visualizer_started', {
+			type: 'maze',
+			algorithm: `${genAlgorithm}+${solveAlgorithm1}`,
+			size: gridSize
+		});
 
 		panel1 = {
 			...panel1,

@@ -1,9 +1,13 @@
 <script lang="ts">
 	import type { Project } from '$lib/types';
 	import { getTechIcon } from '$lib/data/tech-icons';
+	import { track } from '$lib/analytics';
 
 	let { project, featured = false }: { project: Project; featured?: boolean } = $props();
 
+	function trackClick(target: 'github' | 'live') {
+		track('project_click', { project_id: project.id, target });
+	}
 </script>
 
 <article class="project-card {featured ? 'project-card-featured' : ''}">
@@ -81,6 +85,7 @@
 					target="_blank"
 					rel="noopener noreferrer"
 					class="btn-secondary"
+					onclick={() => trackClick('github')}
 				>
 					GitHub Repo
 				</a>
@@ -91,6 +96,7 @@
 					target={project.live.startsWith('/') ? undefined : '_blank'}
 					rel={project.live.startsWith('/') ? undefined : 'noopener noreferrer'}
 					class="btn-secondary"
+					onclick={() => trackClick('live')}
 				>
 					{project.liveText || (project.live.startsWith('/') ? 'Try Demo' : 'Live Demo')}
 				</a>

@@ -4,6 +4,7 @@
 	import { goto } from '$app/navigation';
 	import { darkMode } from '$lib/stores/darkMode';
 	import ThemeToggle from './ThemeToggle.svelte';
+	import { track, trackOutbound } from '$lib/analytics';
 
 	let {
 		activeSection = 'home',
@@ -33,6 +34,14 @@
 		{ id: 'projects', label: 'Projects' },
 		{ id: 'contact', label: 'Contact' }
 	];
+
+	function emailSource(): 'portfolio' | 'consulting' {
+		return $page.url.pathname.startsWith('/consulting') ? 'consulting' : 'portfolio';
+	}
+
+	function trackResume(location: 'nav_desktop' | 'nav_desktop_icon' | 'nav_mobile') {
+		track('resume_download', { source: location });
+	}
 
 	function navigateToSection(id: string) {
 		if (isHomepage) {
@@ -106,6 +115,7 @@
 					href="/Jack_Lutz_Resume.pdf"
 					target="_blank"
 					rel="noopener noreferrer"
+					onclick={() => trackResume('nav_desktop')}
 					class="font-medium transition-colors {isDarkMode
 						? 'text-[#a1a1aa] hover:text-white'
 						: 'text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]'}"
@@ -128,6 +138,7 @@
 					href={profile.social.github}
 					target="_blank"
 					rel="noopener noreferrer"
+					onclick={() => trackOutbound(profile.social.github, 'nav')}
 					class="transition-colors {isDarkMode ? 'text-[#71717a] hover:text-white' : 'text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]'}"
 					aria-label="GitHub"
 				>
@@ -141,6 +152,7 @@
 					href={profile.social.linkedin}
 					target="_blank"
 					rel="noopener noreferrer"
+					onclick={() => trackOutbound(profile.social.linkedin, 'nav')}
 					class="transition-colors {isDarkMode ? 'text-[#71717a] hover:text-white' : 'text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]'}"
 					aria-label="LinkedIn"
 				>
@@ -154,6 +166,7 @@
 					href="mailto:{profile.email}"
 					class="transition-colors {isDarkMode ? 'text-[#71717a] hover:text-white' : 'text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]'}"
 					aria-label="Email"
+					onclick={() => track('email_click', { source: emailSource() })}
 				>
 					<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 						<path
@@ -168,6 +181,7 @@
 					href="/Jack_Lutz_Resume.pdf"
 					target="_blank"
 					rel="noopener noreferrer"
+					onclick={() => trackResume('nav_desktop_icon')}
 					class="transition-colors {isDarkMode ? 'text-[#71717a] hover:text-white' : 'text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]'}"
 					aria-label="Resume"
 				>
@@ -202,7 +216,10 @@
 						href="/Jack_Lutz_Resume.pdf"
 						target="_blank"
 						rel="noopener noreferrer"
-						onclick={() => (mobileMenuOpen = false)}
+						onclick={() => {
+							trackResume('nav_mobile');
+							mobileMenuOpen = false;
+						}}
 						class="text-left font-medium transition-colors {isDarkMode
 							? 'text-[#a1a1aa] hover:text-white'
 							: 'text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]'}"

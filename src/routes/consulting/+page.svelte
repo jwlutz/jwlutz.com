@@ -4,90 +4,17 @@
 	import { inview } from '$lib/actions/inview';
 	import { darkMode } from '$lib/stores/darkMode';
 	import { techIcons } from '$lib/data/tech-icons';
-
-	// Mermaid is dynamically imported on first diagram expansion to keep it out of the initial bundle.
-	let mermaid: typeof import('mermaid').default | null = null;
-	async function ensureMermaid(isDark: boolean) {
-		if (!mermaid) {
-			mermaid = (await import('mermaid')).default;
-			initMermaid(isDark);
-		}
-	}
+	import { track, initSessionTiming } from '$lib/analytics';
 
 	// All page copy lives in /content.yaml at the repo root.
 	const { hero, services, work: workCopy, cta } = consultingData;
 
-	let pipelineExpanded = $state(false);
-	let feedmeExpanded = $state(false);
-	let websiteExpanded = $state(false);
-	let mermaidContainer: HTMLElement;
-	let feedmeContainer: HTMLElement;
-	let mermaidRendered = false;
-	let feedmeRendered = false;
+	let expandedId = $state<string | null>(null);
+	const isExpanded = (id: string) => expandedId === id;
+	function toggleExpanded(id: string) {
+		expandedId = expandedId === id ? null : id;
+	}
 	let isMobile = $state(false);
-	let lastMobileState = false;
-	let lastDarkModeState: boolean | null = null;
-
-	// Desktop diagrams (left to right)
-	const ecommerceDiagramLR = `
-flowchart LR
-    A[Employee Photos] -->|40k+ items| B[CV + OCR]
-    A --> C[AWS S3]
-    B --> D[Supabase]
-    C --> E[Streamlit Review App]
-    D --> E
-    E -->|Edit| D
-    C --> F[Lightspeed POS]
-    D --> F
-    F --> G[Website]
-`;
-
-	const feedmeDiagramLR = `
-flowchart LR
-    A[Menu APIs] --> B[Scraper]
-    B --> C[Supabase]
-    C --> D[Router]
-    D --> E[OR-Tools]
-    D --> F[LLM]
-    E --> G[Filter]
-    F --> G
-    G --> H[API]
-    H --> I[Metrics]
-    H --> J[App]
-`;
-
-	// Mobile diagrams (top to bottom)
-	const ecommerceDiagramTB = `
-flowchart TB
-    A[Employee Photos] -->|40k+ items| B[CV + OCR]
-    A --> C[AWS S3]
-    B --> D[Supabase]
-    C --> E[Streamlit App]
-    D --> E
-    E -->|Edit| D
-    C --> F[Lightspeed POS]
-    D --> F
-    F --> G[Website]
-`;
-
-	const feedmeDiagramTB = `
-flowchart TB
-    A[Menu APIs] --> B[Scraper]
-    B --> C[Supabase]
-    C --> D[Router]
-    D --> E[OR-Tools]
-    D --> F[LLM]
-    E --> G[Filter]
-    F --> G
-    G --> H[API]
-    H --> I[Metrics]
-    H --> J[App]
-`;
-
-	// Get current diagram based on screen size
-	let ecommerceDiagram = $derived(isMobile ? ecommerceDiagramTB : ecommerceDiagramLR);
-	let feedmeDiagram = $derived(isMobile ? feedmeDiagramTB : feedmeDiagramLR);
-
 
 	// SVG path content for service category icons, keyed by the `icon` field in consulting.json
 	const serviceIcons: Record<string, string> = {
@@ -101,141 +28,23 @@ flowchart TB
 		isMobile = window.innerWidth < 900;
 	}
 
-	function initMermaid(isDark: boolean) {
-		if (!mermaid) return;
-		const themeVariables = isDark
-			? {
-					primaryColor: '#10b981',
-					primaryTextColor: '#fafafa',
-					primaryBorderColor: '#10b981',
-					lineColor: '#10b981',
-					secondaryColor: '#1e1e1e',
-					tertiaryColor: '#0c0c0c',
-					background: '#0c0c0c',
-					mainBkg: '#1a1a1a',
-					nodeBorder: '#10b981',
-					clusterBkg: 'rgba(16, 185, 129, 0.05)',
-					clusterBorder: 'rgba(16, 185, 129, 0.2)',
-					titleColor: '#fafafa',
-					edgeLabelBackground: '#0c0c0c'
-			  }
-			: {
-					primaryColor: '#10b981',
-					primaryTextColor: '#1a1a1a',
-					primaryBorderColor: '#10b981',
-					lineColor: '#10b981',
-					secondaryColor: '#f1f3f4',
-					tertiaryColor: '#ffffff',
-					background: '#ffffff',
-					mainBkg: '#f8f9fa',
-					nodeBorder: '#10b981',
-					clusterBkg: 'rgba(16, 185, 129, 0.05)',
-					clusterBorder: 'rgba(16, 185, 129, 0.2)',
-					titleColor: '#1a1a1a',
-					edgeLabelBackground: '#ffffff'
-			  };
-
-		mermaid.initialize({
-			startOnLoad: false,
-			theme: isDark ? 'dark' : 'default',
-			themeVariables,
-			flowchart: {
-				curve: 'basis',
-				padding: 15,
-				nodeSpacing: 40,
-				rankSpacing: 50,
-				useMaxWidth: true,
-				htmlLabels: true
-			},
-			fontSize: 16
-		});
+	// Pre-rendered Mermaid SVGs live under /static/diagrams (built by
+	// scripts/build-diagrams.mjs). Re-run that script if you change a diagram.
+	function diagramSrc(id: string, mobile: boolean, dark: boolean): string {
+		const layout = mobile ? 'tb' : 'lr';
+		const theme = dark ? 'dark' : 'light';
+		return `/diagrams/${id}-${layout}-${theme}.svg`;
 	}
 
 	onMount(() => {
 		checkMobile();
-		lastMobileState = isMobile;
-		lastDarkModeState = $darkMode;
-		window.addEventListener('resize', handleResize);
-
-		// Subscribe to dark mode changes to re-render charts (only after mermaid is loaded)
-		const unsubscribe = darkMode.subscribe((isDark) => {
-			if (lastDarkModeState !== null && lastDarkModeState !== isDark && mermaid) {
-				initMermaid(isDark);
-				// Re-render charts if they're visible
-				if (mermaidRendered) {
-					mermaidRendered = false;
-					renderEcommerce();
-				}
-				if (feedmeRendered) {
-					feedmeRendered = false;
-					renderFeedme();
-				}
-			}
-			lastDarkModeState = isDark;
-		});
-
+		window.addEventListener('resize', checkMobile);
+		track('consulting_visit');
+		const teardownTiming = initSessionTiming('consulting');
 		return () => {
-			window.removeEventListener('resize', handleResize);
-			unsubscribe();
+			window.removeEventListener('resize', checkMobile);
+			teardownTiming?.();
 		};
-	});
-
-	function handleResize() {
-		checkMobile();
-		// Re-render diagrams if mobile state changed
-		if (lastMobileState !== isMobile) {
-			lastMobileState = isMobile;
-			if (mermaidRendered) {
-				mermaidRendered = false;
-				renderEcommerce();
-			}
-			if (feedmeRendered) {
-				feedmeRendered = false;
-				renderFeedme();
-			}
-		}
-	}
-
-	let renderCount = 0;
-
-	async function renderEcommerce() {
-		if (mermaidContainer) {
-			try {
-				await ensureMermaid($darkMode);
-				renderCount++;
-				const { svg } = await mermaid!.render(`ecommerce-diagram-${renderCount}`, ecommerceDiagram);
-				mermaidContainer.innerHTML = svg;
-				mermaidRendered = true;
-			} catch (e) {
-				console.error('Mermaid render error:', e);
-			}
-		}
-	}
-
-	async function renderFeedme() {
-		if (feedmeContainer) {
-			try {
-				await ensureMermaid($darkMode);
-				renderCount++;
-				const { svg } = await mermaid!.render(`feedme-diagram-${renderCount}`, feedmeDiagram);
-				feedmeContainer.innerHTML = svg;
-				feedmeRendered = true;
-			} catch (e) {
-				console.error('Mermaid render error:', e);
-			}
-		}
-	}
-
-	$effect(() => {
-		if (pipelineExpanded && !mermaidRendered) {
-			renderEcommerce();
-		}
-	});
-
-	$effect(() => {
-		if (feedmeExpanded && !feedmeRendered) {
-			renderFeedme();
-		}
 	});
 
 	const work = workCopy.items;
@@ -297,16 +106,12 @@ flowchart TB
 					use:inview
 					class="work-card animate-on-scroll"
 					class:expandable={project.expandable}
-					class:expanded={(project.id === 'ecommerce' && pipelineExpanded) || (project.id === 'feedme' && feedmeExpanded) || (project.id === 'website' && websiteExpanded)}
+					class:expanded={isExpanded(project.id)}
 					style="transition-delay: {i * 100}ms"
 				>
 						<button
 							class="card-header"
-							onclick={() => {
-								if (project.id === 'ecommerce') pipelineExpanded = !pipelineExpanded;
-								if (project.id === 'feedme') feedmeExpanded = !feedmeExpanded;
-								if (project.id === 'website') websiteExpanded = !websiteExpanded;
-							}}
+							onclick={() => project.expandable && toggleExpanded(project.id)}
 							disabled={!project.expandable}
 						>
 							<div class="card-content">
@@ -330,7 +135,7 @@ flowchart TB
 								{/if}
 							</div>
 							{#if project.expandable}
-								<div class="expand-icon" class:rotated={(project.id === 'ecommerce' && pipelineExpanded) || (project.id === 'feedme' && feedmeExpanded) || (project.id === 'website' && websiteExpanded)}>
+								<div class="expand-icon" class:rotated={isExpanded(project.id)}>
 									<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
 										<path d="M6 9l6 6 6-6"/>
 									</svg>
@@ -339,19 +144,31 @@ flowchart TB
 						</button>
 
 						{#if project.id === 'ecommerce'}
-							<div class="pipeline-container" class:visible={pipelineExpanded}>
-								<div class="mermaid-wrapper" bind:this={mermaidContainer}></div>
+							<div class="pipeline-container" class:visible={isExpanded('ecommerce')}>
+								<div class="mermaid-wrapper">
+									<img
+										src={diagramSrc('ecommerce', isMobile, $darkMode)}
+										alt="Ecommerce automation pipeline"
+										loading="lazy"
+									/>
+								</div>
 							</div>
 						{/if}
 
 						{#if project.id === 'feedme'}
-							<div class="pipeline-container" class:visible={feedmeExpanded}>
-								<div class="mermaid-wrapper" bind:this={feedmeContainer}></div>
+							<div class="pipeline-container" class:visible={isExpanded('feedme')}>
+								<div class="mermaid-wrapper">
+									<img
+										src={diagramSrc('feedme', isMobile, $darkMode)}
+										alt="Feedme routing pipeline"
+										loading="lazy"
+									/>
+								</div>
 							</div>
 						{/if}
 
 						{#if project.id === 'website' && project.examples}
-							<div class="pipeline-container" class:visible={websiteExpanded}>
+							<div class="pipeline-container" class:visible={isExpanded('website')}>
 								<div class="examples-section">
 									<span class="examples-label">{project.examplesLabel ?? 'See some examples'}</span>
 									<div class="example-links">
@@ -644,26 +461,11 @@ flowchart TB
 		align-items: center;
 	}
 
-	.mermaid-wrapper :global(svg) {
+	.mermaid-wrapper img {
 		display: block;
 		height: auto;
 		min-height: 120px;
 		max-width: 100%;
-	}
-
-	.mermaid-wrapper :global(.nodeLabel) {
-		font-family: inherit;
-		font-weight: 500;
-	}
-
-	.mermaid-wrapper :global(.node rect),
-	.mermaid-wrapper :global(.node polygon) {
-		rx: 6px;
-		ry: 6px;
-	}
-
-	.mermaid-wrapper :global(.edgeLabel) {
-		font-size: 0.75rem;
 	}
 
 	/* Tech Stack */

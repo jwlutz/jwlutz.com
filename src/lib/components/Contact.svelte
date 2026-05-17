@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { inview } from '$lib/actions/inview';
 	import type { Profile } from '$lib/types';
+	import { track, trackOutbound } from '$lib/analytics';
 
 	let { profile }: { profile: Profile } = $props();
 </script>
@@ -13,7 +14,11 @@
 		</div>
 
 		<div class="text-center mt-8">
-			<a href="mailto:{profile.email}" class="btn-primary">
+			<a
+				href="mailto:{profile.email}"
+				class="btn-primary"
+				onclick={() => track('email_click', { source: 'portfolio' })}
+			>
 				<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 					<path
 						stroke-linecap="round"
@@ -32,6 +37,7 @@
 					rel="noopener noreferrer"
 					class="text-[var(--color-text-secondary)] hover:text-[var(--color-accent)] transition-colors"
 					aria-label="GitHub"
+					onclick={() => trackOutbound(profile.social.github, 'contact')}
 				>
 					<svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
 						<path
@@ -45,6 +51,7 @@
 					rel="noopener noreferrer"
 					class="text-[var(--color-text-secondary)] hover:text-[var(--color-accent)] transition-colors"
 					aria-label="LinkedIn"
+					onclick={() => trackOutbound(profile.social.linkedin, 'contact')}
 				>
 					<svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
 						<path
@@ -56,6 +63,7 @@
 					href="mailto:{profile.email}"
 					class="text-[var(--color-text-secondary)] hover:text-[var(--color-accent)] transition-colors"
 					aria-label="Email"
+					onclick={() => track('email_click', { source: 'portfolio' })}
 				>
 					<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 						<path
