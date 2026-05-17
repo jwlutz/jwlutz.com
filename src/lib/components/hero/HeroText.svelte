@@ -50,9 +50,9 @@
 		display: flex;
 		align-items: center;
 		gap: 3rem;
-		background: rgba(255, 255, 255, 0.85);
-		backdrop-filter: blur(20px);
-		-webkit-backdrop-filter: blur(20px);
+		background: rgba(255, 255, 255, 0.9);
+		backdrop-filter: blur(10px);
+		-webkit-backdrop-filter: blur(10px);
 		border-radius: 1.5rem;
 		padding: 3rem 4rem;
 		box-shadow:
@@ -62,7 +62,6 @@
 		border: 1px solid rgba(255, 255, 255, 0.6);
 		max-width: 1000px;
 		width: 100%;
-		will-change: transform, opacity;
 	}
 
 	:global(html.dark) .hero-card {
@@ -97,12 +96,13 @@
 	}
 
 	.name {
-		font-size: clamp(2.5rem, 5vw, 4rem);
+		font-size: clamp(2rem, 5vw, 4rem);
 		font-weight: 700;
 		color: var(--color-text-primary);
 		margin: 0 0 1rem 0;
 		line-height: 1.1;
 		letter-spacing: -0.02em;
+		overflow-wrap: break-word;
 	}
 
 	.tagline {

@@ -22,13 +22,20 @@
 		width: 100%;
 		max-width: 900px;
 		margin: 0 auto;
-		padding: 2rem 1rem;
+		padding: 2rem 0.75rem;
 	}
 
 	.grid {
 		display: grid;
-		grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-		gap: 1rem;
+		grid-template-columns: repeat(2, 1fr);
+		gap: 0.75rem;
+	}
+
+	@media (min-width: 480px) {
+		.grid {
+			grid-template-columns: repeat(3, 1fr);
+			gap: 1rem;
+		}
 	}
 
 	@media (min-width: 768px) {

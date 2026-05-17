@@ -5,6 +5,7 @@
 	"type": "module",
 	"scripts": {
 		"dev": "bun --bun vite dev",
+		"dev:host": "bun --bun vite dev --host",
 		"build": "bun --bun vite build",
 		"preview": "bun --bun vite preview",
 		"prepare": "svelte-kit sync || echo ''",
@@ -34,7 +35,6 @@
 		"@vercel/speed-insights": "^2.0.0",
 		"js-yaml": "^4.1.1",
 		"mermaid": "^11.12.2",
-		"svelte-motion": "^0.12.2",
 		"three": "^0.182.0"
 	}
 }

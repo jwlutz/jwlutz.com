@@ -71,6 +71,8 @@
 		min-height: 100vh;
 		padding: 6rem 0;
 		overflow: visible;
+		content-visibility: auto;
+		contain-intrinsic-size: 100vh;
 	}
 
 	@media (max-width: 768px) {
@@ -141,7 +143,7 @@
 	}
 
 	.tech-header {
-		z-index: 50;
+		z-index: 30;
 	}
 
 	.keyboard-wrapper {

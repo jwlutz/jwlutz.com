@@ -1,5 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
-
 @import "tailwindcss";
 
 @theme {
@@ -34,13 +32,12 @@ html.dark {
 
 html {
   scroll-behavior: smooth;
-  scroll-padding-top: 80px;
+  scroll-padding-top: 64px;
   scroll-snap-type: none;
 }
 
 body {
   background: linear-gradient(135deg, #fdf2f8 0%, #f8f9fa 25%, #eff6ff 50%, #f8f9fa 75%, #ecfdf5 100%);
-  background-attachment: fixed;
   color: var(--color-text-primary);
   font-family: var(--font-family-sans);
   min-height: 100vh;
@@ -48,18 +45,9 @@ body {
   transition: background 0.3s ease, color 0.3s ease;
 }
 
-/* iOS Safari has long-standing jank issues with background-attachment: fixed.
-   Use scroll on mobile instead — visual difference is minimal. */
-@media (max-width: 768px) {
-  body {
-    background-attachment: scroll;
-  }
-}
-
 html.dark body {
   background: #0a0a0a;
   background-image: none;
-  background-attachment: scroll;
 }
 
 main {
@@ -112,8 +100,8 @@ main {
 .section-header-sticky {
   position: sticky;
   /* Match scroll-padding-top so headers don't slide under the fixed nav. */
-  top: 80px;
-  z-index: 40;
+  top: 64px;
+  z-index: 30;
   padding: 1.5rem 0;
   display: flex;
   flex-direction: column;
@@ -166,10 +154,11 @@ main {
 
 @media (max-width: 768px) {
   .project-card {
-    min-width: 100%;
-    max-width: 100%;
+    min-width: 320px;
+    max-width: 320px;
+    width: 320px;
     height: auto;
-    min-height: 420px;
+    min-height: 480px;
   }
 }
 

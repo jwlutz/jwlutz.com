@@ -15,6 +15,7 @@
 	let container: HTMLDivElement;
 	let canvas: HTMLCanvasElement;
 	let isInView = $state(false);
+	let isActive = false;
 	let isLoading = $state(true);
 	let loadError = $state<string | null>(null);
 	let selectedSkill = $state<KeyboardSkill | null>(null);
@@ -128,9 +129,8 @@
 			});
 			renderer.setClearColor(0x000000, 0);
 			renderer.setSize(canvas.clientWidth, canvas.clientHeight);
-			renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
-			renderer.shadowMap.enabled = true;
-			renderer.shadowMap.type = THREE.PCFShadowMap;
+			renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.25));
+			renderer.shadowMap.enabled = false;
 			// No tone mapping to preserve vibrant colors
 			renderer.toneMapping = THREE.NoToneMapping;
 
@@ -316,6 +316,7 @@
 			canvas.addEventListener('mouseleave', onMouseLeave);
 			window.addEventListener('resize', onResize);
 
+			isActive = true;
 			animate();
 			isLoading = false;
 		} catch (e) {
@@ -516,7 +517,10 @@
 	}
 
 	function animate() {
-		if (!renderer || !scene || !camera) return;
+		if (!renderer || !scene || !camera || !isActive) {
+			animationId = null;
+			return;
+		}
 		animationId = requestAnimationFrame(animate);
 		const delta = clock?.getDelta() || 0.016;
 
@@ -543,15 +547,41 @@
 		if (!browser) return;
 		observer = new IntersectionObserver(
 			(entries) => {
-				if (entries[0].isIntersecting && !isInView) {
+				const visible = entries[0].isIntersecting;
+				if (visible && !isInView) {
 					isInView = true;
 					initAudio();
 					loadThree();
+				} else if (renderer) {
+					// Toggle the animation loop based on visibility so we don't
+					// burn CPU/GPU when the keyboard is scrolled off-screen.
+					if (visible && !isActive) {
+						isActive = true;
+						if (controls) controls.autoRotate = !reducedMotionEnabled;
+						animate();
+					} else if (!visible && isActive) {
+						isActive = false;
+						if (controls) controls.autoRotate = false;
+					}
 				}
 			},
 			{ rootMargin: '200px', threshold: 0.1 }
 		);
 		if (container) observer.observe(container);
+
+		// Also pause when the tab is hidden.
+		const onVisibility = () => {
+			if (document.hidden && isActive) {
+				isActive = false;
+				if (controls) controls.autoRotate = false;
+			} else if (!document.hidden && isInView && renderer && !isActive) {
+				isActive = true;
+				if (controls) controls.autoRotate = !reducedMotionEnabled;
+				animate();
+			}
+		};
+		document.addEventListener('visibilitychange', onVisibility);
+		return () => document.removeEventListener('visibilitychange', onVisibility);
 	});
 
 	onDestroy(() => {

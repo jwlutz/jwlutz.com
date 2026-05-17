@@ -1,30 +1,14 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
-	import { browser } from '$app/environment';
 	import { prefersReducedMotion } from '$lib/stores/mediaQuery';
 
 	let { simplified = false }: { simplified?: boolean } = $props();
 
 	const shouldAnimate = $derived(!simplified && !$prefersReducedMotion);
-
-	let scrollY = $state(0);
-
-	onMount(() => {
-		if (!browser) return;
-
-		const handleScroll = () => {
-			scrollY = window.scrollY;
-		};
-
-		window.addEventListener('scroll', handleScroll, { passive: true });
-		return () => window.removeEventListener('scroll', handleScroll);
-	});
 </script>
 
 <div
 	class="animated-gradient"
 	class:simplified={!shouldAnimate}
-	style="transform: translateY({scrollY * 0.3}px);"
 >
 	<div class="gradient-blob blob-1"></div>
 	<div class="gradient-blob blob-2"></div>
@@ -40,10 +24,10 @@
 		left: 0;
 		right: 0;
 		bottom: 0;
-		height: 200vh;
-		overflow: visible;
+		overflow: hidden;
 		z-index: -1;
 		pointer-events: none;
+		contain: layout paint;
 	}
 
 	.gradient-blob {

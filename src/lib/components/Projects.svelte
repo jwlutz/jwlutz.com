@@ -10,19 +10,40 @@
 	const initialIndex = 2;
 	let currentIndex = $state(initialIndex);
 
+	function centerCard(index: number, behavior: ScrollBehavior = 'auto') {
+		if (!carouselRef) return;
+		const child = carouselRef.children[index] as HTMLElement | undefined;
+		if (!child) return;
+		const target = child.offsetLeft + child.offsetWidth / 2 - carouselRef.clientWidth / 2;
+		carouselRef.scrollTo({ left: target, behavior });
+	}
+
 	onMount(() => {
-		setTimeout(() => {
-			if (carouselRef) {
-				const cardWidth = 420 + 24;
-				carouselRef.scrollLeft = cardWidth * initialIndex;
-			}
-		}, 100);
+		// Position before the first paint so mobile doesn't briefly show card 0.
+		centerCard(initialIndex);
+		// One rAF pass after layout settles, in case fonts/images shift widths.
+		requestAnimationFrame(() => centerCard(initialIndex));
+
+		let raf = 0;
+		const onScroll = () => {
+			if (!carouselRef || raf) return;
+			raf = requestAnimationFrame(() => {
+				raf = 0;
+				if (!carouselRef.children.length) return;
+				const first = carouselRef.children[0] as HTMLElement;
+				const second = carouselRef.children[1] as HTMLElement | undefined;
+				const cardWidth = second ? second.offsetLeft - first.offsetLeft : first.offsetWidth;
+				const center = carouselRef.scrollLeft + carouselRef.clientWidth / 2;
+				const idx = Math.round((center - first.offsetLeft - first.offsetWidth / 2) / cardWidth);
+				if (idx >= 0 && idx < projects.length) currentIndex = idx;
+			});
+		};
+		carouselRef?.addEventListener('scroll', onScroll, { passive: true });
+		return () => carouselRef?.removeEventListener('scroll', onScroll);
 	});
 
 	function scrollTo(index: number) {
-		if (!carouselRef) return;
-		const cardWidth = 420 + 24;
-		carouselRef.scrollTo({ left: cardWidth * index, behavior: 'smooth' });
+		centerCard(index, 'smooth');
 		currentIndex = index;
 	}
 
@@ -79,8 +100,8 @@
 			{/each}
 		</div>
 
-		<!-- Dots Indicator (hidden on mobile) -->
-		<div class="hidden md:flex justify-center gap-2 mt-8">
+		<!-- Dots Indicator -->
+		<div class="flex justify-center gap-2 mt-8">
 			{#each projects as _, i}
 				<button
 					onclick={() => scrollTo(i)}
@@ -122,19 +143,12 @@
 		-ms-overflow-style: none;
 	}
 
-	/* Mobile: vertical stack */
+	/* Mobile: keep horizontal carousel but center cards in the viewport */
 	@media (max-width: 768px) {
 		.carousel-track {
-			flex-direction: column;
-			overflow-x: visible;
-			scroll-snap-type: none;
-			padding-left: 1rem;
-			padding-right: 1rem;
-			gap: 1.5rem;
-		}
-
-		.carousel-track > div {
-			width: 100%;
+			padding-left: max(1rem, calc(50vw - 160px));
+			padding-right: max(1rem, calc(50vw - 160px));
+			gap: 1rem;
 		}
 	}
 </style>
