@@ -2,6 +2,7 @@
 	import '../../app.css';
 	import { profile, Backdrop, ThemeToggle } from '$lib';
 	import { darkMode } from '$lib/stores/darkMode';
+	import { track, trackOutbound } from '$lib/analytics';
 
 	let { children } = $props();
 	let isDarkMode = $derived($darkMode);
@@ -88,9 +89,22 @@
 			<a href="/" class="profile-link">Personal Portfolio</a>
 		</div>
 		<div class="links">
-			<a href={profile.social.github} target="_blank" rel="noopener">GitHub</a>
-			<a href="mailto:jwlutz65@gmail.com">Email</a>
-			<a href={profile.social.linkedin} target="_blank" rel="noopener">LinkedIn</a>
+			<a
+				href={profile.social.github}
+				target="_blank"
+				rel="noopener"
+				onclick={() => trackOutbound(profile.social.github, 'consulting_footer')}
+			>GitHub</a>
+			<a
+				href="mailto:jwlutz65@gmail.com"
+				onclick={() => track('email_click', { source: 'consulting', location: 'footer' })}
+			>Email</a>
+			<a
+				href={profile.social.linkedin}
+				target="_blank"
+				rel="noopener"
+				onclick={() => trackOutbound(profile.social.linkedin, 'consulting_footer')}
+			>LinkedIn</a>
 		</div>
 	</footer>
 </div>

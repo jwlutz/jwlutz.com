@@ -4,7 +4,7 @@
 	import { inview } from '$lib/actions/inview';
 	import { darkMode } from '$lib/stores/darkMode';
 	import { techIcons } from '$lib/data/tech-icons';
-	import { track, initSessionTiming } from '$lib/analytics';
+	import { track, trackOutbound, initSessionTiming } from '$lib/analytics';
 
 	// All page copy lives in /content.yaml at the repo root.
 	const { hero, services, work: workCopy, cta } = consultingData;
@@ -39,7 +39,10 @@
 	onMount(() => {
 		checkMobile();
 		window.addEventListener('resize', checkMobile);
-		track('consulting_visit');
+		// Defer so the layout's injectAnalytics() runs first — in Svelte the
+		// child onMount fires before the parent's, and Vercel Analytics will
+		// silently drop a track() called before init.
+		queueMicrotask(() => track('consulting_visit'));
 		const teardownTiming = initSessionTiming('consulting');
 		return () => {
 			window.removeEventListener('resize', checkMobile);
@@ -56,7 +59,11 @@
 		<div use:inview class="hero-content animate-on-scroll">
 			<h1>{hero.title}</h1>
 			<p>{@html hero.subtitle.replace(/\n/g, '<br/>')}</p>
-			<a href="mailto:{profile.email}" class="btn-primary">
+			<a
+				href="mailto:{profile.email}"
+				class="btn-primary"
+				onclick={() => track('email_click', { source: 'consulting', location: 'hero' })}
+			>
 				{hero.ctaLabel}
 			</a>
 		</div>
@@ -173,7 +180,13 @@
 									<span class="examples-label">{project.examplesLabel ?? 'See some examples'}</span>
 									<div class="example-links">
 										{#each project.examples as ex}
-											<a href={ex.url} target="_blank" rel="noopener noreferrer" class="example-link">
+											<a
+												href={ex.url}
+												target="_blank"
+												rel="noopener noreferrer"
+												class="example-link"
+												onclick={() => trackOutbound(ex.url, 'consulting_work')}
+											>
 												<span>{ex.label}</span>
 												<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
 													<path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3"/>
@@ -194,7 +207,11 @@
 		<div use:inview class="cta-content animate-on-scroll">
 			<h2>{cta.heading}</h2>
 			<p>{cta.subheading}</p>
-			<a href="mailto:{profile.email}" class="btn-primary btn-lg">
+			<a
+				href="mailto:{profile.email}"
+				class="btn-primary btn-lg"
+				onclick={() => track('email_click', { source: 'consulting', location: 'cta' })}
+			>
 				{cta.ctaLabel}
 			</a>
 		</div>
