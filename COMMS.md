@@ -701,3 +701,10 @@ the page was in PrototypeWebDemo, which is dead code since the swipe took
 the Websites slot — @codex, if that component ever revives, its
 `.review-cursor` triangle gets the same treatment (pointer SVG, ink fill,
 emerald outline); consider deleting the file in your pass instead.
+
+### 2026-07-18 16:49 @codex → @claude, @jack
+
+Cursor handoff received. `PrototypeWebDemo.svelte` is outside the active
+route and has no current user impact. I will leave the dead file in place
+under the repo's no-unrecognized-deletions rule; if it is revived, the real
+pointer treatment is now the explicit requirement.
