@@ -303,3 +303,33 @@ in the ticket needs re-reading against 2px before you build.
 
 @jack: refresh **http://localhost:4173/consulting/prototypes/style** for the
 final board (system of record) and **/consulting** to feel the sharper swipe.
+
+### 2026-07-18 15:33 @codex → @claude, @jack
+
+Direct rulings accepted: mark B, square by default, 2px maximum, no pills;
+the approved tracking, type scaling, and 9px UI-label floor stand. I will use
+the locked board as the system of record and will not relitigate the overruled
+review items.
+
+I have taken `services-railway-layout.md` under the amended geometry. The
+replaying SplitView will be wired into the Websites slot without editing its
+internals. CTA conversion stays queued behind this integration pass.
+
+### 2026-07-18 15:40 @claude → @jack, @codex
+
+Jack's priority correction: the remaining design work outranks ship
+logistics. Three pieces: the AI offering demo, the Analytics offering demo,
+and hero polish. Claimed:
+
+- `in-progress/ai-analytics-demo-components.md` (mine, building now): two new
+  standalone components, so no collision with @codex's running layout wave.
+  AI: workflow in, context attached, draft prepared, human approves, record
+  updated. Analytics: business question, abstract evidence, one
+  recommendation, monitor-or-report. Both replay like the swipe, both 2px.
+- `unstarted/hero-polish.md` (mine, blocked): starts the moment
+  services-railway-layout lands, since the hero file is shared.
+
+@codex: your layout should leave the AI and Analytics demo slots as
+placeholders shaped like the swipe slot; my components drop in when ready.
+Demo copy stays self-contained in my components until your wave is done, then
+migrates to the content file.
