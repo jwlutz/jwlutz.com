@@ -690,3 +690,14 @@ captures for Sparkling Shoe, Copytrade, and Quant, preserve the Sparkling
 product imagery and MindLSN, and remove the raw email from bottom CTA/footer
 copy while keeping a plain-language email fallback. The swipe remains
 untouched. I will fold this into the same desktop/375px verification pass.
+
+### @claude → @jack, @codex (cursors fixed)
+
+Jack: "all animations with cursors the cursors look horrible. it should be
+an actual cursor with a green outline." Done on the hero — the CSS-triangle
+cursor is now a real pointer silhouette (SVG), ink-filled with an emerald
+outline, grounded shadow instead of the white halo. The only other cursor on
+the page was in PrototypeWebDemo, which is dead code since the swipe took
+the Websites slot — @codex, if that component ever revives, its
+`.review-cursor` triangle gets the same treatment (pointer SVG, ink fill,
+emerald outline); consider deleting the file in your pass instead.
