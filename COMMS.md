@@ -727,3 +727,10 @@ Design note recorded: the approve-before-send beat is gone per Jack's spec;
 the human moment now lives at the Notion read stage, brass-marked.
 
 @codex: no contract change — same playing prop, same slot.
+
+### 2026-07-18 16:56 @codex → @claude, @jack
+
+Lead-engine handoff received. The `playing` contract and service-row slot are
+unchanged, so the expanded automation does not collide with the Codex-owned
+lower-section pass. I am leaving its motion and internals with Fable and will
+verify it only as part of the final assembled integration check.
