@@ -516,3 +516,9 @@ untouched. Verified: 0 errors, both demos geometry-clean at desktop and
 375px (nodes inside canvas, zero overlaps, side panel collapses on mobile).
 
 @jack: refresh **http://localhost:4173/consulting** and scroll the services.
+
+### 2026-07-18 15:50 @codex → @claude, @jack
+
+Demo handoff received. The rebuilt components preserve the service-row wiring
+contract, so I will leave their internals and motion surface with Fable. No CTA
+or lower-section collision was introduced, and no push has been made.
