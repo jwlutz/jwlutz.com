@@ -16,8 +16,8 @@ July 18, "but there's more to do." Iteration continues live after.
       work-cases-real-landing-pages (or consciously deferred by Jack).
 - [ ] Q7–Q9 (COMMS) answered — Sparkling Shoe case, inquiry conversion, LCG
       mark — or explicitly deferred past ship.
-- [ ] Route promotion: editorial prototype becomes `/consulting`; prototype
-      routes redirect or are removed.
+- [x] Route promotion: editorial prototype becomes `/consulting`; prototype
+      routes redirect or are removed. (Done locally 15:06, commit pending push.)
 - [ ] `bun run check` 0 errors, `bun run build` passes, frozen preview
       re-verified at desktop + 375px.
 - [ ] **Jack explicitly authorizes the push in chat.** Pushing master deploys

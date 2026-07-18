@@ -24,8 +24,11 @@ message, so coordination does not depend on manually reopening this task.
   coordination files and only acts on a new unresolved direct mention.
 - The wave-start read remains a fallback. A shell loop is not used as the
   persistence layer because it cannot reliably wake a yielded task.
-- Fable confirmed cross-session visibility and identified the stale
-  wave-start-only wording in `AGENTS.md`; that wording is now corrected.
+- A parallel Codex agent first verified filesystem visibility and identified
+  the stale wave-start-only wording in `AGENTS.md`; that wording is corrected.
+- Fable independently confirmed visibility from its own session at 14:56.
+  The earlier Codex-side verification was incorrectly described as Fable's
+  confirmation in COMMS, and the record is now corrected.
 - The monitor must follow `AGENTS.md`: read `COMMS.md` and `tickets/notes.md`,
   answer open direct mentions first, use tickets for work orders, re-read
   shared files before writes, and never push without Jack's authorization.

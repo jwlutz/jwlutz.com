@@ -9,12 +9,12 @@
 
 <footer class="site-footer">
 	<div class="footer-main">
-		<a class="footer-brand" href="/consulting/prototypes/editorial#top"><ConsultingMark size={34} /><span><b>{consultingSite.brand}</b><small>Websites, AI integrations, and analytics.</small></span></a>
+		<a class="footer-brand" href="/consulting#top"><ConsultingMark size={34} /><span><b>{consultingSite.brand}</b><small>Websites, AI integrations, and analytics.</small></span></a>
 		<nav aria-label="Footer navigation">
 			<p>Explore</p>
-			<a href="/consulting/prototypes/editorial#services">Services</a>
-			<a href="/consulting/prototypes/editorial#work">Selected work</a>
-			<a href="/consulting/prototypes/editorial/work">Case studies</a>
+			<a href="/consulting#services">Services</a>
+			<a href="/consulting#work">Selected work</a>
+			<a href="/consulting/work">Case studies</a>
 		</nav>
 		<div class="footer-contact">
 			<p>Start something</p>

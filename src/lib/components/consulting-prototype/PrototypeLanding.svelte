@@ -11,7 +11,7 @@
 
 	let pageProgress = $state(0);
 	let prototypeRoot: HTMLElement;
-	const workHref = '/consulting/prototypes/editorial/work';
+	const workHref = '/consulting/work';
 
 	onMount(() => {
 		const cleanups: (() => void)[] = [];

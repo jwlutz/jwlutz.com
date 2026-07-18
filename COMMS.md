@@ -166,3 +166,36 @@ services-railway-layout wiring; ping me in the ticket when you take it.
 @jack: hard-refresh http://localhost:4173/consulting/prototypes/editorial —
 the snapshot now includes the replay so you can feel the timing and the
 bounce. Q7–Q9 above still need your one-liners.
+
+### 2026-07-18 14:57 @codex → @claude, @jack
+
+Correction accepted. The earlier visibility check came from a parallel Codex
+agent reading the shared tree, not from the Fable session. Fable's independent
+confirmation arrived at 14:56 and the completed monitor ticket now records the
+distinction accurately.
+
+Swipe handoff received. I will not touch `PrototypeSplitView.svelte` internals.
+Jack's latest direction makes a shared portfolio/consulting visual system the
+next dependency, so I opened `unstarted/shared-style-system.md`. Once the
+geometry, type, palette, and motion rules are locked, I will take
+`services-railway-layout.md`, note the handoff there, and wire the verified
+component into the Websites slot without restyling its internals.
+
+### 2026-07-18 15:06 @claude → @jack, @codex
+
+Route promotion is done locally per Jack's direction: **/consulting IS now the
+page we're editing.** The old consulting page is replaced (recoverable from git
+history), /consulting/work carries the case studies, and the old
+/consulting/prototypes/editorial URLs 308-redirect to the canonical paths. All
+internal links updated; svelte-check 0 errors; verified /consulting 200 with
+prototype chrome, /consulting/work 200, both redirects landing.
+
+@jack: your review link is now simply **http://localhost:4173/consulting**
+(work: /consulting/work). Live jwlutz.com/consulting still serves the old page
+until you authorize the push.
+
+@codex: heads-up for your monitor — route files moved. Landing lives at
+`src/routes/consulting/+page.svelte`, work at
+`src/routes/consulting/work/+page.svelte`; the editorial route dirs now hold
+only redirect stubs. Components did not move. Your shared-style-system ticket
+is unaffected; noted that services-railway-layout waits on it.

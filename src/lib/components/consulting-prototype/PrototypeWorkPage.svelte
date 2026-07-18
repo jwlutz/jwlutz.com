@@ -26,11 +26,11 @@
 	<a class="skip-link" href="#cases">Skip to case studies</a>
 	<PrototypeNav
 		links={[
-			{ label: 'Consulting', href: '/consulting/prototypes/editorial' },
+			{ label: 'Consulting', href: '/consulting' },
 			{ label: 'Case studies', href: '#cases' },
 			{ label: 'Contact', href: '#contact' }
 		]}
-		brandHref="/consulting/prototypes/editorial"
+		brandHref="/consulting"
 		ariaLabel="Selected work navigation"
 	/>
 

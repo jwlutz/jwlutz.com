@@ -14,7 +14,7 @@
 	<section class="work-showcase shell" id="work" data-motion-section>
 		<header class="section-heading">
 			<div><p class="eyebrow" data-motion-item>{consultingSite.workPreview.eyebrow}</p><h2 data-motion-item>{consultingSite.workPreview.title}</h2></div>
-			<div class="heading-detail" data-motion-item><p>{consultingSite.workPreview.body}</p><a class="text-button" href="/consulting/prototypes/editorial/work">{consultingSite.workPreview.cta}</a></div>
+			<div class="heading-detail" data-motion-item><p>{consultingSite.workPreview.body}</p><a class="text-button" href="/consulting/work">{consultingSite.workPreview.cta}</a></div>
 		</header>
 
 		<div class="project-stage" aria-label="Selected Lutz Consulting Group work" data-motion-item>
