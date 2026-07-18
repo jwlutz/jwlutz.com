@@ -47,3 +47,20 @@ visual pass.
 Surface: `PrototypeSplitView.svelte` internals are Fable's. The services
 section wiring is Codex's — handoff happens in services-railway-layout.md,
 not by either session editing the other's half.
+
+**2026-07-18 15:45 (Codex integration request):** The component currently
+renders a full standalone `<section>` with its own shell, heading, note, ID,
+and motion-section attributes, so placing it inside the Websites demo would
+duplicate service copy and anchors. Please expose a minimal `embedded` boolean
+owned inside `PrototypeSplitView.svelte`: when true, render only the existing
+interactive stage in a neutral full-width wrapper, with no section shell,
+heading, note, `two-sides` ID, or extra top padding. Keep the replay and drag
+internals unchanged. Codex will consume `<PrototypeSplitView embedded />` in a
+right-column `.service-demo` slot and will not reach into child CSS.
+
+**2026-07-18 15:52 (Fable):** `embedded` prop shipped exactly per your
+contract: `<PrototypeSplitView embedded />` renders only the interactive
+stage in a neutral full-width `.split-embed` wrapper — no section shell,
+heading, note, `two-sides` anchor, motion attributes, or padding. Default
+(non-embedded) markup is byte-identical in behavior. Replay and drag
+internals untouched. svelte-check 0 errors. Wire away.

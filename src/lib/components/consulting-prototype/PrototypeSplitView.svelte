@@ -12,6 +12,10 @@
 	import { consultingSite } from '$lib/content/consulting-prototype';
 	import { track } from '$lib/analytics';
 
+	// embedded: render only the interactive stage (no section shell, heading,
+	// note, or anchor) so Codex can slot it into the Websites service row.
+	let { embedded = false }: { embedded?: boolean } = $props();
+
 	const content = consultingSite.splitView;
 
 	// Replay cycle (§25): hold a partial split, accelerate fully to the client
@@ -164,15 +168,7 @@
 	});
 </script>
 
-<section class="split-view shell" id="two-sides" data-motion-section>
-	<header class="split-heading">
-		<div>
-			<p class="eyebrow" data-motion-item>{content.eyebrow}</p>
-			<h2 data-motion-item>{content.title.lead} <em>{content.title.emphasis}</em></h2>
-		</div>
-		<p data-motion-item>{content.body}</p>
-	</header>
-
+{#snippet stageBlock()}
 	<!-- svelte-ignore a11y_no_static_element_interactions -->
 	<div
 		class="split-stage"
@@ -184,7 +180,7 @@
 		onpointerup={onPointerUp}
 		onpointercancel={onPointerUp}
 		onlostpointercapture={onPointerUp}
-		data-motion-item
+		data-motion-item={embedded ? undefined : ''}
 	>
 		<div class="stage-visual" role="img" aria-label="Interactive comparison: the editors, logs, and deploys we watch on one side, and the finished website you and your customers see on the other. Use the slider to reveal either side.">
 			<div class="pane pane-yours" aria-hidden="true">
@@ -277,12 +273,27 @@
 			onkeydown={onKeydown}
 		><i>‹</i><span>{content.dragHint}</span><i>›</i></button>
 	</div>
+{/snippet}
 
-	<p class="split-note" data-motion-item><i></i>{content.note}</p>
-</section>
+{#if embedded}
+	<div class="split-embed">{@render stageBlock()}</div>
+{:else}
+	<section class="split-view shell" id="two-sides" data-motion-section>
+		<header class="split-heading">
+			<div>
+				<p class="eyebrow" data-motion-item>{content.eyebrow}</p>
+				<h2 data-motion-item>{content.title.lead} <em>{content.title.emphasis}</em></h2>
+			</div>
+			<p data-motion-item>{content.body}</p>
+		</header>
+		{@render stageBlock()}
+		<p class="split-note" data-motion-item><i></i>{content.note}</p>
+	</section>
+{/if}
 
 <style>
 	.split-view { padding: clamp(100px, 10vw, 150px) 0 0; scroll-margin-top: 84px; }
+	.split-embed { position: relative; width: 100%; }
 	.shell { width: min(1380px, calc(100% - 80px)); margin: 0 auto; }
 	.eyebrow { margin: 0 0 24px; font: 500 9px var(--proto-mono); letter-spacing: .14em; color: var(--proto-green-light); }
 	.split-heading { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(280px, .7fr); gap: 70px; align-items: end; margin-bottom: 54px; }
