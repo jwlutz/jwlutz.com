@@ -2,6 +2,9 @@
 	let { size = 34, title = 'Lutz Consulting Group' }: { size?: number; title?: string } = $props();
 </script>
 
+<!-- Mark B, "the Seal" — Jack's pick 2026-07-18 (style board section 08,
+     tickets/completed/lcg-logo-directions.md). Serif LCG in a ruled square
+     over a brass baseline. Same size/title API as the provisional mark. -->
 <svg
 	class="mark"
 	width={size}
@@ -11,15 +14,9 @@
 	role="img"
 	aria-label={title}
 >
-	<path d="M3 7h10l7 7" />
-	<path d="M3 20h17" />
-	<path d="M3 33h10l7-7" />
-	<path d="M20 14v12" />
-	<path d="M20 20h17" />
-	<circle cx="3" cy="7" r="2" />
-	<circle cx="3" cy="20" r="2" />
-	<circle cx="3" cy="33" r="2" />
-	<circle cx="37" cy="20" r="2" />
+	<rect x="2.5" y="2.5" width="35" height="35" />
+	<text x="20" y="23.5" text-anchor="middle">LCG</text>
+	<line x1="9" y1="28.5" x2="31" y2="28.5" />
 </svg>
 
 <style>
@@ -28,14 +25,19 @@
 		color: currentColor;
 	}
 
-	path {
+	rect {
 		stroke: currentColor;
-		stroke-width: 1.6;
-		stroke-linecap: square;
-		stroke-linejoin: miter;
+		stroke-width: 1.4;
 	}
 
-	circle {
-		fill: var(--lcg-accent, currentColor);
+	text {
+		fill: currentColor;
+		font: 400 15px 'Instrument Serif', Georgia, serif;
+		letter-spacing: -0.5px;
+	}
+
+	line {
+		stroke: var(--lcg-accent, #b49a67);
+		stroke-width: 1.6;
 	}
 </style>

@@ -86,7 +86,7 @@
 	.prototype, .prototype * { box-sizing: border-box; }
 	.skip-link { position:fixed;z-index:100;left:16px;top:12px;transform:translateY(-160%);padding:11px 14px;background:var(--proto-paper);color:var(--proto-bg);font-size:12px;font-weight:600;text-decoration:none;transition:transform .2s ease; }
 	.skip-link:focus { transform:translateY(0); }
-	:global(.prototype a:focus-visible),:global(.prototype button:focus-visible){outline:2px solid var(--proto-green-light);outline-offset:4px}
+	:global(.prototype a:focus-visible),:global(.prototype button:focus-visible){outline:2px solid var(--proto-brass);outline-offset:4px}
 	.page-thread { position:fixed; z-index:30; left:24px; top:72px; bottom:0; width:1px; background:var(--proto-line); pointer-events:none; }
 	.page-thread i { display:block; height:100%; width:2px; background:var(--proto-green); transform-origin:top; will-change:transform; }
 	.page-thread b { position:absolute; left:-3px; top:-3px; width:7px; height:7px; border-radius:50%; background:var(--proto-brass); box-shadow:0 0 0 5px var(--proto-bg); will-change:transform; }

@@ -1,20 +1,21 @@
 <!--
-	ANALYTICS/ML OFFERING DEMO — traffic dashboard + a running notebook.
+	ANALYTICS/ML OFFERING DEMO — traffic dashboard + an academic notebook.
 	Jack's directions (2026-07-18): "it should show traffic dashboard" and
-	"try something with a jupyter notebook, a volatility surface? model
-	training?" Left column: the live traffic dashboard. Right column: a
-	Jupyter notebook that runs its cells in sequence — load data, train the
-	model, plot the volatility surface. No invented client claims.
+	"make the ML/analytics section better and more academic. demand
+	forecasting, optimization, etc." Left: the live traffic dashboard.
+	Right: demand_plan.ipynb runs — load orders, fit a seasonal model,
+	forecast with a confidence band, then optimize reorder points under a
+	service-level constraint. No client-attributed numbers.
 	`playing` contract per Codex's layout wiring; shell dims unchanged.
 -->
 <script lang="ts">
-	// notebook run: c1 load -> c2 fit (epochs) -> c3 plot surface -> hold -> loop
+	// notebook run: c1 load -> c2 fit -> c3 forecast plot -> c4 optimize -> loop
 	const TIMELINE: [number, string][] = [
-		[500, 'c1'], [1800, 'c1d'], [2100, 'c2'], [3400, 'c2a'], [5200, 'c2d'],
-		[5600, 'c3'], [8200, 'c3d'], [11400, 'nidle']
+		[500, 'c1'], [1600, 'c1d'], [1900, 'c2'], [3000, 'c2a'], [3800, 'c2d'],
+		[4200, 'c3'], [5600, 'c3d'], [6400, 'c4'], [8600, 'c4d'], [11400, 'nidle']
 	];
 	const CYCLE = 12000;
-	const ORDER = ['nidle', 'c1', 'c1d', 'c2', 'c2a', 'c2d', 'c3', 'c3d'];
+	const ORDER = ['nidle', 'c1', 'c1d', 'c2', 'c2a', 'c2d', 'c3', 'c3d', 'c4', 'c4d'];
 
 	let { playing = false }: { playing?: boolean } = $props();
 	let phase = $state('nidle');
@@ -26,7 +27,7 @@
 
 	$effect(() => {
 		reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-		if (reducedMotion) { phase = 'c3d'; return; }
+		if (reducedMotion) { phase = 'c4d'; return; }
 		if (!playing) { phase = 'nidle'; cycleStart = 0; cancelAnimationFrame(frame); return; }
 		function tick(now: number) {
 			frame = requestAnimationFrame(tick);
@@ -41,7 +42,7 @@
 	});
 </script>
 
-<div class="demo" class:playing role="img" aria-label="An analytics and machine-learning workspace: a live traffic dashboard beside a Jupyter notebook that loads data, trains a model, and plots a volatility surface.">
+<div class="demo" class:playing role="img" aria-label="An analytics and machine-learning workspace: a live traffic dashboard beside a Jupyter notebook that loads order history, fits a seasonal demand model, plots a forecast with a confidence band, and optimizes reorder points under a service-level constraint.">
 	<header><span>ANALYTICS + ML / WORKSPACE</span><small>live</small></header>
 
 	<div class="workspace">
@@ -64,23 +65,23 @@
 		</section>
 
 		<aside class="side">
-			<div class="nb-bar"><span>vol_model.ipynb</span><small><i class="kdot" class:busy={past('c1') && !past('c3d')}></i>{past('c3d') ? 'Python 3 · idle' : past('c1') ? 'Python 3 · running' : 'Python 3'}</small></div>
+			<div class="nb-bar"><span>demand_plan.ipynb</span><small><i class="kdot" class:busy={past('c1') && !past('c4d')}></i>{past('c4d') ? 'Python 3 · idle' : past('c1') ? 'Python 3 · running' : 'Python 3'}</small></div>
 
 			<div class="cell" class:ran={past('c1d')}>
 				<b>{past('c1d') ? '[1]' : past('c1') ? '[*]' : '[ ]'}</b>
 				<div>
-					<code>chain = load_options("SPY")</code>
-					<samp class:show={past('c1d')}>4,812 quotes · 34 expiries</samp>
+					<code>orders = read_orders(months=24)</code>
+					<samp class:show={past('c1d')}>24 months · 8 SKUs · weekly buckets</samp>
 				</div>
 			</div>
 
 			<div class="cell" class:ran={past('c2d')}>
 				<b>{past('c2d') ? '[2]' : past('c2') ? '[*]' : '[ ]'}</b>
 				<div>
-					<code>model.fit(iv_grid)</code>
+					<code>fit = sarima(orders).fit()</code>
 					<samp class:show={past('c2a')}>
-						<span class="loss" aria-hidden="true"><i style="--h:100%"></i><i style="--h:64%"></i><i style="--h:38%"></i><i style="--h:22%"></i><i style="--h:13%"></i><i style="--h:9%"></i><i style="--h:8%"></i></span>
-						{past('c2d') ? 'converged · loss stable' : 'training · loss falling'}
+						<span class="loss" aria-hidden="true"><i style="--h:100%"></i><i style="--h:62%"></i><i style="--h:36%"></i><i style="--h:20%"></i><i style="--h:12%"></i><i style="--h:9%"></i><i style="--h:8%"></i></span>
+						{past('c2d') ? 'seasonal terms kept · AIC converged' : 'searching seasonal orders'}
 					</samp>
 				</div>
 			</div>
@@ -88,22 +89,24 @@
 			<div class="cell" class:ran={past('c3d')}>
 				<b>{past('c3d') ? '[3]' : past('c3') ? '[*]' : '[ ]'}</b>
 				<div>
-					<code>plot_iv_surface(model)</code>
-					<div class="surface" class:show={past('c3')} aria-hidden="true">
-						<svg viewBox="0 0 100 62">
-							<g class="mesh">
-								<path style="--d:0" d="M6,50 C14,44 22,42 34,43 C46,44 54,44 62,42 C72,39 80,42 88,48" />
-								<path style="--d:1" d="M10,43 C18,37 26,35 38,36 C50,37 58,37 66,35 C76,32 84,35 92,41" />
-								<path style="--d:2" d="M14,36 C22,30 30,28 42,29 C54,30 62,30 70,28 C80,25 88,28 96,34" />
-								<path style="--d:3" d="M18,29 C26,23 34,21 46,22 C58,23 66,23 74,21 C84,18 90,21 98,27" />
-								<path style="--d:4" d="M6,50 L18,29" />
-								<path style="--d:4" d="M34,43 L46,22" />
-								<path style="--d:4" d="M62,42 L74,21" />
-								<path style="--d:4" d="M88,48 L98,27" />
-							</g>
+					<code>fc = fit.forecast(steps=12, ci=0.9)</code>
+					<div class="fplot" class:draw={past('c3')} class:full={past('c3d')} aria-hidden="true">
+						<svg viewBox="0 0 100 46" preserveAspectRatio="none">
+							<polygon class="band" points="58,25 70,20 84,17 100,15 100,31 84,29 70,28 58,27" />
+							<path class="hist" d="M0,34 C6,32 10,29 16,30 C22,31 26,25 32,26 C38,27 42,21 48,23 C52,24 55,25 58,26" />
+							<path class="fcast" d="M58,26 C66,24 74,21 84,19.5 C90,18.5 96,17 100,16.5" />
+							<line class="nowline" x1="58" y1="4" x2="58" y2="44" />
 						</svg>
-						<small><span>STRIKE →</span><span>↗ EXPIRY</span><span>IV ↑</span></small>
+						<small><span>WEEKS →</span><span>90% BAND</span><span>UNITS ↑</span></small>
 					</div>
+				</div>
+			</div>
+
+			<div class="cell" class:ran={past('c4d')}>
+				<b>{past('c4d') ? '[4]' : past('c4') ? '[*]' : '[ ]'}</b>
+				<div>
+					<code>plan = argmin(cost) <i class="st">s.t. service ≥ 0.98</i></code>
+					<samp class:show={past('c4d')}><i class="ok">✓</i>reorder points set · holding + stockout cost minimized</samp>
 				</div>
 			</div>
 		</aside>
@@ -117,7 +120,7 @@
 	.demo{position:relative;height:610px;display:flex;flex-direction:column;overflow:hidden;border:1px solid rgba(240,239,233,.18);background:#0d100e;box-shadow:0 36px 100px rgba(0,0,0,.34);contain:layout paint}
 	.demo>header{flex:0 0 54px;padding:0 20px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(240,239,233,.09);color:#848a83;background:#101411;font:500 7px var(--proto-mono);letter-spacing:.1em}
 	.demo>header small{color:#b49a67;font:inherit}
-	.workspace{flex:1;min-height:0;display:grid;grid-template-columns:1.35fr 1fr}
+	.workspace{flex:1;min-height:0;display:grid;grid-template-columns:1.3fr 1.05fr}
 	.main{min-width:0;display:flex;flex-direction:column;border-right:1px solid rgba(240,239,233,.08)}
 	.side{min-width:0;display:flex;flex-direction:column;background:#0e120f}
 	.panel-bar{flex:0 0 40px;padding:0 14px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(240,239,233,.07);color:#9aa09a;font:500 7px var(--proto-mono);letter-spacing:.1em}
@@ -148,26 +151,30 @@
 	.nb-bar small{display:flex;align-items:center;gap:6px;color:#666d66;font:500 7px var(--proto-mono);letter-spacing:.06em}
 	.kdot{width:6px;height:6px;border-radius:50%;background:#4a524c;transition:background .3s ease}
 	.kdot.busy{background:#b49a67}
-	.cell{display:grid;grid-template-columns:26px 1fr;gap:8px;padding:13px 14px 11px;border-bottom:1px solid rgba(240,239,233,.06);border-left:2px solid transparent;transition:border-color .35s ease,background .35s ease}
+	.cell{display:grid;grid-template-columns:26px 1fr;gap:8px;padding:12px 14px 10px;border-bottom:1px solid rgba(240,239,233,.06);border-left:2px solid transparent;transition:border-color .35s ease}
 	.cell.ran{border-left-color:rgba(180,154,103,.55)}
 	.cell b{color:#666d66;font:500 8px var(--proto-mono)}
 	.cell.ran b{color:#b49a67}
-	.cell code{display:block;color:#ccd0c8;font:500 9px var(--proto-mono);letter-spacing:.02em}
-	.cell samp{display:flex;align-items:center;gap:8px;margin-top:8px;color:#8b9089;font:7.5px var(--proto-mono);opacity:0;transition:opacity .4s ease}
+	.cell code{display:block;color:#ccd0c8;font:500 8.5px var(--proto-mono);letter-spacing:.01em}
+	.cell code .st{color:#8b9089;font-style:normal}
+	.cell samp{display:flex;align-items:center;gap:8px;margin-top:7px;color:#8b9089;font:7.5px var(--proto-mono);opacity:0;transition:opacity .4s ease}
 	.cell samp.show{opacity:1}
-	.loss{display:flex;gap:2px;align-items:flex-end;height:16px}
+	.cell samp .ok{color:#b49a67;font-style:normal}
+	.loss{display:flex;gap:2px;align-items:flex-end;height:15px}
 	.loss i{width:4px;height:var(--h);background:rgba(180,154,103,.55)}
 	.loss i:last-child{background:#b49a67}
-	.surface{position:relative;margin-top:10px;height:150px;opacity:0;transition:opacity .5s ease}
-	.surface.show{opacity:1}
-	.surface svg{width:100%;height:calc(100% - 14px)}
-	.mesh path{fill:none;stroke:#b49a67;stroke-width:1;vector-effect:non-scaling-stroke;opacity:0;transition:opacity .5s ease;transition-delay:calc(var(--d) * .35s)}
-	.mesh path[style*="--d:1"]{stroke:rgba(180,154,103,.8)}
-	.mesh path[style*="--d:2"]{stroke:rgba(180,154,103,.6)}
-	.mesh path[style*="--d:3"]{stroke:rgba(180,154,103,.45)}
-	.mesh path[style*="--d:4"]{stroke:rgba(240,239,233,.22)}
-	.surface.show .mesh path{opacity:1}
-	.surface small{display:flex;justify-content:space-between;color:#666d66;font:500 6px var(--proto-mono);letter-spacing:.1em}
+
+	.fplot{position:relative;margin-top:9px;height:128px;opacity:0;transition:opacity .45s ease}
+	.fplot.draw{opacity:1}
+	.fplot svg{width:100%;height:calc(100% - 13px)}
+	.fplot .hist{fill:none;stroke:#b49a67;stroke-width:1.4;vector-effect:non-scaling-stroke;clip-path:inset(0 100% 0 0);transition:clip-path 1.1s ease}
+	.fplot.draw .hist{clip-path:inset(0 42% 0 0)}
+	.fplot .fcast{fill:none;stroke:#b49a67;stroke-width:1.4;stroke-dasharray:3 3;vector-effect:non-scaling-stroke;opacity:0;transition:opacity .5s ease}
+	.fplot .band{fill:rgba(45,128,100,.18);opacity:0;transition:opacity .55s ease}
+	.fplot .nowline{stroke:rgba(240,239,233,.18);stroke-width:1;stroke-dasharray:2 3;vector-effect:non-scaling-stroke;opacity:0;transition:opacity .4s ease}
+	.fplot.full .hist{clip-path:inset(0 0 0 0)}
+	.fplot.full .fcast,.fplot.full .band,.fplot.full .nowline{opacity:1}
+	.fplot small{display:flex;justify-content:space-between;color:#666d66;font:500 6px var(--proto-mono);letter-spacing:.1em}
 
 	.demo>footer{flex:0 0 44px;padding:0 20px;display:flex;align-items:center;justify-content:space-between;border-top:1px solid rgba(240,239,233,.09);background:#101411}
 	.demo>footer span{color:#9b9d98;font-size:10px;font-style:italic;font-family:var(--proto-display)}
@@ -181,20 +188,20 @@
 	@keyframes dash-progress{to{transform:scaleX(1)}}
 
 	@media(max-width:680px){
-		.demo{height:520px}
+		.demo{height:540px}
 		.workspace{grid-template-columns:1fr}
 		.side{border-top:1px solid rgba(240,239,233,.08)}
 		.main{border-right:0}
 		.chart{margin:10px 12px 8px}
-		.sources{display:none}
-		.sources-bar{display:none}
-		.surface{height:110px}
+		.sources,.sources-bar{display:none}
+		.fplot{height:96px}
 		.demo>footer small{display:none}
 	}
 	@media(prefers-reduced-motion:reduce){
 		.demo *{animation:none!important;transition:none!important}
 		.chart svg{clip-path:none}
 		.sources i{transform:scaleX(1)}
-		.cell samp,.surface,.mesh path{opacity:1}
+		.cell samp,.fplot,.fplot .fcast,.fplot .band,.fplot .nowline{opacity:1}
+		.fplot .hist{clip-path:none}
 	}
 </style>

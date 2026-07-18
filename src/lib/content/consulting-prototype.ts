@@ -62,7 +62,7 @@ export const consultingSite = {
 			{
 				index: '01',
 				title: 'Websites and products',
-				headline: { lead: 'Fast tools.', emphasis: 'Human judgment.' },
+				headline: { lead: 'Fast tools.', tail: 'Human', emphasis: 'judgment.' },
 				body: 'We use modern tools to move quickly. A person still reads every line, tests every path, and owns the release.',
 				detail: 'DESIGN · DEVELOPMENT · COMMERCE · PRODUCTS',
 				features: [
@@ -76,7 +76,7 @@ export const consultingSite = {
 			{
 				index: '02',
 				title: 'AI integrations',
-				headline: { lead: 'Automate the handoff.', emphasis: 'Keep the judgment.' },
+				headline: { lead: 'Automate the handoff.', tail: 'Keep the', emphasis: 'judgment.' },
 				body: 'We connect AI to the work you already do, keeping context attached and putting a person at the decisions that matter.',
 				detail: 'INTEGRATIONS · AUTOMATION · INTERNAL TOOLS · AGENTS',
 				features: [
@@ -90,7 +90,7 @@ export const consultingSite = {
 			{
 				index: '03',
 				title: 'ML and analytics',
-				headline: { lead: 'Measure what changes', emphasis: 'the decision.' },
+				headline: { lead: 'Measure what changes', tail: 'the', emphasis: 'decision.' },
 				body: 'We start with a business question, find the evidence that answers it, and carry the result through to the next useful action.',
 				detail: 'MEASUREMENT · MACHINE LEARNING · EXPERIMENTS · GROWTH',
 				features: [

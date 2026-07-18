@@ -50,7 +50,7 @@
 					<div class="service-copy">
 						<header data-motion-item>
 							<p class="service-label"><small>0{index + 1} / 03</small><span>{service.title}</span></p>
-							<h3>{service.headline.lead}<br /><em>{service.headline.emphasis}</em></h3>
+							<h3>{service.headline.lead}<br />{service.headline.tail} <em>{service.headline.emphasis}</em></h3>
 						</header>
 
 						<div class="service-summary" data-motion-item>

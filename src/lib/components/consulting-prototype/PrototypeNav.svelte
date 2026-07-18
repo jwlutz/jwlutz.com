@@ -10,7 +10,6 @@
 	}: { links: { label: string; href: string }[]; brandHref: string; ariaLabel: string } = $props();
 
 	let menuOpen = $state(false);
-	const email = `mailto:${consultingSite.contactEmail}?subject=${encodeURIComponent(consultingSite.emailSubject)}`;
 
 	function close() {
 		menuOpen = false;
@@ -30,7 +29,7 @@
 		{#each links as link}<a href={link.href}>{link.label}</a>{/each}
 	</nav>
 	<div class="nav-actions">
-		<a class="nav-cta" href={email} onclick={() => track('email_click', { source: 'consulting_prototype', location: 'nav' })}>{consultingSite.hero.primaryCta}</a>
+		<a class="nav-cta" href="#contact" onclick={() => track('cta_click', { source: 'consulting_prototype', location: 'nav' })}>{consultingSite.hero.primaryCta}</a>
 		<button
 			class="nav-toggle"
 			type="button"
@@ -47,12 +46,12 @@
 		<nav aria-label={`${ariaLabel} (mobile)`}>
 			{#each links as link, index}<a href={link.href} style={`--i:${index}`} onclick={close}>{link.label}</a>{/each}
 		</nav>
-		<a class="menu-cta" href={email} onclick={() => { close(); track('email_click', { source: 'consulting_prototype', location: 'mobile_menu' }); }}>{consultingSite.hero.primaryCta}<small>{consultingSite.finalCta.emailLabel}</small></a>
+		<a class="menu-cta" href="#contact" onclick={() => { close(); track('cta_click', { source: 'consulting_prototype', location: 'mobile_menu' }); }}>{consultingSite.hero.primaryCta}<small>tell us what you need</small></a>
 	</div>
 {/if}
 
 <style>
-	.proto-nav { height:72px; position:fixed; z-index:40; left:0; right:0; top:0; display:flex; align-items:center; justify-content:space-between; padding:0 32px; background:rgba(8,11,9,.9); backdrop-filter:blur(18px); border-bottom:1px solid var(--proto-line); }
+	.proto-nav { height:72px; position:fixed; z-index:40; left:0; right:0; top:0; display:flex; align-items:center; justify-content:space-between; padding:0 32px; background:#0a0d0b; border-bottom:1px solid var(--proto-line); }
 	.brand { display:flex; align-items:center; gap:12px; text-decoration:none; color:inherit; font-size:13px; }
 	.proto-nav nav { display:flex; gap:27px; }
 	.proto-nav nav a { color:var(--proto-muted); text-decoration:none; font-size:12px; transition:color .2s ease; }
@@ -67,7 +66,7 @@
 	.nav-toggle[aria-expanded='true'] i:first-child { transform:translateY(3px) rotate(45deg); }
 	.nav-toggle[aria-expanded='true'] i:last-child { transform:translateY(-3px) rotate(-45deg); }
 
-	.mobile-menu { position:fixed; z-index:39; inset:72px 0 0; display:none; flex-direction:column; padding:34px 24px 30px; background:rgba(8,11,9,.97); backdrop-filter:blur(18px); }
+	.mobile-menu { position:fixed; z-index:39; inset:72px 0 0; display:none; flex-direction:column; padding:34px 24px 30px; background:#080b09; }
 	.mobile-menu nav { display:flex; flex-direction:column; }
 	.mobile-menu nav a { padding:20px 0; border-bottom:1px solid var(--proto-line); color:var(--proto-text); text-decoration:none; font:400 clamp(30px,8vw,40px)/1 var(--proto-display); letter-spacing:-.02em; animation:menu-item .45s cubic-bezier(.2,.75,.2,1) both; animation-delay:calc(var(--i) * 60ms); }
 	.mobile-menu nav a:active { color:var(--proto-brass); }
