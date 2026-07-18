@@ -38,3 +38,6 @@ shared will create another round of visual divergence.
 - `services-railway-layout.md` remains unstarted until this system is locked;
   its two-column structure is approved, but its final geometry should come
   from this ticket.
+- Canonical route wrappers are now `src/routes/consulting/+page.svelte` and
+  `src/routes/consulting/work/+page.svelte`. The former editorial route files
+  are redirect stubs and are not style-system targets.
