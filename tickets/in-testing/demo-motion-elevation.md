@@ -65,3 +65,14 @@ motion remain Fable's surface for this ticket.
 - Verified in-browser on the assembled /consulting: 2 demos, zero purple-cast
   computed colors page-wide, brass progress, embedded swipe live, standalone
   section gone. svelte-check 0 errors.
+
+**(Fable) Jack redirected both demo contents in chat, superseding the
+content-stays clause:**
+- AI demo: "the whole point of the AI is me building AI integrations and
+  automations for them and their business. this could be an n8n style
+  workflow. like building one of those AI automation flow charts."
+- Analytics demo: "it should show traffic dashboard and im not sure I need
+  ideas here."
+Fable is rebuilding both component bodies now (shells, `playing` contract,
+and slot dimensions preserved so the layout wiring is untouched). The earlier
+"You approve" checkpoint idea survives inside the flow as the human node.
