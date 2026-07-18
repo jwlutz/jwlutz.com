@@ -1,0 +1,18 @@
+	// Approved 2026-07-18 (decisions doc §23) — do not remove; renders in PrototypeSplitView.svelte
+	splitView: {
+		eyebrow: 'ONE WEBSITE / TWO SIDES',
+		title: { lead: 'We watch the side you', emphasis: 'never have to.' },
+		body: 'This is our screen: editors, logs, deploys, and dependencies. Drag the line to reveal the only thing you and your customers ever see.',
+		oursLabel: 'WHAT WE WATCH',
+		yoursLabel: 'WHAT YOU SEE',
+		dragHint: 'Drag',
+		note: 'The next change is a text away. Not a ticket, not a quote, not a project.',
+		logLines: [
+			'deploy complete · 41 files · no errors',
+			'checkout webhook retried twice · recovered',
+			'nightly backup verified',
+			'renewal caught · certificate rotated early',
+			'mobile regression fixed before anyone saw it',
+			'dependencies reviewed · two held back on purpose'
+		]
+	},

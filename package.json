@@ -21,6 +21,7 @@
 		"@sveltejs/vite-plugin-svelte": "^6.2.1",
 		"@tailwindcss/postcss": "^4.1.18",
 		"@tailwindcss/typography": "^0.5.19",
+		"@types/three": "^0.185.1",
 		"autoprefixer": "^10.4.23",
 		"playwright": "^1.59.1",
 		"postcss": "^8.5.6",
@@ -34,7 +35,10 @@
 		"@types/js-yaml": "^4.0.9",
 		"@vercel/analytics": "^2.0.1",
 		"@vercel/speed-insights": "^2.0.0",
+		"animejs": "^4.5.0",
 		"js-yaml": "^4.1.1",
+		"motion": "^12.42.2",
+		"simple-icons": "^16.26.0",
 		"three": "^0.182.0"
 	}
 }

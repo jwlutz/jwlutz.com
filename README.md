@@ -1,38 +1,62 @@
-# sv
+# jwlutz.com
 
-Everything you need to build a Svelte project, powered by [`sv`](https://github.com/sveltejs/cli).
+Personal portfolio and Lutz Consulting Group website, built with SvelteKit 5, TypeScript, Vite, and Bun.
 
-## Creating a project
-
-If you're seeing this, you've probably already done this step. Congrats!
+## Development
 
 ```sh
-# create a new project in the current directory
-npx sv create
-
-# create a new project in my-app
-npx sv create my-app
+bun install
+bun run dev
 ```
 
-## Developing
-
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+Production validation:
 
 ```sh
-npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
+bun run build
+bun run check
 ```
 
-## Building
-
-To create a production version of your app:
+Other useful scripts:
 
 ```sh
-npm run build
+bun run dev:host
+bun run preview
+bun run audit:mobile
+bun run build:diagrams
 ```
 
-You can preview the production build with `npm run preview`.
+## Consulting redesign
 
-> To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.
+The current chosen direction is available at:
+
+- Landing page: `/consulting/prototypes/editorial`
+- Detailed work page: `/consulting/prototypes/editorial/work`
+- Architecture comparison: `/consulting/prototypes`
+
+The editorial prototype is intended to replace the current production `/consulting` page after final approval and launch hardening.
+
+### Documentation
+
+- [Documentation index](docs/README.md)
+- [Current product specification](docs/consulting-site-spec.md)
+- [Motion storyboard](docs/consulting-motion-storyboard.md)
+- [Content and proof guide](docs/consulting-content-and-proof.md)
+- [Design system](docs/consulting-design-system.md)
+- [Implementation guide](docs/consulting-implementation.md)
+- [Complete decision and idea history](docs/consulting-decisions.md)
+
+Public consulting copy, links, services, and case-study evidence are centralized in [`src/lib/content/consulting-prototype.ts`](src/lib/content/consulting-prototype.ts).
+
+## Current consulting architecture
+
+- `PrototypeLanding.svelte` — page shell and section composition.
+- `PrototypeThroughlineStory.svelte` — 3D MacBook hero and browser ownership story.
+- `PrototypeOperatingLoop.svelte` — three-service animation and alternative tools.
+- `PrototypeWorkPage.svelte` — separate editorial case-study page.
+- `PrototypeCaseStudy.svelte` and `PrototypeWorkVisual.svelte` — reusable case content and visuals.
+
+See the [implementation guide](docs/consulting-implementation.md) for the full route/component map and promotion checklist.
+
+## Deployment and analytics
+
+The app currently uses `@sveltejs/adapter-auto`. Vercel Analytics and Speed Insights are initialized in the root layout. Confirm the final adapter and production route migration as part of the consulting launch checklist.
