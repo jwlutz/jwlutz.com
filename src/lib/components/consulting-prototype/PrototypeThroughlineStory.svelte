@@ -21,7 +21,7 @@
 	let section: HTMLElement;
 	let screenFrame: HTMLElement;
 	let elapsed = $state(0);
-	const HOLD = 3.4; // Jack 07-18: hold the opening so the clean-site phase registers
+	const HOLD = 0.6; // Jack 07-18: brief hold, then play (3.4s felt stalled)
 	let story = $derived(Math.max(0, elapsed - HOLD));
 	let visible = $state(false);
 	let reducedMotion = $state(false);
@@ -53,11 +53,11 @@
 		'Figure out why deployment failed'
 	];
 	const chapters = [
-		{ label: 'YOUR SITE', start: 0, end: 1.65 },
-		{ label: 'THE STACK', start: 1.65, end: 7.55 },
-		{ label: 'SECOND JOB', start: 7.55, end: 13.45 },
-		{ label: 'HAND OFF', start: 13.45, end: 18.05 },
-		{ label: 'IT JUST WORKS', start: 18.05, end: duration }
+		{ label: 'Start a Site', start: 0, end: 1.65 },
+		{ label: 'Complexity Grows', start: 1.65, end: 7.55 },
+		{ label: 'Things Break', start: 7.55, end: 13.45 },
+		{ label: 'We Take Over', start: 13.45, end: 18.05 },
+		{ label: 'It Just Works', start: 18.05, end: duration }
 	];
 
 	let activeChapter = $derived(Math.max(0, chapters.findIndex((chapter) => story >= chapter.start && story < chapter.end)));
@@ -138,9 +138,18 @@
 		return `--cx:${x};--cy:${y};opacity:${opacity}`;
 	}
 
+	let hasStarted = false;
+
 	function replay() {
 		elapsed = 0;
 		lastFrame = performance.now();
+		hasStarted = true;
+	}
+
+	function seek(index: number) {
+		elapsed = HOLD + chapters[index].start;
+		lastFrame = performance.now();
+		hasStarted = true;
 	}
 
 	onMount(() => {
@@ -174,7 +183,6 @@
 			}
 		}
 
-		let hasStarted = false;
 		const observer = new IntersectionObserver(([entry]) => {
 			const shouldPlay = entry.intersectionRatio >= 0.62;
 			if (shouldPlay && !hasStarted && !reducedMotion) {
@@ -316,13 +324,14 @@
 		</div>
 
 		<div class="story-caption" aria-live="polite">
-			<span>{String(activeChapter + 1).padStart(2, '0')} / {String(chapters.length).padStart(2, '0')}</span>
 			<p>{sceneTitle}</p>
 			<button type="button" onclick={replay} aria-label="Replay the website ownership story"><i></i> Replay</button>
-			<div class="story-progress" aria-hidden="true">
-				{#each chapters as chapter}
+			<div class="phase-bar" role="group" aria-label="Story phases">
+				{#each chapters as chapter, index}
 					{@const amount = ramp(story, chapter.start, chapter.end)}
-					<i class:active={story >= chapter.start && story < chapter.end}><b style={`transform:scaleX(${amount})`}></b></i>
+					<button type="button" class="phase-tab" class:active={index === activeChapter} onclick={() => seek(index)} aria-label={`Jump to phase: ${chapter.label}`}>
+						{chapter.label}<i aria-hidden="true"><b style={`transform:scaleX(${amount})`}></b></i>
+					</button>
 				{/each}
 			</div>
 		</div>
@@ -356,7 +365,7 @@
 	.story-grid{opacity:.34;background-size:78px 78px;mask-image:linear-gradient(to bottom,#000 0%,rgba(0,0,0,.75) 56%,transparent 92%)}
 	.color-field{position:absolute;inset:0;pointer-events:none;overflow:hidden}.color-field i{position:absolute;border-radius:50%;opacity:.16}.color-field i:first-child{width:470px;height:470px;left:-195px;top:195px;background:radial-gradient(circle closest-side,#0e8e66,transparent)}.color-field i:nth-child(2){width:380px;height:380px;right:1%;top:330px;background:radial-gradient(circle closest-side,#774633,transparent)}.color-field i:last-child{width:310px;height:310px;right:25%;top:130px;background:radial-gradient(circle closest-side,#c8784f,transparent);opacity:.08}
 	.story-heading{width:min(1380px,100%);margin:0 auto 42px;grid-template-columns:1.18fr .52fr;gap:clamp(40px,7vw,110px);align-items:end}.story-heading p{margin-bottom:22px;color:#45a77f;font-size:9px}.story-heading h1{max-width:930px;margin:0;font:400 clamp(68px,7.8vw,126px)/.84 var(--proto-display);letter-spacing:-.05em;text-wrap:balance}.story-heading h1 em{font-weight:400;color:#dad6cc}.story-intro{max-width:460px;padding-bottom:6px}.story-intro>span{font-size:clamp(14px,1.25vw,18px);line-height:1.7}.hero-actions{margin-top:29px;display:flex;align-items:center;gap:24px}.hero-actions a{font-size:12px;text-decoration:none}.hero-actions .primary{padding:14px 17px;color:#0a0d0b;background:var(--proto-paper);font-weight:600;box-shadow:0 8px 30px rgba(0,0,0,.18);transition:background .25s ease,transform .25s ease}.hero-actions .primary:hover{background:var(--proto-brass);transform:translateY(-2px)}.hero-actions .secondary{padding-bottom:5px;color:var(--proto-muted);border-bottom:1px solid var(--proto-line-strong);transition:color .25s ease,border-color .25s ease}.hero-actions .secondary:hover{color:var(--proto-paper);border-color:var(--proto-brass)}
-	.story-caption{position:relative;z-index:3;width:min(1240px,92%);margin:0 auto 20px;display:grid;grid-template-columns:1fr 1.1fr auto;gap:28px;align-items:center;color:var(--proto-muted);font:500 7px var(--proto-mono);letter-spacing:.09em}.story-caption>span{color:#8c948e}.story-caption p{margin:0;font:400 11px/1.55 var(--proto-sans);letter-spacing:0}.story-caption button{padding:0;border:0;color:#b9beb9;background:none;font:500 7px var(--proto-mono);letter-spacing:.09em;cursor:pointer}.story-caption button i{display:inline-block;width:13px;height:13px;margin-right:7px;border:1px solid #4a524c;border-radius:50%;vertical-align:-3px;position:relative}.story-caption button i::after{content:'';position:absolute;left:4px;top:3px;width:3px;height:5px;border-right:1px solid #b49a67;transform:rotate(-35deg)}
+	.story-caption{position:relative;z-index:3;width:min(1240px,92%);margin:0 auto 20px;display:grid;grid-template-columns:1fr 1.1fr auto;gap:28px;align-items:center;color:var(--proto-muted);font:500 7px var(--proto-mono);letter-spacing:.09em}.story-caption p{margin:0;font:400 11px/1.55 var(--proto-sans);letter-spacing:0}.story-caption>button{padding:0;border:0;color:#b9beb9;background:none;font:500 7px var(--proto-mono);letter-spacing:.09em;cursor:pointer}.story-caption>button i{display:inline-block;width:13px;height:13px;margin-right:7px;border:1px solid #4a524c;border-radius:50%;vertical-align:-3px;position:relative}.story-caption>button i::after{content:'';position:absolute;left:4px;top:3px;width:3px;height:5px;border-right:1px solid #b49a67;transform:rotate(-35deg)}
 	.monitor{width:min(1380px,100%);height:auto;min-height:0;margin:0 auto;overflow:visible;border:0;background:transparent;box-shadow:none;perspective:1800px}.monitor::before{content:'';position:absolute;left:8%;right:8%;top:9%;height:63%;border-radius:50%;background:radial-gradient(ellipse,rgba(35,118,87,.16),rgba(83,58,121,.07) 42%,transparent 72%);pointer-events:none}.screen-frame{position:relative;z-index:4;width:100%;aspect-ratio:16/10;padding:11px;border:1px solid #343937;border-radius:22px 22px 9px 9px;background:linear-gradient(145deg,#4a4f4d 0%,#1d211f 12%,#090b0a 50%,#303532 92%,#565b58 100%);box-shadow:0 34px 120px rgba(0,0,0,.58),0 0 0 1px rgba(255,255,255,.05) inset,0 1px 0 rgba(255,255,255,.22) inset;transform:perspective(1900px) rotateX(-1.2deg) rotateY(-.55deg);transform-origin:center bottom}.screen-frame::after{content:'';position:absolute;inset:5px;border-radius:17px 17px 7px 7px;border:1px solid rgba(255,255,255,.035);pointer-events:none}.screen-content{position:relative;width:100%;height:100%;overflow:hidden;border:1px solid #070908;border-radius:13px 13px 5px 5px;background:#0a0d0b;box-shadow:0 0 0 1px rgba(255,255,255,.025) inset;container-type:size}.screen-reflection{position:absolute;z-index:60;inset:0;pointer-events:none;background:linear-gradient(118deg,rgba(255,255,255,.055),transparent 14%,transparent 70%,rgba(87,135,117,.025))}
 	.browser{left:2.4%;right:2.4%;top:56px;bottom:101px;border-color:rgba(255,255,255,.16);background:#101411;box-shadow:0 22px 65px rgba(0,0,0,.46),0 0 0 1px rgba(255,255,255,.025) inset}.tab-strip{background:linear-gradient(180deg,#181d19,#111512)}.browser-tab{border-top:1px solid rgba(255,255,255,.035);background:#1a201b}.browser-tab.active{background:#2b332d;color:#edf0ea;box-shadow:0 -1px 0 rgba(180,154,103,.35) inset}.tool-tab{background:color-mix(in srgb,var(--brand-color) 9%,#191e1a);border-top-color:color-mix(in srgb,var(--brand-color) 35%,transparent)}.brand-icon{color:var(--brand-color,#dedfda)}.brand-icon img{filter:saturate(1.12)}.notion-tab .brand-icon{color:#f4f4f4}.address-row{background:linear-gradient(180deg,#2b322d,#242a26)}.address-row>div{border:1px solid rgba(255,255,255,.035);box-shadow:0 1px 0 rgba(255,255,255,.025)}
 	.business-page{background:linear-gradient(125deg,#e8e1d5 0%,#d9d6cc 58%,#cec7bb 100%)}.business-page::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 83% 18%,rgba(7,84,63,.21),transparent 30%),linear-gradient(90deg,transparent 49.8%,rgba(7,84,63,.07) 50%,transparent 50.2%);pointer-events:none}.business-page nav{position:relative;z-index:2;background:rgba(232,225,213,.92)}.business-page nav button{background:#171914;box-shadow:0 8px 24px rgba(23,25,20,.2)}.site-visual{overflow:hidden;background:linear-gradient(145deg,rgba(7,84,63,.29),rgba(180,154,103,.16));box-shadow:0 22px 60px rgba(7,84,63,.12)}.error-page{background:radial-gradient(circle at 50% 36%,rgba(122,52,42,.24),transparent 31%),linear-gradient(180deg,#160e0c,#0b0d0c 65%)}.error-page strong{text-shadow:0 12px 55px rgba(171,76,54,.14)}.search-page{background:radial-gradient(circle at 50% 38%,#fff 0%,#f1eee8 52%,#d9d7d0 100%)}.consulting-page{background:radial-gradient(circle at 82% 24%,rgba(16,116,83,.72),transparent 40%),#080b09}.notion-pane{background:linear-gradient(160deg,#1e211f,#141715)}
@@ -364,7 +373,7 @@
 		.story{padding:122px 16px 70px}.story-heading{grid-template-columns:1fr;gap:28px}.story-heading h1{max-width:760px;font-size:clamp(66px,11vw,92px)}.story-intro{max-width:590px;justify-self:start}.story-caption{width:96%;grid-template-columns:1fr auto}.story-caption p{display:none}.screen-frame{padding:8px;border-radius:16px 16px 7px 7px}
 	}
 	@media(max-width:620px){
-		.story{padding:110px 12px 58px}.story-heading{margin-bottom:30px}.story-heading p{font-size:7px}.story-heading h1{font-size:clamp(51px,15vw,70px);line-height:.88}.story-intro>span{font-size:13px}.hero-actions{gap:17px}.hero-actions .primary{padding:12px 14px}.story-caption{width:100%;grid-template-columns:1fr auto;margin-bottom:12px}.story-caption>span{font-size:5px}.story-caption button{font-size:6px}.monitor{width:108%;margin-left:-4%}.screen-frame{aspect-ratio:16/10;padding:5px;border-radius:11px 11px 5px 5px}.screen-content{border-radius:7px 7px 3px 3px}.screen-reflection{opacity:.45}.browser{left:1.5%;right:1.5%;top:31px;bottom:55px;border-radius:4px}.tab-strip{height:25px;padding:4px 4px 0}.browser-tab{height:21px;padding:0 4px;font-size:4px;border-radius:3px 3px 0 0}.business-tab{flex-basis:78px;min-width:55px}.site-favicon,.help-favicon{width:10px;height:10px;font-size:4px}.brand-icon{width:9px;height:9px}.tool-tab,.notion-tab,.help-tab{max-width:34px}.address-row{height:27px;padding:0 6px;gap:7px;font-size:7px}.address-row>div{height:17px;padding:0 6px;font-size:4px}.browser-workspace{inset:52px 0 0}.business-page nav{height:31px;padding:0 5%;font-size:5px}.business-page nav strong{font-size:5px}.business-page nav span,.business-page nav button{display:none}.business-copy{left:7%;top:12%;width:68%}.business-copy h3{margin:5px 0 6px;font-size:clamp(15px,5vw,22px)}.business-copy p{font-size:5px}.site-visual{right:5%;bottom:11%;width:31%;height:35%}.business-page footer{height:18px;font-size:4px}.error-page strong{font-size:55px}.error-page span{font-size:4px}.search-symbol{width:23px;height:23px}.search-input{width:82%;height:25px;font-size:7px}.consulting-page nav{height:32px}.consulting-page nav span{font-size:5px}.consulting-page>div:last-child{padding-top:9%}.consulting-page h3{margin:7px 0 9px;font-size:22px}.consulting-page button{padding:7px 8px;font-size:5px}.notion-pane{width:calc(var(--split) * 71%)}.notion-head{height:27px;font-size:4px}.notion-page{min-width:175px;padding:6% 7%}.notion-icon{width:18px;height:18px;margin-bottom:7px}.notion-page h3{font-size:12px}.task{min-height:21px}.task span{font-size:5px}.task>i{width:7px;height:7px}
+		.story{padding:110px 12px 58px}.story-heading{margin-bottom:30px}.story-heading p{font-size:7px}.story-heading h1{font-size:clamp(51px,15vw,70px);line-height:.88}.story-intro>span{font-size:13px}.hero-actions{gap:17px}.hero-actions .primary{padding:12px 14px}.story-caption{width:100%;grid-template-columns:1fr auto;margin-bottom:12px}.story-caption button{font-size:6px}.monitor{width:108%;margin-left:-4%}.screen-frame{aspect-ratio:16/10;padding:5px;border-radius:11px 11px 5px 5px}.screen-content{border-radius:7px 7px 3px 3px}.screen-reflection{opacity:.45}.browser{left:1.5%;right:1.5%;top:31px;bottom:55px;border-radius:4px}.tab-strip{height:25px;padding:4px 4px 0}.browser-tab{height:21px;padding:0 4px;font-size:4px;border-radius:3px 3px 0 0}.business-tab{flex-basis:78px;min-width:55px}.site-favicon,.help-favicon{width:10px;height:10px;font-size:4px}.brand-icon{width:9px;height:9px}.tool-tab,.notion-tab,.help-tab{max-width:34px}.address-row{height:27px;padding:0 6px;gap:7px;font-size:7px}.address-row>div{height:17px;padding:0 6px;font-size:4px}.browser-workspace{inset:52px 0 0}.business-page nav{height:31px;padding:0 5%;font-size:5px}.business-page nav strong{font-size:5px}.business-page nav span,.business-page nav button{display:none}.business-copy{left:7%;top:12%;width:68%}.business-copy h3{margin:5px 0 6px;font-size:clamp(15px,5vw,22px)}.business-copy p{font-size:5px}.site-visual{right:5%;bottom:11%;width:31%;height:35%}.business-page footer{height:18px;font-size:4px}.error-page strong{font-size:55px}.error-page span{font-size:4px}.search-symbol{width:23px;height:23px}.search-input{width:82%;height:25px;font-size:7px}.consulting-page nav{height:32px}.consulting-page nav span{font-size:5px}.consulting-page>div:last-child{padding-top:9%}.consulting-page h3{margin:7px 0 9px;font-size:22px}.consulting-page button{padding:7px 8px;font-size:5px}.notion-pane{width:calc(var(--split) * 71%)}.notion-head{height:27px;font-size:4px}.notion-page{min-width:175px;padding:6% 7%}.notion-icon{width:18px;height:18px;margin-bottom:7px}.notion-page h3{font-size:12px}.task{min-height:21px}.task span{font-size:5px}.task>i{width:7px;height:7px}
 	}
 	/* The browser is the product demo. There is no device frame competing with it. */
 	.story{overflow:clip}
@@ -406,18 +415,19 @@
 		width:min(780px,72%);
 		margin:20px auto 0;
 		display:grid;
-		grid-template-columns:auto minmax(220px,1fr) auto;
+		grid-template-columns:minmax(220px,1fr) auto;
 		gap:10px 22px;
 		align-items:center;
 		color:var(--proto-muted);
 	}
-	.story-caption>span{color:var(--proto-green-light);font:500 7px var(--proto-mono);letter-spacing:.11em}
-	.story-caption p{display:block;margin:0;text-align:center;color:var(--proto-paper);font:400 clamp(18px,1.65vw,24px)/1 var(--proto-display);letter-spacing:-.018em}
-	.story-caption button{display:inline-flex;align-items:center;justify-self:end;white-space:nowrap}
-	.story-progress{grid-column:1/-1;grid-row:2;height:3px;display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
-	.story-progress>i{overflow:hidden;background:#202721;border-radius:2px}
-	.story-progress>i>b{display:block;width:100%;height:100%;background:linear-gradient(90deg,#8a6d3f,#b49a67);transform-origin:left}
-	.story-progress>i.active{background:#2b362f}
+		.story-caption p{display:block;margin:0;text-align:center;color:var(--proto-paper);font:400 clamp(18px,1.65vw,24px)/1 var(--proto-display);letter-spacing:-.018em}
+	.story-caption>button{display:inline-flex;align-items:center;justify-self:end;white-space:nowrap}
+	.phase-bar{grid-column:1/-1;grid-row:2;display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+	.phase-tab{position:relative;overflow:hidden;padding:10px 4px 12px;border:1px solid var(--proto-line-strong);border-radius:2px;background:rgba(10,13,11,.6);color:var(--proto-muted);font:500 7.5px var(--proto-mono);letter-spacing:.08em;text-transform:uppercase;cursor:pointer;transition:color .25s ease,border-color .25s ease,background .25s ease}
+	.phase-tab:hover{color:var(--proto-paper)}
+	.phase-tab.active{color:var(--proto-paper);border-color:rgba(180,154,103,.6);background:rgba(180,154,103,.07)}
+	.phase-tab i{position:absolute;left:0;right:0;bottom:0;height:2px;overflow:hidden}
+	.phase-tab i b{display:block;width:100%;height:100%;background:linear-gradient(90deg,#8a6d3f,#b49a67);transform-origin:left}
 	.cursor{--cursor-scale:1.32;transform-origin:top left;filter:drop-shadow(0 2px 2px rgba(255,255,255,.35))}
 	.business-copy{top:22%}
 	.notion-page h3{margin-bottom:18px}
@@ -429,9 +439,10 @@
 		.story-player{width:108%;margin-left:-4%}
 		.monitor{width:100%}
 		.screen-frame{aspect-ratio:16/10;border-radius:2px}
-		.story-caption{width:92%;margin-top:13px;grid-template-columns:auto 1fr auto;gap:8px 10px}
-		.story-caption>span{font-size:5px}.story-caption p{font-size:15px}.story-caption button{font-size:0}.story-caption button i{margin-right:0}
-		.story-progress{gap:4px;height:2px}
+		.story-caption{width:92%;margin-top:13px;grid-template-columns:1fr auto;gap:8px 10px}
+		.story-caption p{font-size:15px}.story-caption>button{font-size:0}.story-caption>button i{margin-right:0}
+		.phase-bar{gap:4px}
+		.phase-tab{padding:8px 2px 10px;font-size:5px;letter-spacing:.04em}
 		.cursor{--cursor-scale:.82}
 	}
 	@media(prefers-reduced-motion:reduce){.story *{animation:none!important;transition:none!important}}

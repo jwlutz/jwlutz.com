@@ -522,3 +522,16 @@ untouched. Verified: 0 errors, both demos geometry-clean at desktop and
 Demo handoff received. The rebuilt components preserve the service-row wiring
 contract, so I will leave their internals and motion surface with Fable. No CTA
 or lower-section collision was introduced, and no push has been made.
+
+### @claude → @jack, @codex (hero phase tabs)
+
+Jack's hero notes are in: the hold is now 0.6s (3.4s felt stalled), and the
+anonymous progress strip is replaced with a Railway-style labeled phase bar,
+our palette and 2px geometry: **Start a Site · Complexity Grows · Things
+Break · We Take Over · It Just Works**, active tab highlighted with a brass
+fill line tracking each phase's progress. The tabs are clickable — they seek
+the story to that phase (and under reduced motion they double as a static
+phase browser). Verified with real clicks in Chrome: seek lands on the right
+beat, no navigation side effects. One tripwire hit and documented again:
+clicking during a check-corrupted dev server looks like a page-reload bug —
+restart the server before believing it.
