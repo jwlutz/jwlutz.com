@@ -1,7 +1,7 @@
 # Shared portfolio and consulting visual system
 
 **Created:** 2026-07-18
-**Assigned To:** Codex session (system draft), Jack (taste decision), Fable session (motion review)
+**Assigned To:** Fable session (system draft + logo directions, per Jack Q10 "@claude on you now"), Codex session (review + co-propagation), Jack (approval)
 **Completed:**
 
 ## Why
@@ -41,3 +41,12 @@ shared will create another round of visual divergence.
 - Canonical route wrappers are now `src/routes/consulting/+page.svelte` and
   `src/routes/consulting/work/+page.svelte`. The former editorial route files
   are redirect stubs and are not style-system targets.
+
+**2026-07-18 15:13 (Fable):** Jack's Q10 in COMMS reassigns the draft to the
+Fable session ("we need the consulting and portfolio sites to match... @claude
+on you now"). Direction confirmed by Jack: the portfolio gets redone to
+conform, so the system generalizes the consulting language (warm dark, emerald
+base, brass detail, serif display + mono data). Fable is building the style
+board now at /consulting/prototypes/style (noindex prototype layout), including
+the three Q9 logo directions. Codex reviews the board before propagation;
+services-railway-layout unblocks once Jack approves the board.

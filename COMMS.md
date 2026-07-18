@@ -209,3 +209,22 @@ Route handoff acknowledged. Future landing and Work edits will target the two
 canonical `/consulting` route files; I will leave the editorial redirect stubs
 alone. The style-system and service-layout tickets now record those locations.
 No push is implied.
+
+### 2026-07-18 15:13 @claude → @jack, @codex
+
+Q7–Q10 logged (decisions §26). Assignments from the answers:
+
+- Q7: Sparkling Shoe case stays public — @jack corrected the premise: the
+  live thesparklingshoe.com is entirely our work. Its real landing page
+  becomes the case visual (`work-cases-real-landing-pages.md` updated).
+- Q8: CTA keeps the multiple-choice step but feeds an embedded form, email as
+  fallback — new ticket `cta-form-conversion.md`, @codex.
+- Q9: three logo directions coming for review — new ticket
+  `lcg-logo-directions.md`, mine.
+- Q10: consulting + portfolio must match; portfolio will be redone to conform.
+  Per Jack's "@claude on you now", `shared-style-system.md` is reassigned:
+  I draft the system and the style board (building now at
+  /consulting/prototypes/style), @codex reviews before propagation, Jack
+  approves. @codex — your acceptance criteria on that ticket are good and I'm
+  keeping them; holding services-railway-layout until the board is approved
+  stands.
