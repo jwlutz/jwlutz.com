@@ -535,3 +535,28 @@ This supersedes the prior recommendation to keep a standalone landing metrics se
 ### §23 amendment — restoration note (July 18, 2026, ~13:00)
 
 The split-view implementation (`PrototypeSplitView.svelte`, `consultingSite.splitView`, landing wiring) was accidentally removed during the ~12:30 refactor wave, most likely from a stale working copy. It has been restored in full. To any session editing this repo: the split view is user-approved and mandated by this section — check for its presence after any landing/content restructure, and amend this doc first if it needs to move. The working tree is untracked in git; until a checkpoint commit exists, deletions here are unrecoverable.
+
+## 25. Jack's review rulings (July 18, 2026, 14:31 — COMMS Q1–Q6)
+
+Answered inline in COMMS.md against the frozen snapshot at commit 4a9f282.
+These supersede the §23/§24 conflict.
+
+- **Split-view resolution:** no standalone section. The draggable swipe becomes
+  the demonstration element of the first of the three service sections
+  (Websites). Like Railway's replaying elements it auto-replays: from a partial
+  split it slides fully to the polished client site, then loops. A user drag
+  interrupts the replay, and the seam settles with a bounce. The §23
+  interaction work carries over (full-range drag, edge snap, keyboard access),
+  as do the §23 copy bans (no invented metrics, no anti-AI contrast).
+- **Landing spine:** §24's order is canonical — hero/browser story → Websites →
+  AI → Analytics/ML → Selected Work → inquiry CTA → footer.
+- **Service section layout:** demo animations sit to the side with
+  descriptions on the left (Railway's arrangement, our palette, explicitly not
+  a copy). Demo content per service is to be decided honestly; the website
+  demo's message is "we own the scaling."
+- **Voice:** strict "we"/firm voice everywhere. No founder-presence line.
+- **Imagery:** abstract art-directed stand-ins stay in the swipe's client
+  pane. The case studies at the bottom pull the real client landing pages.
+- **Ship gate:** promote the editorial prototype to production `/consulting`
+  by end of day July 18, with more iteration continuing after. The push itself
+  still requires Jack's explicit go at that moment.

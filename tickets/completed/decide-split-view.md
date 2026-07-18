@@ -2,7 +2,7 @@
 
 **Created:** 2026-07-18
 **Assigned To:** Jack
-**Completed:** —
+**Completed:** 2026-07-18
 
 ## Why
 
@@ -49,3 +49,11 @@ For a fair decision, three options rather than two:
 Fable recommendation: (b) if the page feels redundant during review, (a) if
 the swipe deserves its hero-adjacent billing. Either way the DRAG interaction
 survives; it is the thing Jack approved most concretely.
+
+**2026-07-18 14:36 (Fable):** RESOLVED by Jack in COMMS Q1. Ruling: none of
+(a)/(b)/(c) verbatim — a synthesis closest to (b). No standalone section; the
+drag becomes the demo element of the first of the three service sections
+(Websites). It auto-replays Railway-style (partial split → slides fully to the
+polished site, loops), drag interrupts the replay, seam settles with a bounce.
+Mirrored to decisions doc §25. Implementation: swipe-replay-service-demo.md
+(Fable) + services-railway-layout.md (Codex). Freeze lifted.

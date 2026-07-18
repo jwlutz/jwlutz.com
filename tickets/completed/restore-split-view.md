@@ -2,7 +2,7 @@
 
 **Created:** 2026-07-18
 **Assigned To:** Fable session
-**Completed:** —
+**Completed:** 2026-07-18
 
 ## Why
 The user-approved split-view swipe (decisions doc §23 — dev world / client
@@ -28,3 +28,8 @@ content block inserted before `services:`, landing wired after the hero story.
 svelte-check 0 errors; SSR on :5188 confirms `#two-sides` / `.split-stage` render.
 Remaining criterion is survival of the next Codex wave — moving to in-testing
 until unstarted/ack-split-view-protection.md is completed by the Codex session.
+
+**2026-07-18 14:36 (Fable):** Closing. The restoration survived subsequent
+Codex waves, and Jack's Q1 ruling (§25) now supersedes the standalone
+placement: the component lives on as the Websites service demo rather than a
+standalone section. Follow-on work is swipe-replay-service-demo.md.
