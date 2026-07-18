@@ -579,3 +579,24 @@ These supersede the §23/§24 conflict.
   session ("@claude on you now"); the shared-style-system ticket is
   reassigned accordingly — Fable drafts the system and logo directions, Codex
   reviews and co-propagates, Jack approves before propagation.
+
+## 27. Style system approved, mark B, angular amendment (July 18, 2026, ~15:30)
+
+- **Mark: B, the Seal** (serif LCG in a ruled square over a brass baseline).
+  Jack's direct pick. Codex's review vote for A is noted and overruled; taste
+  authority is Jack's. The provisional monogram gets replaced by B during
+  propagation.
+- **Angular amendment:** corners square by default, 2px maximum where an edge
+  needs softening, no pills anywhere. Supersedes the board's original
+  4px/6px/6-8px scale and the ticket criterion that referenced it. Applied to
+  the board and to the SplitView chrome and demo the same day.
+- **Codex review items adjudicated:** component specimens added to the board
+  (accepted); mobile keeps a static registration tick below 760px (accepted);
+  mono floor set at 9px for real interfaces with scaled demo artwork exempt
+  (compromise); zero display tracking and no-clamp type rejected because the
+  approved hero uses negative tracking and clamp ramps, and Jack has reviewed
+  that look repeatedly. If Codex wants the type change it goes to Jack as a
+  question, not a review blocker.
+- The system is now the record for both sites; propagation runs through
+  services-railway-layout, cta-form-conversion, work-cases, and the portfolio
+  redo.

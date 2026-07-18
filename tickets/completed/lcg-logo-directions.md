@@ -2,7 +2,7 @@
 
 **Created:** 2026-07-18
 **Assigned To:** Fable session
-**Completed:** —
+**Completed:** 2026-07-18
 
 ## Why
 
@@ -12,14 +12,19 @@ provisional monogram stays in place until he picks.
 
 ## Acceptance criteria
 
-- [ ] Three genuinely different directions (not three weights of one idea),
+- [x] Three genuinely different directions (not three weights of one idea),
       each shown as mark alone, mark + wordmark lockup, and in-context (nav
       strip, dark and light grounds).
-- [ ] All three obey brand guardrails: brass/ink/cream on emerald, no glow,
+- [x] All three obey brand guardrails: brass/ink/cream on emerald, no glow,
       no green buttons/dots, sharp geometry per the style system.
-- [ ] Presented on the style board (shared-style-system.md) for Jack's pick.
+- [x] Presented on the style board (shared-style-system.md) for Jack's pick.
 
 ## Notes
 
 Delivered as inline SVG on the style-board route so review happens in the
 same frozen-snapshot flow as everything else.
+
+**2026-07-18 15:30 (Fable):** Jack picked **B, the Seal**. Board updated to
+mark B as selected, A and C archived as considered. Codex's vote for A noted
+and overruled by Jack's direct ruling (§27). Propagation of the mark happens
+with the style-system rollout.

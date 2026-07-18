@@ -14,7 +14,7 @@
 
 <div class="board">
 	<header class="board-head">
-		<p class="crumb">STYLE BOARD · FOR JACK'S APPROVAL · 2026-07-18</p>
+		<p class="crumb">STYLE BOARD · SYSTEM OF RECORD · APPROVED 2026-07-18 · MARK B · ANGULAR</p>
 		<h1>One system, <em>two voices.</em></h1>
 		<p class="intent">
 			The portfolio and the consulting site read as one authored brand. The system
@@ -51,7 +51,7 @@
 			<p class="spec-mono">IBM PLEX MONO · METADATA, LABELS, EVIDENCE, TIMESTAMPS · NEVER PARAGRAPHS</p>
 		</div>
 		<div class="rules">
-			<p><b>Rules:</b> serif only at 28px and above, tight leading (0.9 to 1.05), negative tracking at scale. One italic emphasis word per heading is the house move. Mono is letterspaced 0.1em or more and 10px or smaller, uppercase. The portfolio may run serif at larger text sizes for editorial passages; the consulting site may not.</p>
+			<p><b>Rules:</b> serif only at 28px and above, tight leading (0.9 to 1.05), negative tracking at scale (the approved hero look; tracking stays). One italic emphasis word per heading is the house move. Mono is letterspaced 0.1em or more, uppercase, 9 to 11px in real interfaces; smaller mono appears only inside scaled demo artwork, never as UI. The portfolio may run serif at larger text sizes for editorial passages; the consulting site may not.</p>
 		</div>
 	</section>
 
@@ -62,12 +62,12 @@
 			<button class="g-btn">Primary action</button>
 			<button class="g-btn g-btn-paper">On light ground</button>
 			<span class="g-input">Form field</span>
-			<span class="g-tag">semantic tag</span>
-			<div class="g-card"><small>CARD · 6PX</small><b>Repeated card</b></div>
-			<div class="g-frame"><small>DEMO FRAME · 6PX</small></div>
+			<span class="g-tag">metadata tag</span>
+			<div class="g-card"><small>CARD · 2PX</small><b>Repeated card</b></div>
+			<div class="g-frame"><small>DEMO FRAME · 2PX</small></div>
 		</div>
 		<div class="rules">
-			<p><b>Rules:</b> structural bands and large media frames are square. Controls are 4px, demo frames 6px, repeated cards 6 to 8px. Pills exist only where the shape means something (tags, the swipe handle). Depth comes from 1px lines, inset top highlights, and directional shadows, never from blur glows. Angular but tailored, not brutalist.</p>
+			<p><b>Rules (angular, per Jack 2026-07-18):</b> corners are square by default. Where a hard edge needs softening, 2px, never more, on controls, cards, and demo frames alike. No pills anywhere; tags and handles are ruled rectangles. Depth comes from 1px lines, inset top highlights, and directional shadows, never from blur glows. Angular but tailored, not brutalist.</p>
 		</div>
 	</section>
 
@@ -110,16 +110,70 @@
 			<p><b>Media framing:</b> real artifacts (live sites, actual screens) sit in square 1px-ruled frames with an inset top highlight. Simulated interfaces appear only framed as our side of the glass.</p>
 			<p><b>Case openers:</b> mono eyebrow, serif title with one italic word, one-sentence stake, then evidence attached to the work it measures.</p>
 			<p><b>Footer:</b> ink ground, mono metadata, brass accents. The portfolio footer credits the consulting practice and vice versa; that cross-link is the only founder presence on LCG (§25 voice ruling).</p>
-			<p><b>Responsive:</b> two-column arrangements stack at 900px, type ramps use clamp, the registration line hides below 760px, everything holds at 375px.</p>
+			<p><b>Responsive:</b> two-column arrangements stack at 900px, type ramps use clamp, everything holds at 375px. Below 760px the live thread reduces to a static registration tick beside each section head, so the shared signature survives mobile.</p>
+		</div>
+	</section>
+
+	<!-- ————————————————— component specimens ————————————————— -->
+	<section id="specimens">
+		<h2><i>07</i> Component specimens</h2>
+
+		<div class="spec-grid">
+			<div class="cspec">
+				<small class="cspec-label">PORTFOLIO · PROJECT ROW</small>
+				<div class="p-project">
+					<div class="p-thumb"></div>
+					<div>
+						<p class="p-meta">2026 · SYSTEMS</p>
+						<p class="p-title">Copytrade, <em>multi-broker.</em></p>
+						<p class="p-desc">Real-time trade fan-out across brokerages.</p>
+					</div>
+				</div>
+			</div>
+
+			<div class="cspec">
+				<small class="cspec-label">CONSULTING · SERVICE ROW</small>
+				<div class="s-row">
+					<div class="s-copy">
+						<p class="p-meta">01 · WEBSITES</p>
+						<p class="p-title">We own <em>the scaling.</em></p>
+						<p class="p-desc">Built, deployed, watched, and grown by us.</p>
+					</div>
+					<div class="s-demo"><i></i><i></i><i style="width:58%"></i></div>
+				</div>
+			</div>
+
+			<div class="cspec">
+				<small class="cspec-label">CASE OPENER</small>
+				<p class="p-meta">CASE · COMMERCE</p>
+				<p class="p-title-lg">The Sparkling Shoe, <em>end to end.</em></p>
+				<p class="p-desc">One storefront, owned and operated since launch.</p>
+			</div>
+
+			<div class="cspec">
+				<small class="cspec-label">INQUIRY · CHOICE + FORM (Q8)</small>
+				<div class="f-choices"><span class="f-choice f-on">Website</span><span class="f-choice">AI integration</span><span class="f-choice">Analytics</span></div>
+				<span class="f-field">Name</span>
+				<span class="f-field">Email</span>
+				<button class="g-btn f-submit">Start the conversation</button>
+			</div>
+
+			<div class="cspec cspec-wide">
+				<small class="cspec-label">FOOTER STRIP · BOTH SITES</small>
+				<div class="f-footer"><span>© 2026 LUTZ CONSULTING GROUP</span><i></i><span>BUILT AND RUN BY US</span><b>jwlutz.com ↗</b></div>
+			</div>
+		</div>
+		<div class="rules">
+			<p><b>Rule:</b> these five assemblies are the contract. If a built section cannot be traced back to one of them plus the token sections above, it does not ship.</p>
 		</div>
 	</section>
 
 	<!-- ————————————————— logos ————————————————— -->
 	<section id="logos">
-		<h2><i>07</i> Three mark directions <em>(Q9, pick one)</em></h2>
+		<h2><i>08</i> The mark <em>(B selected, 2026-07-18)</em></h2>
 
 		<div class="logo-block">
-			<div class="logo-title"><b>A · Registration</b><p>The registration line made into a mark: two hairlines meeting at a brass point. Reads as precision and surveying. Quietest of the three, strongest tie to the shared motif.</p></div>
+			<div class="logo-title"><b>A · Registration <span class="lg-tag-note">CONSIDERED</span></b><p>The registration line made into a mark: two hairlines meeting at a brass point. Reads as precision and surveying. Quietest of the three, strongest tie to the shared motif.</p></div>
 			<div class="logo-row">
 				<div class="lg lg-dark"><svg viewBox="0 0 64 64" aria-label="Registration mark"><line x1="22" y1="6" x2="22" y2="58" stroke="#f0efe9" stroke-width="2"/><line x1="10" y1="44" x2="58" y2="44" stroke="#f0efe9" stroke-width="2"/><circle cx="22" cy="44" r="4.5" fill="#b49a67"/></svg></div>
 				<div class="lg lg-dark lg-lockup"><svg viewBox="0 0 64 64"><line x1="22" y1="6" x2="22" y2="58" stroke="#f0efe9" stroke-width="2"/><line x1="10" y1="44" x2="58" y2="44" stroke="#f0efe9" stroke-width="2"/><circle cx="22" cy="44" r="4.5" fill="#b49a67"/></svg><span class="lock-serif">Lutz Consulting Group</span></div>
@@ -129,7 +183,7 @@
 		</div>
 
 		<div class="logo-block">
-			<div class="logo-title"><b>B · Seal</b><p>Serif LCG monogram in a thin square frame over a brass baseline. Reads as an established firm's stamp. Most traditional; closest to the current provisional mark's spirit.</p></div>
+			<div class="logo-title"><b>B · Seal <span class="lg-tag-note lg-selected">SELECTED</span></b><p>Serif LCG monogram in a thin square frame over a brass baseline. Reads as an established firm's stamp. Most traditional; closest to the current provisional mark's spirit.</p></div>
 			<div class="logo-row">
 				<div class="lg lg-dark"><svg viewBox="0 0 64 64" aria-label="Seal mark"><rect x="4" y="4" width="56" height="56" fill="none" stroke="#f0efe9" stroke-width="1.5"/><text x="32" y="38" text-anchor="middle" font-family="Instrument Serif, Georgia, serif" font-size="26" fill="#f0efe9" letter-spacing="-1">LCG</text><line x1="14" y1="46" x2="50" y2="46" stroke="#b49a67" stroke-width="2"/></svg></div>
 				<div class="lg lg-dark lg-lockup"><svg viewBox="0 0 64 64"><rect x="4" y="4" width="56" height="56" fill="none" stroke="#f0efe9" stroke-width="1.5"/><text x="32" y="38" text-anchor="middle" font-family="Instrument Serif, Georgia, serif" font-size="26" fill="#f0efe9" letter-spacing="-1">LCG</text><line x1="14" y1="46" x2="50" y2="46" stroke="#b49a67" stroke-width="2"/></svg><span class="lock-serif">Lutz Consulting Group</span></div>
@@ -139,7 +193,7 @@
 		</div>
 
 		<div class="logo-block">
-			<div class="logo-title"><b>C · Seam</b><p>The split view itself: ink side, paper side, brass seam off center. Carries the whole brand argument (we watch one side so you only see the other). Boldest and most product-tied.</p></div>
+			<div class="logo-title"><b>C · Seam <span class="lg-tag-note">CONSIDERED</span></b><p>The split view itself: ink side, paper side, brass seam off center. Carries the whole brand argument (we watch one side so you only see the other). Boldest and most product-tied.</p></div>
 			<div class="logo-row">
 				<div class="lg lg-dark"><svg viewBox="0 0 64 64" aria-label="Seam mark"><rect x="6" y="6" width="52" height="52" fill="#171914" stroke="#f0efe9" stroke-width="1.5"/><rect x="38" y="6" width="20" height="52" fill="#dad6cc"/><rect x="36.5" y="6" width="3" height="52" fill="#b49a67"/></svg></div>
 				<div class="lg lg-dark lg-lockup"><svg viewBox="0 0 64 64"><rect x="6" y="6" width="52" height="52" fill="#171914" stroke="#f0efe9" stroke-width="1.5"/><rect x="38" y="6" width="20" height="52" fill="#dad6cc"/><rect x="36.5" y="6" width="3" height="52" fill="#b49a67"/></svg><span class="lock-serif">Lutz Consulting Group</span></div>
@@ -150,7 +204,7 @@
 	</section>
 
 	<footer class="board-foot">
-		<p>Approve in COMMS: the system as a whole, plus mark A, B, or C. Propagation and the services layout start after your yes.</p>
+		<p>Approved by Jack 2026-07-18 with the angular amendment; mark B is the LCG mark. This page is now the system of record for both sites. Propagation runs through the ticket board.</p>
 	</footer>
 </div>
 
@@ -191,14 +245,14 @@
 	.spec-mono { margin: 0; font: 500 10px var(--mono); letter-spacing: .14em; color: var(--brass); }
 
 	.geo-row { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; margin-bottom: 24px; }
-	.g-btn { padding: 12px 18px; border: 0; border-radius: 4px; background: var(--paper); color: #171914; font: 500 12px var(--sans); cursor: pointer; }
+	.g-btn { padding: 12px 18px; border: 0; border-radius: 2px; background: var(--paper); color: #171914; font: 500 12px var(--sans); cursor: pointer; }
 	.g-btn-paper { background: #171914; color: var(--paper); box-shadow: 0 0 0 1px var(--line-strong); }
-	.g-input { padding: 11px 14px; border: 1px solid var(--line-strong); border-radius: 4px; color: var(--muted); font-size: 12px; background: var(--surface); }
-	.g-tag { padding: 6px 12px; border: 1px solid var(--brass); border-radius: 999px; color: var(--brass); font: 500 9px var(--mono); letter-spacing: .1em; }
-	.g-card { padding: 14px 16px; border: 1px solid var(--line-strong); border-radius: 7px; background: var(--surface); box-shadow: 0 1px 0 rgba(255,255,255,.06) inset; }
+	.g-input { padding: 11px 14px; border: 1px solid var(--line-strong); border-radius: 2px; color: var(--muted); font-size: 12px; background: var(--surface); }
+	.g-tag { padding: 6px 12px; border: 1px solid var(--brass); border-radius: 2px; color: var(--brass); font: 500 9px var(--mono); letter-spacing: .1em; }
+	.g-card { padding: 14px 16px; border: 1px solid var(--line-strong); border-radius: 2px; background: var(--surface); box-shadow: 0 1px 0 rgba(255,255,255,.06) inset; }
 	.g-card small { display: block; margin-bottom: 5px; font: 500 8px var(--mono); letter-spacing: .12em; color: var(--muted); }
 	.g-card b { font: 400 16px var(--display); }
-	.g-frame { width: 150px; height: 74px; display: flex; align-items: flex-end; padding: 10px; border: 1px solid var(--line-strong); border-radius: 6px; background: linear-gradient(180deg, rgba(255,255,255,.05), transparent 30%), var(--emerald-deep); }
+	.g-frame { width: 150px; height: 74px; display: flex; align-items: flex-end; padding: 10px; border: 1px solid var(--line-strong); border-radius: 2px; background: linear-gradient(180deg, rgba(255,255,255,.05), transparent 30%), var(--emerald-deep); }
 	.g-frame small { font: 500 8px var(--mono); letter-spacing: .12em; color: var(--muted); }
 
 	.motif-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 22px; }
@@ -217,6 +271,8 @@
 	.logo-block { display: grid; grid-template-columns: minmax(220px, .8fr) 2.2fr; gap: 30px; align-items: start; padding: 26px 0; border-top: 1px solid var(--line); }
 	.logo-block:first-of-type { border-top: 0; }
 	.logo-title b { display: block; margin-bottom: 10px; font: 400 22px var(--display); letter-spacing: -.01em; }
+	.lg-tag-note { display: inline-block; margin-left: 8px; padding: 4px 8px; border: 1px solid var(--line-strong); border-radius: 2px; vertical-align: 3px; font: 500 7px var(--mono); letter-spacing: .14em; color: var(--muted); }
+	.lg-selected { border-color: var(--brass); color: var(--brass); }
 	.logo-title p { margin: 0; color: var(--muted); font-size: 12.5px; line-height: 1.65; }
 	.logo-row { display: flex; flex-wrap: wrap; gap: 12px; align-items: stretch; }
 	.lg { display: flex; align-items: center; justify-content: center; gap: 14px; padding: 18px; border: 1px solid var(--line-strong); min-height: 96px; }
@@ -229,7 +285,30 @@
 	.lg-nav svg, .lg-nav i { width: 22px; height: 22px; display: flex; }
 	.lg-nav b { margin-right: auto; font: 600 12px var(--sans); letter-spacing: .01em; }
 	.lg-nav span { font-size: 11px; color: var(--muted); }
-	.lg-nav em { padding: 8px 12px; border-radius: 4px; background: var(--paper); color: #171914; font: 500 10px var(--sans); font-style: normal; }
+	.lg-nav em { padding: 8px 12px; border-radius: 2px; background: var(--paper); color: #171914; font: 500 10px var(--sans); font-style: normal; }
+
+	.spec-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 14px; margin-bottom: 22px; }
+	.cspec { padding: 20px; border: 1px solid var(--line-strong); border-radius: 2px; background: var(--surface); }
+	.cspec-wide { grid-column: 1 / -1; }
+	.cspec-label { display: block; margin-bottom: 16px; font: 500 9px var(--mono); letter-spacing: .14em; color: var(--brass); }
+	.p-meta { margin: 0 0 8px; font: 500 9px var(--mono); letter-spacing: .12em; color: var(--muted); }
+	.p-title { margin: 0 0 8px; font: 400 28px/1 var(--display); letter-spacing: -.02em; }
+	.p-title-lg { margin: 0 0 8px; font: 400 34px/1 var(--display); letter-spacing: -.025em; }
+	.p-title em, .p-title-lg em { color: var(--paper); }
+	.p-desc { margin: 0; color: var(--muted); font-size: 12.5px; line-height: 1.6; }
+	.p-project { display: flex; gap: 16px; align-items: flex-start; }
+	.p-thumb { flex: 0 0 74px; height: 74px; border: 1px solid var(--line-strong); background: linear-gradient(150deg, var(--emerald-deep), #1a1410 80%); }
+	.s-row { display: grid; grid-template-columns: 1.1fr .9fr; gap: 16px; align-items: center; }
+	.s-demo { display: flex; flex-direction: column; gap: 8px; justify-content: center; min-height: 84px; padding: 14px; border: 1px solid var(--line-strong); border-radius: 2px; background: linear-gradient(180deg, rgba(255,255,255,.05), transparent 30%), var(--emerald-deep); }
+	.s-demo i { height: 6px; width: 80%; background: rgba(240,239,233,.16); }
+	.f-choices { display: flex; gap: 8px; margin-bottom: 12px; }
+	.f-choice { padding: 8px 12px; border: 1px solid var(--line-strong); border-radius: 2px; font-size: 11px; color: var(--muted); }
+	.f-on { border-color: var(--brass); color: var(--text); }
+	.f-field { display: block; margin-bottom: 10px; padding: 10px 12px; border: 1px solid var(--line-strong); border-radius: 2px; color: var(--muted); font-size: 11px; }
+	.f-submit { width: 100%; }
+	.f-footer { display: flex; align-items: center; gap: 16px; padding: 16px 18px; background: var(--ink); border: 1px solid var(--line); font: 500 9px var(--mono); letter-spacing: .1em; color: var(--muted); }
+	.f-footer i { flex: 1; height: 1px; background: var(--line); }
+	.f-footer b { color: var(--brass); font-weight: 500; }
 
 	.board-foot { margin-top: 40px; padding-top: 26px; border-top: 1px solid var(--line); }
 	.board-foot p { max-width: 560px; margin: 0; color: var(--muted); font-size: 13px; line-height: 1.7; }
@@ -237,6 +316,8 @@
 	@media (max-width: 900px) {
 		.motif-pair { grid-template-columns: 1fr; }
 		.logo-block { grid-template-columns: 1fr; gap: 16px; }
+		.s-row { grid-template-columns: 1fr; }
+		.f-footer { flex-wrap: wrap; }
 	}
 	@media (max-width: 480px) {
 		.board > header, .board > section, .board > footer { width: calc(100% - 36px); }

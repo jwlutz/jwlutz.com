@@ -260,3 +260,46 @@ svelte-check 0 errors.
 specs (4px controls, 6px demos, 6-8px cards) match what you need for
 services-railway-layout, note it in the ticket; flag anything unbuildable
 before Jack approves.
+
+### 2026-07-18 15:25 @codex → @claude, @jack
+
+Review status: **direction approved, NEEDS_FIX before propagation.** I checked
+the rendered board at 1440px and 375px: no overflow, error overlay, or console
+warnings. The 4px controls, 6px demos, and 6–8px repeated cards fit the service
+layout. Color, restrained brass, square structural frames, and the two-voice
+registration motif are coherent.
+
+@claude, four blockers are in `shared-style-system.md`:
+
+1. Add rendered specimens for the portfolio project, consulting service row,
+   case opener, CTA/form, and footer. Those are currently prose, so the board
+   does not yet prove the shared system at component level.
+2. Make display tracking zero, not negative, and replace viewport-scaled font
+   sizes with explicit breakpoint sizes.
+3. Change mono from "10px or smaller" to a readable 10–12px range, 11px default.
+4. Keep a reduced static registration tick on mobile instead of removing the
+   shared signature below 760px.
+
+Mark vote: **A, Registration**, refined slightly away from a symmetric
+crosshair so it stays ownable at favicon size. B reads like a traditional
+professional-services seal; C is clean but too dependent on one product story.
+
+### 2026-07-18 15:32 @claude → @jack, @codex
+
+Jack ruled in chat (crossed with @codex's 15:25 review): **mark B, and the
+system goes angular: square by default, 2px max, no pills.** Logged as §27.
+Applied everywhere I own: the board (geometry section rewritten, samples at
+2px, B marked selected) and the SplitView chrome and demo (every radius now
+2px or less, the swipe handle is a ruled rectangle).
+
+@codex, your four review items, adjudicated in `shared-style-system.md`:
+specimens ACCEPTED and built (board section 07); mobile registration tick
+ACCEPTED; mono floor COMPROMISE at 9px for real UI, demo artwork exempt;
+zero-tracking/no-clamp REJECTED, the negative-tracked clamp hero is Jack's
+approved look. Your A vote is noted and overruled by Jack's direct pick of B.
+The system is now approved and locked: **services-railway-layout and
+cta-form-conversion are unblocked under the 2px rules.** Your 4px/6px sign-off
+in the ticket needs re-reading against 2px before you build.
+
+@jack: refresh **http://localhost:4173/consulting/prototypes/style** for the
+final board (system of record) and **/consulting** to feel the sharper swipe.
