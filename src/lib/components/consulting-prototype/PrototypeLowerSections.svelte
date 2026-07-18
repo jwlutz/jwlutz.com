@@ -88,10 +88,10 @@
 			<header><span>PROJECT STARTER</span><small>Choose the closest answer</small></header>
 			<div class="brief-question">
 				<small id="project-type-label">WHAT ARE WE STARTING WITH?</small>
-				<div role="radiogroup" aria-labelledby="project-type-label" aria-describedby={activeResponse?.errors?.projectType ? 'project-type-error' : undefined}>
+				<div role="radiogroup" aria-labelledby="project-type-label" aria-invalid={Boolean(activeResponse?.errors?.projectType)} aria-describedby={activeResponse?.errors?.projectType ? 'project-type-error' : undefined}>
 					{#each options as option, index}
 						<label class:selected={selectedOption === option}>
-							<input type="radio" name="projectType" value={option} bind:group={selectedOption} aria-invalid={Boolean(activeResponse?.errors?.projectType)} />
+							<input type="radio" name="projectType" value={option} bind:group={selectedOption} />
 							<i aria-hidden="true"></i><span>{option}</span><small>0{index + 1}</small>
 						</label>
 					{/each}

@@ -53,11 +53,11 @@
 		'Figure out why deployment failed'
 	];
 	const chapters = [
-		{ label: 'Start a Site', start: 0, end: 1.65 },
-		{ label: 'Complexity Grows', start: 1.65, end: 7.55 },
-		{ label: 'Things Break', start: 7.55, end: 13.45 },
-		{ label: 'We Take Over', start: 13.45, end: 18.05 },
-		{ label: 'It Just Works', start: 18.05, end: duration }
+		{ label: 'Start a Site', start: 0, end: 1.65, icon: '<rect x="1.5" y="2.5" width="9" height="7.5"/><line x1="1.5" y1="4.5" x2="10.5" y2="4.5"/>' },
+		{ label: 'Complexity Grows', start: 1.65, end: 7.55, icon: '<path d="M6 1.5L10.5 4 6 6.5 1.5 4z"/><path d="M1.5 6.5L6 9l4.5-2.5"/><path d="M1.5 8.8L6 11.3l4.5-2.5"/>' },
+		{ label: 'Things Break', start: 7.55, end: 13.45, icon: '<path d="M7.5 1L3.5 6.8h2.6L4.5 11 9 5.4H6.2z"/>' },
+		{ label: 'We Take Over', start: 13.45, end: 18.05, icon: '<path d="M1.5 6h6.5"/><path d="M5.5 3.5L8 6 5.5 8.5"/><path d="M10.5 2.5v7"/>' },
+		{ label: 'It Just Works', start: 18.05, end: duration, icon: '<circle cx="6" cy="6" r="4.5"/><path d="M4 6.2l1.4 1.4 2.6-3"/>' }
 	];
 
 	let activeChapter = $derived(Math.max(0, chapters.findIndex((chapter) => story >= chapter.start && story < chapter.end)));
@@ -330,7 +330,9 @@
 				{#each chapters as chapter, index}
 					{@const amount = ramp(story, chapter.start, chapter.end)}
 					<button type="button" class="phase-tab" class:active={index === activeChapter} onclick={() => seek(index)} aria-label={`Jump to phase: ${chapter.label}`}>
-						{chapter.label}<i aria-hidden="true"><b style={`transform:scaleX(${amount})`}></b></i>
+						<i class="tab-fill" aria-hidden="true" style={`transform:scaleX(${index === activeChapter ? amount : 0})`}></i>
+						<svg class="tab-icon" viewBox="0 0 12 12" aria-hidden="true">{@html chapter.icon}</svg>
+						<span>{chapter.label}</span>
 					</button>
 				{/each}
 			</div>
@@ -422,12 +424,14 @@
 	}
 		.story-caption p{display:block;margin:0;text-align:center;color:var(--proto-paper);font:400 clamp(18px,1.65vw,24px)/1 var(--proto-display);letter-spacing:-.018em}
 	.story-caption>button{display:inline-flex;align-items:center;justify-self:end;white-space:nowrap}
-	.phase-bar{grid-column:1/-1;grid-row:2;display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
-	.phase-tab{position:relative;overflow:hidden;padding:10px 4px 12px;border:1px solid var(--proto-line-strong);border-radius:2px;background:rgba(10,13,11,.6);color:var(--proto-muted);font:500 9px var(--proto-mono);letter-spacing:.08em;text-transform:uppercase;cursor:pointer;transition:color .25s ease,border-color .25s ease,background .25s ease}
+	.phase-bar{grid-column:1/-1;grid-row:2;display:flex;overflow:hidden;border:1px solid var(--proto-line-strong);border-radius:2px;background:rgba(10,13,11,.72)}
+	.phase-tab{position:relative;flex:1;display:flex;align-items:center;justify-content:center;gap:7px;padding:12px 4px;border:0;border-left:1px solid var(--proto-line);background:none;color:var(--proto-muted);font:500 9px var(--proto-mono);letter-spacing:.08em;text-transform:uppercase;cursor:pointer;transition:color .25s ease}
+	.phase-tab:first-child{border-left:0}
 	.phase-tab:hover{color:var(--proto-paper)}
-	.phase-tab.active{color:var(--proto-paper);border-color:rgba(180,154,103,.6);background:rgba(180,154,103,.07)}
-	.phase-tab i{position:absolute;left:0;right:0;bottom:0;height:2px;overflow:hidden}
-	.phase-tab i b{display:block;width:100%;height:100%;background:linear-gradient(90deg,#8a6d3f,#b49a67);transform-origin:left}
+	.phase-tab.active{color:var(--proto-paper)}
+	.tab-fill{position:absolute;inset:0;background:rgba(180,154,103,.26);transform-origin:left;pointer-events:none}
+	.tab-icon{position:relative;width:12px;height:12px;flex:0 0 auto;fill:none;stroke:currentColor;stroke-width:1.2;stroke-linecap:round;stroke-linejoin:round}
+	.phase-tab span{position:relative;white-space:nowrap}
 	.cursor{--cursor-scale:1.32;transform-origin:top left;filter:drop-shadow(0 2px 2px rgba(255,255,255,.35))}
 	.business-copy{top:22%}
 	.notion-page h3{margin-bottom:18px}
@@ -441,8 +445,8 @@
 		.screen-frame{aspect-ratio:16/10;border-radius:2px}
 		.story-caption{width:92%;margin-top:13px;grid-template-columns:1fr auto;gap:8px 10px}
 		.story-caption p{font-size:15px}.story-caption>button{font-size:0}.story-caption>button i{margin-right:0}
-		.phase-bar{gap:4px}
-		.phase-tab{padding:8px 2px 10px;font-size:5px;letter-spacing:.04em}
+		.phase-tab{padding:10px 2px;gap:0}
+		.phase-tab span{display:none}
 		.cursor{--cursor-scale:.82}
 	}
 	@media(prefers-reduced-motion:reduce){.story *{animation:none!important;transition:none!important}}

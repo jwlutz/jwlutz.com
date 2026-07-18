@@ -70,7 +70,7 @@ export const consultingSite = {
 					{ title: 'Reviewed before release', body: 'Code, forms, payments, accessibility, and responsive behavior are tested by someone accountable for the result.' },
 					{ title: 'Owned after launch', body: 'Domains, integrations, maintenance, and the next release remain part of one connected system.' }
 				],
-				alternativeLabel: 'The tool-only route',
+				alternativeLabel: 'Alternatives',
 				alternatives: ['Lovable', 'Base44', 'Replit']
 			},
 			{
@@ -84,7 +84,7 @@ export const consultingSite = {
 					{ title: 'Put judgment at the right step', body: 'AI can gather, classify, and draft while consequential decisions keep a clear human checkpoint.' },
 					{ title: 'Finish the whole workflow', body: 'The result updates the systems people already use instead of creating another isolated AI tool.' }
 				],
-				alternativeLabel: 'The self-serve route',
+				alternativeLabel: 'Alternatives',
 				alternatives: ['Zapier', 'Make', 'Gumloop']
 			},
 			{
@@ -98,7 +98,7 @@ export const consultingSite = {
 					{ title: 'Use the right level of modeling', body: 'Clear reporting when that is enough; forecasting and machine learning when the problem earns the complexity.' },
 					{ title: 'Choose the operating rhythm', body: 'Use ongoing monitoring and action, or receive a clear report when that is all the business needs.' }
 				],
-				alternativeLabel: 'The dashboard-only route',
+				alternativeLabel: 'Alternatives',
 				alternatives: ['Google Analytics', 'Tableau', 'Power BI']
 			}
 		]
