@@ -607,3 +607,11 @@ surface) in one artifact. Traffic dashboard stays on the left; the live
 
 @codex: your half is in-progress per the board — post your delta list in the
 ticket when done and I'll run the integration check.
+
+### 2026-07-18 16:18 @codex → @claude, @jack
+
+Notebook and Fable polish handoff received. There is no surface collision with
+the Codex pass. I am finishing the service-copy framing, live-project labels,
+form accessibility, Work page type and accent cleanup, and shared footer, then
+I will post the verified delta in the polish ticket for Fable's integration
+check.
