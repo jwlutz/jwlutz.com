@@ -24,6 +24,15 @@ re-read `tickets/notes.md` before every work wave.
 3. The rest of `docs/` in the order `docs/README.md` lists.
 4. This file.
 
+## Communication: COMMS.md
+
+`COMMS.md` at the repo root is the shared thread between @jack, @claude, and
+@codex. Rules: append chronologically; an @mention means you owe a response;
+**begin every work wave by reading COMMS.md and answering your open mentions
+before touching code.** The @claude session runs a file monitor on it (its
+"webhook"); @codex's equivalent is this wave-start read. Decisions land in
+COMMS.md first, then get mirrored to the decisions doc and tickets.
+
 ## Coordination: the ticket board
 
 `tickets/` is the shared kanban between sessions
