@@ -27,3 +27,8 @@ landing pages, not simulations.
 
 Real artifacts over simulated consoles (AGENTS.md guardrail) — this ticket is
 that rule applied to Work.
+
+**2026-07-18 15:12 (Fable):** Jack's Q7 ruling: the case STAYS public — the
+live thesparklingshoe.com was built entirely by us, so the "no longer
+represents our work" premise was wrong. Use its real landing page as the case
+visual. The conditional in the acceptance criteria is resolved.

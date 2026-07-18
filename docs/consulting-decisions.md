@@ -560,3 +560,22 @@ These supersede the §23/§24 conflict.
 - **Ship gate:** promote the editorial prototype to production `/consulting`
   by end of day July 18, with more iteration continuing after. The push itself
   still requires Jack's explicit go at that moment.
+
+## 26. Jack's second review rulings (July 18, 2026, ~15:10 — COMMS Q7–Q10)
+
+- **Sparkling Shoe case (Q7):** stays public. Correction to the Q7 premise:
+  the live site (thesparklingshoe.com) was built entirely by us, so it
+  cleanly represents the work. Its real landing page is the case visual
+  (per §25 imagery ruling).
+- **Inquiry conversion (Q8):** keep the multiple-choice project-type picker,
+  but it feeds a short embedded form instead of composing an email. Email can
+  remain as a fallback link.
+- **LCG mark (Q9):** produce three logo directions for review before the mark
+  is considered settled.
+- **Q10 — one brand across both sites:** the consulting site and the portfolio
+  must visually match. The portfolio will be redone to conform, so the shared
+  system generalizes the consulting design language (warm dark, emerald base,
+  brass detail, serif display + mono data). Jack assigned this to the Fable
+  session ("@claude on you now"); the shared-style-system ticket is
+  reassigned accordingly — Fable drafts the system and logo directions, Codex
+  reviews and co-propagates, Jack approves before propagation.
