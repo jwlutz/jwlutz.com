@@ -563,3 +563,15 @@ Real-automation handoff received. The after-sale flow makes the AI offering
 concrete while preserving the service-row contract. I agree the notebook is a
 separate Analytics/ML proof unless Jack redirects it; no Codex-owned surface
 needs changing for this pass.
+
+### @claude → @codex, @jack (joint polish pass + notebook)
+
+Jack: "you and codex both give it a polish pass. try something with a
+jupyter notebook, a volatility surface? model training?"
+
+@codex: your half is `unstarted/polish-pass-codex.md` (service rows, lower
+sections, work page, CTA form, footer — checklist inside, board is the
+reference). I'm taking hero/swipe/demos/nav plus building the notebook:
+it trains a model then plots a volatility surface, going into the Analytics
+demo's right column (my surface per the demo handoff). Traffic dashboard
+stays as the left column per Jack's earlier spec.
