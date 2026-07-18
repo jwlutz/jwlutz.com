@@ -1,9 +1,11 @@
 <!--
 	APPROVED SECTION — do not remove in refactors.
-	Jack approved and iterated on this split-view "swipe" on 2026-07-18; it is the
-	site's central metaphor per docs/consulting-decisions.md §23. If a restructure
-	needs to move or absorb it, amend §23 first. Content lives in
-	consultingSite.splitView in src/lib/content/consulting-prototype.ts.
+	Jack's Q1 ruling (docs/consulting-decisions.md §25, 2026-07-18): this swipe
+	is the demo element of the Websites service section. It auto-replays
+	(partial split → slides fully to the polished site, bounces, returns, loops)
+	and dragging interrupts the replay. Codex wires placement per
+	tickets services-railway-layout.md; component internals are Fable's surface.
+	Content lives in consultingSite.splitView in src/lib/content/consulting-prototype.ts.
 -->
 <script lang="ts">
 	import { onMount } from 'svelte';
@@ -11,13 +13,29 @@
 	import { track } from '$lib/analytics';
 
 	const content = consultingSite.splitView;
+
+	// Replay cycle (§25): hold a partial split, accelerate fully to the client
+	// site, bounce on impact, hold there, ease back, repeat. Any interaction
+	// pauses the loop; it resumes after RESUME_DELAY of idle.
+	const REPLAY_START = 62;
+	const HOLD_SPLIT = 1400;
+	const SLIDE = 1700;
+	const HOLD_SITE = 2600;
+	const RETURN = 1150;
+	const RESUME_DELAY = 5500;
+
 	let stage: HTMLElement;
-	let seam = $state(100);
+	let seam = $state(REPLAY_START);
 	let visible = $state(false);
 	let interacted = $state(false);
 	let reducedMotion = false;
 	let dragging = false;
 	let frame = 0;
+	let paused = false;
+	let lastInteraction = 0;
+	let phase: 'hold-split' | 'slide' | 'hold-site' | 'return' = 'hold-split';
+	let phaseStart = 0;
+	let returnFrom = 0;
 
 	function clampSeam(value: number) {
 		return Math.max(0, Math.min(100, value));
@@ -29,6 +47,8 @@
 	}
 
 	function markInteracted() {
+		paused = true;
+		lastInteraction = performance.now();
 		if (!interacted) {
 			interacted = true;
 			track('split_view_interact', { source: 'consulting_prototype' });
@@ -49,11 +69,15 @@
 	}
 
 	function onPointerMove(event: PointerEvent) {
-		if (dragging) seam = seamFromEvent(event);
+		if (dragging) {
+			seam = seamFromEvent(event);
+			lastInteraction = performance.now();
+		}
 	}
 
 	function onPointerUp() {
 		dragging = false;
+		lastInteraction = performance.now();
 		if (seam < 8) seam = 0;
 		else if (seam > 92) seam = 100;
 	}
@@ -68,23 +92,71 @@
 		markInteracted();
 	}
 
+	function easeInOutCubic(p: number) {
+		return p < 0.5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2;
+	}
+
+	// Accelerate into the edge, then two decaying rebounds — the §25 bounce.
+	function slideBounce(p: number) {
+		if (p < 0.5) {
+			const q = p / 0.5;
+			return REPLAY_START * (1 - q * q);
+		}
+		if (p < 0.78) {
+			const q = (p - 0.5) / 0.28;
+			return 8.5 * Math.sin(Math.PI * q);
+		}
+		if (p < 0.94) {
+			const q = (p - 0.78) / 0.16;
+			return 2.4 * Math.sin(Math.PI * q);
+		}
+		return 0;
+	}
+
 	onMount(() => {
 		reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-		const observer = new IntersectionObserver(([entry]) => { visible = entry.isIntersecting; }, { threshold: 0.35 });
+		if (reducedMotion) seam = 50;
+		const observer = new IntersectionObserver(([entry]) => {
+			visible = entry.isIntersecting;
+			// Re-enter the cycle by easing from wherever the seam is, not snapping.
+			if (visible && !paused && !dragging) {
+				phase = 'return';
+				returnFrom = seam;
+				phaseStart = 0;
+			}
+		}, { threshold: 0.35 });
 		observer.observe(stage);
 
-		let t = 0;
-		let last = 0;
-		function sway(now: number) {
-			if (!last) last = now;
-			if (visible && !interacted && !reducedMotion) {
-				t += (now - last) / 1000;
-				seam = 93 + Math.cos(t * 0.55) * 7;
+		function tick(now: number) {
+			frame = requestAnimationFrame(tick);
+			if (!visible || reducedMotion || dragging) {
+				phaseStart = 0;
+				return;
 			}
-			last = now;
-			frame = requestAnimationFrame(sway);
+			if (paused) {
+				if (now - lastInteraction < RESUME_DELAY) return;
+				paused = false;
+				phase = 'return';
+				returnFrom = seam;
+				phaseStart = now;
+			}
+			if (!phaseStart) phaseStart = now;
+			const t = now - phaseStart;
+			if (phase === 'hold-split') {
+				if (t >= HOLD_SPLIT) { phase = 'slide'; phaseStart = now; }
+			} else if (phase === 'slide') {
+				const p = Math.min(1, t / SLIDE);
+				seam = slideBounce(p);
+				if (p === 1) { phase = 'hold-site'; phaseStart = now; }
+			} else if (phase === 'hold-site') {
+				if (t >= HOLD_SITE) { phase = 'return'; returnFrom = seam; phaseStart = now; }
+			} else if (phase === 'return') {
+				const p = Math.min(1, t / RETURN);
+				seam = returnFrom + (REPLAY_START - returnFrom) * easeInOutCubic(p);
+				if (p === 1) { phase = 'hold-split'; phaseStart = now; }
+			}
 		}
-		frame = requestAnimationFrame(sway);
+		frame = requestAnimationFrame(tick);
 		return () => {
 			observer.disconnect();
 			cancelAnimationFrame(frame);

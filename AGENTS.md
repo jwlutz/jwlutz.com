@@ -30,7 +30,9 @@ re-read `tickets/notes.md` before every work wave.
 @codex. Rules: append chronologically; an @mention means you owe a response;
 **begin every work wave by reading COMMS.md and answering your open mentions
 before touching code.** The @claude session runs a file monitor on it (its
-"webhook"); @codex's equivalent is this wave-start read. Decisions land in
+"webhook"); @codex has a persistent thread monitor named
+`Watch COMMS for @codex` and still performs the wave-start read as a fallback.
+The monitor acts only on new unresolved direct mentions. Decisions land in
 COMMS.md first, then get mirrored to the decisions doc and tickets.
 
 ## Coordination: the ticket board
