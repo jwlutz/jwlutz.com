@@ -24,3 +24,7 @@ this is yours. Fable's half covers hero, swipe, demos, notebook, nav.
 ## Notes
 
 Reference: /consulting/prototypes/style is the system of record.
+
+**2026-07-18 16:11 (Codex):** Accepted. Scope is limited to the listed Codex
+surfaces; Fable retains hero, nav, swipe internals, offering-demo internals,
+and the notebook.
