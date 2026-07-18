@@ -34,7 +34,7 @@ export const actions = {
 		if (readField(data, 'company', 200)) {
 			return fail(400, {
 				success: false,
-				message: `We could not send that form. Email ${consultingSite.contactEmail} instead.`,
+				message: 'We could not send that form. Use the direct email link below instead.',
 				errors: { form: 'Submission rejected.' },
 				values
 			} satisfies ContactFormState);
@@ -56,7 +56,7 @@ export const actions = {
 		if (!apiKey || !from) {
 			return fail(503, {
 				success: false,
-				message: `The form is not connected in this preview yet. Email ${consultingSite.contactEmail} instead.`,
+				message: 'The form is not connected in this preview yet. Use the direct email link below instead.',
 				errors: { form: 'Email delivery is not configured.' },
 				values
 			} satisfies ContactFormState);
@@ -84,7 +84,7 @@ export const actions = {
 				console.error('Contact form email failed:', error.name ?? 'unknown Resend error');
 				return fail(502, {
 					success: false,
-					message: `The message did not send. Email ${consultingSite.contactEmail} instead.`,
+					message: 'The message did not send. Use the direct email link below instead.',
 					errors: { form: 'Email delivery failed.' },
 					values
 				} satisfies ContactFormState);
@@ -93,7 +93,7 @@ export const actions = {
 			console.error('Contact form email failed:', error instanceof Error ? error.name : 'unknown error');
 			return fail(502, {
 				success: false,
-				message: `The message did not send. Email ${consultingSite.contactEmail} instead.`,
+				message: 'The message did not send. Use the direct email link below instead.',
 				errors: { form: 'Email delivery failed.' },
 				values
 			} satisfies ContactFormState);

@@ -19,6 +19,9 @@ export type PrototypeCase = {
 	title: { lead: string; emphasis: string };
 	summary: string;
 	liveUrl: string;
+	capture: string;
+	captureAlt: string;
+	productImages?: { src: string; alt: string }[];
 	evidence: PrototypeEvidence[];
 	sections: { label: string; body: string }[];
 	responsibilities: string[];
@@ -106,17 +109,26 @@ export const consultingSite = {
 	workPreview: {
 		eyebrow: 'SELECTED WORK',
 		title: 'Built for the real world.',
-		body: 'Three different businesses, three different systems. Open the work or see how each one was designed, connected, and kept moving.',
+		body: 'Four working systems across commerce, cognitive training, and financial infrastructure. Open the work to see what each one required beyond the screen.',
 		cta: 'Explore the case studies',
 		projects: [
+			{
+				name: 'Candella Copytrade',
+				category: 'FINANCIAL INFRASTRUCTURE',
+				description: 'Real-money trade routing across connected brokerage accounts with visible risk and execution.',
+				url: 'https://candella.dev/copytrade',
+				host: 'candella.dev/copytrade',
+				image: '/consulting/prototypes/work/copytrade-landing.webp',
+				imageAlt: 'Candella Labs landing page introducing Candella Copytrade'
+			},
 			{
 				name: 'Candella Quant',
 				category: 'MARKET RESEARCH WORKSPACE',
 				description: 'Live charts, strategy research, backtests, and AI-assisted analysis in one modular workspace.',
 				url: 'https://candella.dev/quant',
 				host: 'candella.dev/quant',
-				image: '/consulting/prototypes/candella-quant-workspace.png',
-				imageAlt: 'Candella Quant workspace showing a Bitcoin chart and AI research panel'
+				image: '/consulting/prototypes/work/quant-landing.webp',
+				imageAlt: 'Candella Quant landing page showing its research workspace'
 			},
 			{
 				name: 'The Sparkling Shoe',
@@ -124,8 +136,8 @@ export const consultingSite = {
 				description: 'A mobile-ready storefront and commerce migration for a dance accessories company.',
 				url: 'https://thesparklingshoe.com',
 				host: 'thesparklingshoe.com',
-				image: '/consulting/prototypes/sparkling-live.png',
-				imageAlt: 'The Sparkling Shoe ecommerce homepage'
+				image: '/consulting/prototypes/work/tss-landing.webp',
+				imageAlt: 'The Sparkling Shoe ecommerce landing page'
 			},
 			{
 				name: 'MindLSN',
@@ -133,7 +145,7 @@ export const consultingSite = {
 				description: 'Seven adaptive drills, integrity checks, and one comparable measure of progress.',
 				url: 'https://mindlsn.com',
 				host: 'mindlsn.com',
-				image: '/consulting/prototypes/mindlsn-live.png',
+				image: '/consulting/prototypes/work/mindlsn-landing.webp',
 				imageAlt: 'MindLSN cognitive training product homepage'
 			}
 		]
@@ -150,7 +162,7 @@ export const consultingSite = {
 	lab: {
 		eyebrow: 'IN THE LAB / CLOSED BETA',
 		title: 'Candella Quant',
-		body: 'A modular workspace for live charts, strategy editing, backtests, and AI-assisted research. Active product development, not a finished case study yet.',
+		body: 'A modular workspace for live charts, strategy editing, backtests, and AI-assisted research, now in active closed-beta development.',
 		cta: 'View the beta page',
 		url: 'https://candella.dev/quant'
 	},
@@ -159,7 +171,7 @@ export const consultingSite = {
 		title: { lead: 'Bring us the messy version.', emphasis: 'We’ll find the first move.' },
 		body: 'A current site, a manual process, a spreadsheet, or a half-formed idea is enough. Choose the closest starting point and send it over.',
 		cta: 'Start an email',
-		emailLabel: 'jwlutz65@gmail.com',
+		emailLabel: 'Email us directly',
 		options: ['Website or product', 'AI workflow', 'Analytics or ML', 'Not sure yet']
 	}
 } as const;
@@ -173,6 +185,8 @@ export const prototypeCases: PrototypeCase[] = [
 		title: { lead: 'One trade.', emphasis: 'Sixteen brokerages.' },
 		summary: 'A real-money trading system that mirrors a lead trader across connected brokerage accounts while keeping risk and every execution visible.',
 		liveUrl: 'https://candella.dev/copytrade',
+		capture: '/consulting/prototypes/work/copytrade-landing.webp',
+		captureAlt: 'Candella Labs landing page with Candella Copytrade presented as a live product',
 		evidence: [
 			{ value: '16 brokerages', label: 'ONE CONNECTED EXECUTION NETWORK' },
 			{ value: '90% under ½ sec', label: 'MEASURED LEAD-TO-FOLLOWER ROUTING' }
@@ -193,6 +207,8 @@ export const prototypeCases: PrototypeCase[] = [
 		title: { lead: 'A score that', emphasis: 'learns with you.' },
 		summary: 'An adaptive cognitive-training product where drills, ratings, integrity checks, and the surrounding experience work as one coherent system.',
 		liveUrl: 'https://mindlsn.com',
+		capture: '/consulting/prototypes/work/mindlsn-landing.webp',
+		captureAlt: 'MindLSN landing page showing its cognitive drills and Mind Index product',
 		evidence: [
 			{ value: '7 adaptive drills', label: 'DIFFICULTY CHANGES WITH PERFORMANCE' },
 			{ value: '5 domains', label: 'ONE COMPARABLE MIND INDEX' }
@@ -213,6 +229,13 @@ export const prototypeCases: PrototypeCase[] = [
 		title: { lead: 'From site builder', emphasis: 'to commerce system.' },
 		summary: 'A complete commerce rebuild for a dance accessories company, connecting product presentation, Shopify, mobile shopping, analytics, and ongoing growth.',
 		liveUrl: 'https://thesparklingshoe.com',
+		capture: '/consulting/prototypes/work/tss-landing.webp',
+		captureAlt: 'The Sparkling Shoe ecommerce landing page with its current summer collection',
+		productImages: [
+			{ src: '/consulting/prototypes/sparkling-fresh.jpg', alt: 'Toe-tally Fresh pointe shoe inserts' },
+			{ src: '/consulting/prototypes/sparkling-puff.jpg', alt: 'The Perfect Puff rosin product' },
+			{ src: '/consulting/prototypes/sparkling-pouch.webp', alt: 'Purple Poppy dance shoe pouch' }
+		],
 		evidence: [
 			{ value: 'Squarespace → Shopify', label: 'COMPLETE COMMERCE MIGRATION' },
 			{ value: 'Built for mobile', label: 'PRODUCT DISCOVERY THROUGH CHECKOUT' }

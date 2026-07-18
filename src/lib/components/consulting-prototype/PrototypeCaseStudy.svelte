@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import type { PrototypeCase } from '$lib/content/consulting-prototype';
-	import PrototypeWorkVisual from './PrototypeWorkVisual.svelte';
+	import PrototypeCaseMedia from './PrototypeCaseMedia.svelte';
 
 	let { project, compact = false }: { project: PrototypeCase; compact?: boolean } = $props();
 	let article: HTMLElement;
@@ -31,7 +31,7 @@
 				<div><span>CASE STUDY {project.index} · CHAPTER</span><b>{String(activeChapter + 1).padStart(2, '0')} / {String(chapterTotal).padStart(2, '0')}</b></div>
 				<h3>{project.name}</h3>
 			</div>
-			<PrototypeWorkVisual variant={project.slug} stage={activeChapter} />
+			<PrototypeCaseMedia {project} stage={activeChapter} />
 			<div class="evidence-grid">
 				{#each project.evidence as evidence}
 					<div><strong>{evidence.value}</strong><span>{evidence.label}</span></div>

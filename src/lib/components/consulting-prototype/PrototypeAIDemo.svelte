@@ -1,22 +1,23 @@
 <!--
-	AI OFFERING DEMO — a real lead-outreach automation, built then run.
-	Jack's direction (2026-07-18): "make it automating like finding leads
-	through different social medias and making personalized outreach and
-	following up." Three social sources fan into AI qualification, a
-	personalized draft, a human approval in Slack, the send, and an automatic
-	follow-up loop back to drafting. `playing` contract per Codex's wiring.
+	AI OFFERING DEMO — the full lead engine, built then run.
+	Jack's spec (2026-07-18): scrape TikTok / Instagram / X / LinkedIn /
+	Reddit / company pages → research leads with Perplexity → rank on criteria
+	→ store in Supabase → Claude writes personalized outreach → Gmail sends →
+	no-reply loops to a Claude follow-up → replies log to Notion for human
+	reading → outcomes feed back into the ranking. The Notion node is the
+	human checkpoint. `playing` contract per Codex's wiring.
 -->
 <script lang="ts">
-	import { siInstagram, siX, siGmail } from 'simple-icons';
+	import { siTiktok, siInstagram, siX, siReddit, siPerplexity, siSupabase, siClaude, siGmail, siNotion } from 'simple-icons';
 
-	// build: sources + chain assemble · run: a lead flows through · done: logged
 	const TIMELINE: [number, string][] = [
-		[0, 'b1'], [400, 'b2'], [800, 'b3'], [1300, 'b4'], [1800, 'b5'], [2300, 'b6'], [2800, 'b7'],
-		[4200, 'r1'], [4450, 'r2'], [4700, 'r3'], [5200, 'r4'], [6000, 'r5'],
-		[7200, 'approve'], [8000, 'r6'], [8700, 'r7'], [9400, 'done'], [11400, 'idle']
+		[0, 'b1'], [300, 'b2'], [600, 'b3'], [900, 'b4'], [1200, 'b5'], [1500, 'b6'],
+		[2000, 'b7'], [2400, 'b8'], [2800, 'b9'], [3200, 'b10'], [3600, 'b11'], [4000, 'b12'], [4400, 'b13'],
+		[5600, 'r1'], [6200, 'r2'], [6800, 'r3'], [7300, 'r4'], [7800, 'r5'],
+		[8400, 'r6'], [9100, 'r7'], [9800, 'r8'], [10500, 'r9'], [11200, 'done'], [13600, 'idle']
 	];
-	const CYCLE = 12000;
-	const ORDER = ['idle', 'b1', 'b2', 'b3', 'b4', 'b5', 'b6', 'b7', 'r1', 'r2', 'r3', 'r4', 'r5', 'approve', 'r6', 'r7', 'done'];
+	const CYCLE = 14200;
+	const ORDER = ['idle', 'b1', 'b2', 'b3', 'b4', 'b5', 'b6', 'b7', 'b8', 'b9', 'b10', 'b11', 'b12', 'b13', 'r1', 'r2', 'r3', 'r4', 'r5', 'r6', 'r7', 'r8', 'r9', 'done'];
 
 	let { playing = false }: { playing?: boolean } = $props();
 	let phase = $state('idle');
@@ -25,6 +26,15 @@
 	let reducedMotion = $state(false);
 
 	const past = (p: string) => ORDER.indexOf(phase) >= ORDER.indexOf(p);
+
+	const sources = [
+		{ icon: siTiktok, brand: '#f0efe9', name: 'TikTok', b: 'b1' },
+		{ icon: siInstagram, brand: '#E4405F', name: 'Instagram', b: 'b2' },
+		{ icon: siX, brand: '#f0efe9', name: 'X', b: 'b3' },
+		{ icon: null, brand: '', name: 'LinkedIn', b: 'b4' },
+		{ icon: siReddit, brand: '#FF4500', name: 'Reddit', b: 'b5' },
+		{ icon: null, brand: '', name: 'Company pages', b: 'b6', glyph: '⌂' }
+	];
 
 	$effect(() => {
 		reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -43,61 +53,83 @@
 	});
 </script>
 
-<div class="demo" class:playing role="img" aria-label="A lead-outreach automation being built, then run: Instagram, X, and LinkedIn feed new leads to AI qualification, a personalized outreach draft is written, the owner approves it in Slack, it sends, and unanswered leads loop back for an automatic follow-up.">
-	<header><span>AUTOMATION / LEAD OUTREACH</span><small class:on={past('done')}>{past('done') ? 'run complete · logged' : past('r1') ? 'running' : 'building'}</small></header>
+<div class="demo" class:playing role="img" aria-label="A complete lead engine being built, then run: TikTok, Instagram, X, LinkedIn, Reddit, and company pages are scraped, Perplexity researches each lead, they are ranked on your criteria and stored in Supabase, Claude writes personalized outreach that Gmail sends, unanswered leads loop through a Claude follow-up, replies log to Notion for the owner to read, and outcomes feed back into the ranking.">
+	<header><span>AUTOMATION / LEAD ENGINE</span><small class:on={past('done')}>{past('done') ? 'run complete · ranking updated' : past('r1') ? 'running' : 'building'}</small></header>
 
 	<div class="canvas">
 		<svg class="edges" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
 			<g class="wire">
-				<polyline class:on={past('b4')} points="25,13 28,13 28,35 31,35" />
-				<polyline class:on={past('b4')} points="25,39 31,39" />
-				<polyline class:on={past('b4')} points="25,65 28,65 28,43 31,43" />
-				<polyline class:on={past('b5')} points="57,37 60,37 60,14 63,14" />
-				<polyline class:on={past('b6')} points="76,22 76,40" />
-				<polyline class:on={past('b7')} points="76,58 76,76" />
-				<polyline class="loop" class:on={past('b7')} points="63,86 51,86 51,14 63,14" />
+				<polyline class:on={past('b7')} points="17,8 20,8" />
+				<polyline class:on={past('b7')} points="17,24 20,24" />
+				<polyline class:on={past('b7')} points="17,40 20,40" />
+				<polyline class:on={past('b7')} points="17,56 20,56" />
+				<polyline class:on={past('b7')} points="17,72 20,72" />
+				<polyline class:on={past('b7')} points="17,88 20,88" />
+				<polyline class:on={past('b7')} points="20,8 20,88" />
+				<polyline class:on={past('b7')} points="20,14 23,14" />
+				<polyline class:on={past('b8')} points="33,24 33,40" />
+				<polyline class:on={past('b9')} points="33,56 33,72" />
+				<polyline class:on={past('b10')} points="44,46 47,46 47,14 50,14" />
+				<polyline class:on={past('b11')} points="60,24 60,40" />
+				<polyline class:on={past('b12')} points="60,56 60,72" />
+				<polyline class="loop" class:on={past('b12')} points="71,78 73.5,78 73.5,48 71,48" />
+				<polyline class:on={past('b13')} points="71,44 77,44" />
+				<polyline class="loop" class:on={past('b13')} points="87,56 87,94 36,94 36,56" />
 			</g>
 			<g class="live">
-				<polyline class:on={past('r4')} points="25,13 28,13 28,35 31,35" />
-				<polyline class:on={past('r4')} points="25,39 31,39" />
-				<polyline class:on={past('r4')} points="25,65 28,65 28,43 31,43" />
-				<polyline class:on={past('r5')} points="57,37 60,37 60,14 63,14" />
-				<polyline class:on={past('approve')} points="76,22 76,40" />
-				<polyline class:on={past('r6')} points="76,58 76,76" />
-				<polyline class="loop" class:on={past('r7')} points="63,86 51,86 51,14 63,14" />
+				<polyline class:on={past('r2')} points="20,8 20,88" />
+				<polyline class:on={past('r2')} points="20,14 23,14" />
+				<polyline class:on={past('r3')} points="33,24 33,40" />
+				<polyline class:on={past('r4')} points="33,56 33,72" />
+				<polyline class:on={past('r5')} points="44,46 47,46 47,14 50,14" />
+				<polyline class:on={past('r6')} points="60,24 60,40" />
+				<polyline class:on={past('r7')} points="60,56 60,72" />
+				<polyline class="loop" class:on={past('r7')} points="71,78 73.5,78 73.5,48 71,48" />
+				<polyline class:on={past('r8')} points="71,44 77,44" />
+				<polyline class="loop" class:on={past('r9')} points="87,56 87,94 36,94 36,56" />
 			</g>
 		</svg>
 
-		<div class="node src" class:on={past('b1')} class:hit={past('r1')} style="left:3%;top:6%">
-			<i class="logo" style="--brand:#E4405F">{@html siInstagram.svg}</i>
-			<small>SOURCE</small><strong>Instagram</strong><span>new followers · comments</span>
+		{#each sources as s, i}
+			<div class="node src" class:on={past(s.b)} class:hit={past('r1')} style={`left:2%;top:${2 + i * 16}%;--rd:${i * 0.12}s`}>
+				<i class="logo">{#if s.icon}<span style={`--brand:${s.brand}`}>{@html s.icon.svg}</span>{:else if s.glyph}<em>{s.glyph}</em>{:else}<img src="/consulting/prototypes/brands/linkedin.png" alt="" />{/if}</i>
+				<strong>{s.name}</strong>
+			</div>
+		{/each}
+
+		<div class="node ai" class:on={past('b7')} class:hit={past('r2')} style="left:23%;top:8%">
+			<i class="logo"><span style="--brand:#1FB8CD">{@html siPerplexity.svg}</span></i>
+			<small>RESEARCH</small><strong>Perplexity</strong><span>who are they, what do they need</span>
 		</div>
-		<div class="node src" class:on={past('b2')} class:hit={past('r2')} style="left:3%;top:32%">
-			<i class="logo" style="--brand:#f0efe9">{@html siX.svg}</i>
-			<small>SOURCE</small><strong>X</strong><span>replies · mentions</span>
+		<div class="node ai" class:on={past('b8')} class:hit={past('r3')} style="left:23%;top:40%">
+			<i class="logo"><em class="glyph">✦</em></i>
+			<small>RANK</small><strong>Score on your criteria</strong><span>fit · intent · timing</span>
 		</div>
-		<div class="node src" class:on={past('b3')} class:hit={past('r3')} style="left:3%;top:58%">
-			<i class="logo"><img src="/consulting/prototypes/brands/linkedin.png" alt="" /></i>
-			<small>SOURCE</small><strong>LinkedIn</strong><span>connections · posts</span>
+		<div class="node act" class:on={past('b9')} class:hit={past('r4')} style="left:23%;top:72%">
+			<i class="logo"><span style="--brand:#3FCF8E">{@html siSupabase.svg}</span></i>
+			<small>STORE</small><strong>Supabase</strong><span>every lead, deduped</span><i class:done={past('r4')}>✓</i>
 		</div>
 
-		<div class="node ai" class:on={past('b4')} class:hit={past('r4')} style="left:31%;top:28%">
-			<small>AI STEP</small><strong>Qualify the lead</strong><span>fits your customer profile?</span>
+		<div class="node ai" class:on={past('b10')} class:hit={past('r5')} style="left:50%;top:8%">
+			<i class="logo"><span style="--brand:#D97757">{@html siClaude.svg}</span></i>
+			<small>WRITE</small><strong>Personal outreach</strong><span>their work, your voice</span>
 		</div>
-		<div class="node ai" class:on={past('b5')} class:hit={past('r5')} style="left:63%;top:6%">
-			<small>AI STEP</small><strong>Personal outreach</strong><span>references their post · your voice</span>
+		<div class="node act" class:on={past('b11')} class:hit={past('r6')} style="left:50%;top:40%">
+			<i class="logo"><span style="--brand:#EA4335">{@html siGmail.svg}</span></i>
+			<small>SEND</small><strong>Gmail</strong><span>from your address</span><i class:done={past('r6')}>✓</i>
 		</div>
-		<div class="node human" class:on={past('b6')} class:hit={past('approve')} style="left:63%;top:40%">
-			<i class="logo"><img src="/consulting/prototypes/brands/slack.png" alt="" /></i>
-			<small>HUMAN CHECKPOINT</small><strong>You approve</strong><span>one tap in #leads</span>
-			<b class="chip" class:pressed={past('approve')}>Approve</b>
-		</div>
-		<div class="node act" class:on={past('b7')} class:hit={past('r6')} style="left:63%;top:76%">
-			<i class="logo" style="--brand:#EA4335">{@html siGmail.svg}</i>
-			<small>ACTION</small><strong>Send + log</strong><span>DM or email · CRM updated</span><i class:done={past('r6')}>✓</i>
+		<div class="node ai" class:on={past('b12')} class:hit={past('r7')} style="left:50%;top:72%">
+			<i class="logo"><span style="--brand:#D97757">{@html siClaude.svg}</span></i>
+			<small>FOLLOW UP</small><strong>Personal follow-up</strong><span>no reply in 3 days</span>
 		</div>
 
-		<div class="loop-label" class:on={past('r7')}>NO REPLY? FOLLOW UP IN 3 DAYS ↺</div>
+		<div class="node human" class:on={past('b13')} class:hit={past('r8')} style="left:77%;top:34%">
+			<i class="logo"><span style="--brand:#f0efe9">{@html siNotion.svg}</span></i>
+			<small>HUMAN CHECKPOINT</small><strong>Replies land in Notion</strong><span>you read every one</span>
+		</div>
+
+		<div class="loop-label ll-followup" class:on={past('r7')}>NO REPLY ↺</div>
+		<div class="loop-label ll-feedback" class:on={past('r9')}>REPLIES TUNE THE RANKING ↺</div>
 	</div>
 
 	<footer><span>Your tools, wired together, run on your rules.</span><small class:on={past('done')}><i>✓</i>every run logged</small></footer>
@@ -111,33 +143,38 @@
 	.demo>header small.on{color:#b49a67}
 	.canvas{position:relative;flex:1;min-height:0;background-image:radial-gradient(rgba(240,239,233,.07) 1px,transparent 1px);background-size:22px 22px}
 	.edges{position:absolute;inset:0;width:100%;height:100%}
-	.wire polyline,.live polyline{fill:none;stroke-width:1.5;vector-effect:non-scaling-stroke}
-	.wire polyline{stroke:rgba(240,239,233,.16);opacity:0;transition:opacity .45s ease}
+	.wire polyline,.live polyline{fill:none;stroke-width:1.4;vector-effect:non-scaling-stroke}
+	.wire polyline{stroke:rgba(240,239,233,.15);opacity:0;transition:opacity .45s ease}
 	.wire polyline.on{opacity:1}
 	.live polyline{stroke:#b49a67;opacity:0;transition:opacity .35s ease}
 	.live polyline.on{opacity:.85}
-	.wire .loop{stroke-dasharray:3 3;stroke:rgba(240,239,233,.12)}
+	.wire .loop{stroke-dasharray:3 3;stroke:rgba(240,239,233,.11)}
 	.live .loop{stroke-dasharray:3 3}
-	.node{position:absolute;width:26%;min-height:52px;padding:10px 12px;border:1px solid rgba(240,239,233,.16);border-radius:2px;background:#121613;box-shadow:0 1px 0 rgba(255,255,255,.05) inset,0 14px 30px rgba(0,0,0,.3);opacity:0;transform:translateY(8px) scale(.96);transition:opacity .4s ease,transform .4s ease,border-color .35s ease}
-	.node.src{width:22%;min-height:44px;padding:8px 10px}
+	.node{position:absolute;width:21%;min-height:46px;padding:9px 11px;border:1px solid rgba(240,239,233,.16);border-radius:2px;background:#121613;box-shadow:0 1px 0 rgba(255,255,255,.05) inset,0 12px 26px rgba(0,0,0,.3);opacity:0;transform:translateY(8px) scale(.96);transition:opacity .4s ease,transform .4s ease,border-color .35s ease}
+	.node.src{width:15%;min-height:0;padding:6px 8px;display:flex;align-items:center;gap:6px;border-left:2px solid #774633;transition-delay:0s}
+	.node.src.hit{transition-delay:var(--rd,0s)}
+	.node.src strong{margin:0;font-size:7.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+	.node.src .logo{position:static;width:11px;height:11px;flex:0 0 auto}
 	.node.on{opacity:1;transform:none}
 	.node.hit{border-color:rgba(180,154,103,.75)}
-	.node .logo{position:absolute;right:9px;top:9px;width:14px;height:14px;display:grid;place-items:center;font-style:normal}
-	.node .logo :global(svg){width:100%;height:100%;fill:var(--brand,#dedfda)}
+	.node .logo{position:absolute;right:8px;top:8px;width:13px;height:13px;display:grid;place-items:center;font-style:normal}
+	.node .logo span{display:block;width:100%;height:100%}
+	.node .logo :global(svg){display:block;width:100%;height:100%;fill:var(--brand,#dedfda)}
 	.node .logo img{width:100%;height:100%;display:block;border-radius:2px}
-	.node small{display:block;margin-bottom:5px;font:500 6px var(--proto-mono);letter-spacing:.12em;color:#666d66}
+	.node .logo em,.node .logo .glyph{color:#b49a67;font-style:normal;font-size:11px;line-height:1}
+	.node small{display:block;margin-bottom:4px;font:500 6px var(--proto-mono);letter-spacing:.12em;color:#666d66}
 	.node.hit small{color:#b49a67}
-	.node strong{display:block;color:#e6e8e1;font:500 10.5px var(--proto-sans)}
-	.node span{display:block;margin-top:4px;color:#82887f;font-size:7.5px}
-	.node.src{border-left:2px solid #774633}
+	.node strong{display:block;color:#e6e8e1;font:500 9.5px var(--proto-sans)}
+	.node span{display:block;margin-top:3px;color:#82887f;font-size:7px}
 	.node.ai{border-left:2px solid #2d8064}
+	.node.act{border-left:2px solid #6e6553}
 	.node.human{border-left:2px solid #b49a67;background:#15130d}
-	.node.act i:not(.logo){position:absolute;right:10px;bottom:9px;color:transparent;font-style:normal;font-size:10px;transition:color .35s ease}
+	.node.act i:not(.logo){position:absolute;right:9px;bottom:8px;color:transparent;font-style:normal;font-size:9px;transition:color .35s ease}
 	.node.act i.done{color:#b49a67}
-	.chip{display:inline-block;margin-top:8px;padding:6px 10px;border-radius:2px;background:#dad6cc;color:#171914;font:500 8px var(--proto-sans);transition:transform .18s ease,background .18s ease}
-	.chip.pressed{transform:scale(.94);background:#b49a67}
-	.loop-label{position:absolute;left:31%;top:88%;color:transparent;font:500 6px var(--proto-mono);letter-spacing:.1em;transition:color .4s ease}
+	.loop-label{position:absolute;color:transparent;font:500 5.5px var(--proto-mono);letter-spacing:.1em;transition:color .4s ease}
 	.loop-label.on{color:#8d8571}
+	.ll-followup{left:63%;top:63.5%}
+	.ll-feedback{left:40%;top:95.5%}
 	.demo>footer{flex:0 0 44px;padding:0 20px;display:flex;align-items:center;justify-content:space-between;border-top:1px solid rgba(240,239,233,.09);background:#101411}
 	.demo>footer span{color:#9b9d98;font-size:10px;font-style:italic;font-family:var(--proto-display)}
 	.demo>footer small{display:flex;gap:6px;align-items:center;color:transparent;font:500 7px var(--proto-mono);letter-spacing:.1em;transition:color .4s ease}
@@ -145,15 +182,15 @@
 	.demo>footer small i{font-style:normal;color:inherit}
 	.demo>footer small.on i{color:#b49a67}
 	.progress{position:absolute;left:0;right:0;bottom:0;height:2px;background:#b49a67;transform:scaleX(0);transform-origin:left}
-	.playing .progress{animation:flow-progress 12s linear infinite}
+	.playing .progress{animation:flow-progress 14.2s linear infinite}
 	@keyframes flow-progress{to{transform:scaleX(1)}}
 	@media(max-width:680px){
-		.demo{height:520px}
-		.node{width:28%;padding:8px 9px;min-height:40px}
-		.node.src{width:24%}
-		.node strong{font-size:8.5px}
+		.demo{height:560px}
+		.node{width:23%;padding:7px 8px;min-height:40px}
+		.node.src{width:16%}
+		.node strong{font-size:7.5px}
 		.node span{display:none}
-		.loop-label{font-size:5px}
+		.loop-label{display:none}
 		.demo>footer span{font-size:8.5px}
 	}
 	@media(prefers-reduced-motion:reduce){

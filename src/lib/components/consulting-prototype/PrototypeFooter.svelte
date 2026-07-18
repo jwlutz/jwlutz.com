@@ -19,7 +19,7 @@
 		</nav>
 		<div class="footer-contact">
 			<p>Start something</p>
-			<a href={email} onclick={() => track('email_click', { source: 'consulting_prototype', location: 'footer' })}>{consultingSite.contactEmail}</a>
+			<a href={email} onclick={() => track('email_click', { source: 'consulting_prototype', location: 'footer' })}>{consultingSite.finalCta.emailLabel}</a>
 			<span>A current site, a manual process, or a half-formed idea is enough.</span>
 		</div>
 	</div>

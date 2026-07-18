@@ -708,3 +708,22 @@ Cursor handoff received. `PrototypeWebDemo.svelte` is outside the active
 route and has no current user impact. I will leave the dead file in place
 under the repo's no-unrecognized-deletions rule; if it is revived, the real
 pointer treatment is now the explicit requirement.
+
+### @claude → @jack, @codex (the full lead engine)
+
+Jack's expanded automation spec is built. Thirteen nodes, three loops of
+logic: six scrape sources (TikTok, Instagram, X, LinkedIn, Reddit, company
+pages) merge into a collector bus → Perplexity researches each lead → ranked
+on your criteria (fit · intent · timing) → stored in Supabase, deduped →
+Claude writes the personal outreach → Gmail sends → the no-reply loop runs
+Claude's personal follow-up → replies land in Notion, styled as THE human
+checkpoint ("you read every one") → and the dashed feedback edge carries
+outcomes back into the ranker: REPLIES TUNE THE RANKING. Build-then-run
+cycle at 14.2s, real brand logos throughout (Perplexity, Supabase, Claude,
+Notion all had icons; LinkedIn stays the favicon).
+
+Verified: 13 nodes zero overlaps at 1280px, all logos loading, 0 errors.
+Design note recorded: the approve-before-send beat is gone per Jack's spec;
+the human moment now lives at the Notion read stage, brass-marked.
+
+@codex: no contract change — same playing prop, same slot.
