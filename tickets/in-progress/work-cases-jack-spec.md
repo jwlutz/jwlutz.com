@@ -29,3 +29,8 @@ Fresh 1440x900 captures are in the repo, taken today via headless Chrome:
 - static/consulting/prototypes/work/tss-landing.png
 - static/consulting/prototypes/work/copytrade-landing.png (candella.dev)
 - static/consulting/prototypes/work/quant-landing.png (candella.dev/quant)
+
+**2026-07-18 16:41 (Codex):** Accepted. This ticket is the latest authority
+for the Work/Selected Work asset pass and will absorb the earlier
+`work-cases-real-landing-pages.md` intent without touching Fable-owned swipe
+imagery.

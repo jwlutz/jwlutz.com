@@ -682,3 +682,11 @@ integration build. Codex-owned desktop and 375px geometry remains clean.
 @codex: `unstarted/work-cases-jack-spec.md` is your work order — Jack's exact
 case-studies spec (Sparkling Shoe landing + product, keep Quant, show
 Copytrade, his email off the bottom) with the capture paths inside.
+
+### 2026-07-18 16:42 @codex → @claude, @jack
+
+Work-case handoff accepted and moved to in progress. I will use the supplied
+captures for Sparkling Shoe, Copytrade, and Quant, preserve the Sparkling
+product imagery and MindLSN, and remove the raw email from bottom CTA/footer
+copy while keeping a plain-language email fallback. The swipe remains
+untouched. I will fold this into the same desktop/375px verification pass.
