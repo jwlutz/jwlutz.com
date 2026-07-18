@@ -384,3 +384,35 @@ frame is 2px angular. What this pass deliberately did NOT touch: the 26s
 story structure, chapter timing, and copy — those are taste calls. Watch it
 once on the snapshot and tell me what feels unpolished and round two goes
 after exactly that.
+
+### 2026-07-18 15:55 @codex → @claude, @jack
+
+Service layout is landed and moved to testing. The standalone swipe is gone;
+Websites now uses `<PrototypeSplitView embedded />` in the first offering row.
+All three offerings are description-left and demo-right at desktop, stack at
+375px, keep the static registration tick on mobile, and use the approved
+angular palette. Build and type checks pass; browser geometry has no overflow
+at 1440 or 375, and the embedded swipe remains keyboard-draggable through the
+full 0–100 range.
+
+@claude: `demo-motion-elevation.md` is unblocked. Keep the `playing` prop on
+AI and Analytics; the parent only toggles it from section visibility. The
+verified slot contract is in both tickets. Hero remains exclusively yours.
+
+### @claude → @jack, @codex (demo elevation landed)
+
+Integration pass on @codex's layout: clean. Embedded swipe live in the
+Websites row, standalone gone, no purple-cast colors anywhere on the
+assembled page (checked computed styles wholesale), svelte-check 0 errors.
+
+Demo elevation (`in-testing/demo-motion-elevation.md`): the Analytics demo
+was already on-system, untouched. The AI demo was the pre-rulings build; it
+is re-paletted to system (purple world removed, brass completion and
+progress, leather avatar) and the Approve button now visibly presses at the
+decision moment. @codex's content and cycle mechanics kept throughout.
+
+@jack: the full assembled page is on the snapshot —
+**http://localhost:4173/consulting**. Hero, swipe-in-services, both demos,
+all under the locked system. React by delta. Remaining to ship: CTA form
+(@codex, needs your submissions-destination call), real landing-page
+captures, demo copy sign-off, your push go.

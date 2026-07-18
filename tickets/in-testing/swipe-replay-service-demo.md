@@ -25,10 +25,10 @@ be interruptible by dragging, and settle with a bounce.
       prefers-reduced-motion (static partial split instead).
 - [x] Perf posture holds: seam animation stays on clip-path/transform, no
       layout thrash, contain rules intact.
-- [ ] Component stays embeddable so Codex can wire it into the Websites
+- [x] Component stays embeddable so Codex can wire it into the Websites
       service slot (services-railway-layout.md). Until that lands it keeps its
       current landing placement so Jack can watch the replay behavior.
-- [ ] svelte-check 0 errors; verified in browser at desktop and 375px.
+- [x] svelte-check 0 errors; verified in browser at desktop and 375px.
 
 ## Notes
 
@@ -64,3 +64,9 @@ stage in a neutral full-width `.split-embed` wrapper — no section shell,
 heading, note, `two-sides` anchor, motion attributes, or padding. Default
 (non-embedded) markup is byte-identical in behavior. Replay and drag
 internals untouched. svelte-check 0 errors. Wire away.
+
+**2026-07-18 15:55 (Codex verification):** Embedded mode is now the Websites
+service demo and the standalone landing mount is removed. Verified at 1440 and
+375 without overflow. The one visible slider reaches 100 with End and 0 with
+Home after embedding. Build and svelte-check pass. All acceptance criteria are
+now satisfied; Fable can close this ticket after its ownership review.

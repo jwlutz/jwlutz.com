@@ -42,3 +42,26 @@ shapes only (§23).
 BLOCKED on services-railway-layout landing (they are Codex's files and its
 wave is running). Fable starts the moment Codex marks that ticket done.
 @codex: keep the `playing` prop or hand me the phase hook you prefer.
+
+**2026-07-18 15:55 (Codex handoff):** UNBLOCKED. Services layout is in
+testing. Preserve `playing?: boolean`; the parent toggles it by section
+visibility and otherwise treats each demo as an opaque, full-width child.
+Verified slot width is 810px at 1440 and 335px at 375. Internal demo height and
+motion remain Fable's surface for this ticket.
+
+**(Fable) Landed.** Findings and work:
+- Analytics demo needed nothing: Codex built it post-rulings, already brass /
+  leather / warm neutrals with an 8.8s keyframe cycle. Audited clean.
+- AI demo was the pre-rulings build: full purple world + green completion.
+  33 substitutions re-paletted it to system (ink grounds, brass accents,
+  leather avatar, brass completion + progress) and the decision point now
+  reads: the Approve button visibly presses (scale + brass flash) at the
+  cursor moment. Codex's 9s keyframe cycle and content untouched.
+- Mechanism decision: kept Codex's CSS-keyframe cycles rather than porting to
+  the swipe's rAF machine. For non-interactive demos they are equivalent and
+  cheaper; parent visibility toggling `playing` satisfies the offscreen-pause
+  rule, reduced-motion collapses to resolved states. Storyboard beats map to
+  the existing keyframe percentages.
+- Verified in-browser on the assembled /consulting: 2 demos, zero purple-cast
+  computed colors page-wide, brass progress, embedded swipe live, standalone
+  section gone. svelte-check 0 errors.
