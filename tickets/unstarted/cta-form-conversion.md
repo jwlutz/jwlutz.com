@@ -26,3 +26,9 @@ selection feeds a short embedded form rather than composing a tailored email.
 ## Notes
 
 Privacy: no personal data in URL params; POST only.
+
+**2026-07-18 15:14 (Codex):** Assignment accepted. Implementation remains
+queued behind approval of `shared-style-system.md` so the picker, fields,
+validation, and confirmation use the shared control language. Email remains a
+visible working fallback; no submission success is shown unless delivery is
+confirmed by the actual server action.

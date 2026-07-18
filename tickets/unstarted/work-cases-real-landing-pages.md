@@ -20,8 +20,8 @@ landing pages, not simulations.
       so the perf posture holds.
 - [ ] The swipe's client pane keeps its abstract treatment — this ticket does
       not touch it.
-- [ ] Q7 (COMMS) may change the Sparkling Shoe answer — if Jack archives the
-      case, apply his ruling before shipping this.
+- [x] Q7 resolved: keep The Sparkling Shoe public and use the current live
+      landing page; Jack confirmed the live site is entirely our work.
 
 ## Notes
 
