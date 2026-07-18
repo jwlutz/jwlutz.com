@@ -4,7 +4,6 @@
 	import { consultingSite } from '$lib/content/consulting-prototype';
 	import PrototypeNav from './PrototypeNav.svelte';
 	import PrototypeThroughlineStory from './PrototypeThroughlineStory.svelte';
-	import PrototypeSplitView from './PrototypeSplitView.svelte';
 	import PrototypeOperatingLoop from './PrototypeOperatingLoop.svelte';
 	import PrototypeLowerSections from './PrototypeLowerSections.svelte';
 	import PrototypeFooter from './PrototypeFooter.svelte';
@@ -66,8 +65,6 @@
 
 	<main id="main-content">
 		<div id="throughline"><PrototypeThroughlineStory storageKey="lcg_editorial_story_seen" {workHref} /></div>
-
-		<PrototypeSplitView />
 
 		<PrototypeOperatingLoop />
 

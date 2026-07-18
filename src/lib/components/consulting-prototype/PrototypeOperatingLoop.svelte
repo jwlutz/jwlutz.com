@@ -2,7 +2,7 @@
 	import { onMount } from 'svelte';
 	import { siGoogleanalytics, siMake, siReplit, siZapier } from 'simple-icons';
 	import { consultingSite } from '$lib/content/consulting-prototype';
-	import PrototypeWebDemo from './PrototypeWebDemo.svelte';
+	import PrototypeSplitView from './PrototypeSplitView.svelte';
 	import PrototypeAIDemo from './PrototypeAIDemo.svelte';
 	import PrototypeAnalyticsDemo from './PrototypeAnalyticsDemo.svelte';
 
@@ -80,7 +80,7 @@
 
 					<div class="service-demo" data-motion-item>
 						{#if index === 0}
-							<PrototypeWebDemo playing={visibleServices[index]} />
+							<PrototypeSplitView embedded />
 						{:else if index === 1}
 							<PrototypeAIDemo playing={visibleServices[index]} />
 						{:else}
