@@ -16,7 +16,7 @@ export type PrototypeCase = {
 	index: string;
 	name: string;
 	category: string;
-	title: string;
+	title: { lead: string; emphasis: string };
 	summary: string;
 	liveUrl: string;
 	evidence: PrototypeEvidence[];
@@ -57,12 +57,12 @@ export const consultingSite = {
 		eyebrow: 'WHAT WE BUILD AND RUN',
 		title: 'Judgment first. Then leverage.',
 		body: 'The tools change. The job does not: understand the business, make the right thing, and remain accountable after it ships.',
-		toolNote: 'We use some of these tools too. What you are buying is judgment and ownership—not a preference for one platform.',
+		toolNote: 'We use some of these tools too. What you are buying is judgment and ownership, not a preference for one platform.',
 		items: [
 			{
 				index: '01',
 				title: 'Websites and products',
-				headline: 'Fast tools. Human judgment.',
+				headline: { lead: 'Fast tools.', emphasis: 'Human judgment.' },
 				body: 'We use modern tools to move quickly. A person still reads every line, tests every path, and owns the release.',
 				detail: 'DESIGN · DEVELOPMENT · COMMERCE · PRODUCTS',
 				features: [
@@ -76,7 +76,7 @@ export const consultingSite = {
 			{
 				index: '02',
 				title: 'AI integrations',
-				headline: 'Automate the handoff. Keep the judgment.',
+				headline: { lead: 'Automate the handoff.', emphasis: 'Keep the judgment.' },
 				body: 'We connect AI to the work you already do, keeping context attached and putting a person at the decisions that matter.',
 				detail: 'INTEGRATIONS · AUTOMATION · INTERNAL TOOLS · AGENTS',
 				features: [
@@ -90,7 +90,7 @@ export const consultingSite = {
 			{
 				index: '03',
 				title: 'ML and analytics',
-				headline: 'Measure what changes the decision.',
+				headline: { lead: 'Measure what changes', emphasis: 'the decision.' },
 				body: 'We start with a business question, find the evidence that answers it, and carry the result through to the next useful action.',
 				detail: 'MEASUREMENT · MACHINE LEARNING · EXPERIMENTS · GROWTH',
 				features: [
@@ -150,7 +150,7 @@ export const consultingSite = {
 	lab: {
 		eyebrow: 'IN THE LAB / CLOSED BETA',
 		title: 'Candella Quant',
-		body: 'A modular workspace for live charts, strategy editing, backtests, and AI-assisted research. Active product development—not a finished case study yet.',
+		body: 'A modular workspace for live charts, strategy editing, backtests, and AI-assisted research. Active product development, not a finished case study yet.',
 		cta: 'View the beta page',
 		url: 'https://candella.dev/quant'
 	},
@@ -170,7 +170,7 @@ export const prototypeCases: PrototypeCase[] = [
 		index: '01',
 		name: 'Candella Copytrade',
 		category: 'FINANCIAL INFRASTRUCTURE',
-		title: 'One trade. Sixteen brokerages.',
+		title: { lead: 'One trade.', emphasis: 'Sixteen brokerages.' },
 		summary: 'A real-money trading system that mirrors a lead trader across connected brokerage accounts while keeping risk and every execution visible.',
 		liveUrl: 'https://candella.dev/copytrade',
 		evidence: [
@@ -190,7 +190,7 @@ export const prototypeCases: PrototypeCase[] = [
 		index: '02',
 		name: 'MindLSN',
 		category: 'ADAPTIVE PRODUCT',
-		title: 'A score that learns with you.',
+		title: { lead: 'A score that', emphasis: 'learns with you.' },
 		summary: 'An adaptive cognitive-training product where drills, ratings, integrity checks, and the surrounding experience work as one coherent system.',
 		liveUrl: 'https://mindlsn.com',
 		evidence: [
@@ -210,7 +210,7 @@ export const prototypeCases: PrototypeCase[] = [
 		index: '03',
 		name: 'The Sparkling Shoe',
 		category: 'ECOMMERCE',
-		title: 'From site builder to commerce system.',
+		title: { lead: 'From site builder', emphasis: 'to commerce system.' },
 		summary: 'A complete commerce rebuild for a dance accessories company, connecting product presentation, Shopify, mobile shopping, analytics, and ongoing growth.',
 		liveUrl: 'https://thesparklingshoe.com',
 		evidence: [

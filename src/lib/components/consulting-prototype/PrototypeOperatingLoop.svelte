@@ -50,7 +50,7 @@
 					<div class="service-copy">
 						<header data-motion-item>
 							<p class="service-label"><small>0{index + 1} / 03</small><span>{service.title}</span></p>
-							<h3>{service.headline}</h3>
+							<h3>{service.headline.lead}<br /><em>{service.headline.emphasis}</em></h3>
 						</header>
 
 						<div class="service-summary" data-motion-item>
@@ -132,6 +132,7 @@
 	.service-label small { min-width: 48px; color: color-mix(in srgb, var(--chapter-accent) 58%, var(--proto-muted)); font: inherit; }
 	.service-label span { padding-left: 15px; border-left: 1px solid color-mix(in srgb, var(--chapter-accent) 55%, transparent); }
 	.service-copy h3 { max-width: 560px; margin: 0; font: 400 clamp(48px, 4.35vw, 68px)/.92 var(--proto-display); letter-spacing: -.04em; text-wrap: balance; }
+	.service-copy h3 em { color: var(--proto-paper); font-weight: 400; }
 	.service-summary { margin-top: 30px; }
 	.service-summary > p { max-width: 500px; margin: 0; color: #b2b7b2; font-size: 15px; line-height: 1.72; }
 	.service-summary > small { display: block; margin-top: 22px; color: var(--chapter-accent); font: 500 9px/1.65 var(--proto-mono); letter-spacing: .08em; }

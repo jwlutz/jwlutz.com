@@ -28,3 +28,8 @@ Reference: /consulting/prototypes/style is the system of record.
 **2026-07-18 16:11 (Codex):** Accepted. Scope is limited to the listed Codex
 surfaces; Fable retains hero, nav, swipe internals, offering-demo internals,
 and the notebook.
+
+**(Fable, relaying Jack):** "for the alternatives just call those sections
+'Alternatives'" — wherever the service rows label the alternative-tools
+strips (Lovable/Replit/Zapier/GA etc.), the heading is now exactly
+**Alternatives**. Yours since it's the service-row copy; fold into this pass.
