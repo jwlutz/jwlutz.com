@@ -21,6 +21,8 @@
 	let section: HTMLElement;
 	let screenFrame: HTMLElement;
 	let elapsed = $state(0);
+	const HOLD = 3.4; // Jack 07-18: hold the opening so the clean-site phase registers
+	let story = $derived(Math.max(0, elapsed - HOLD));
 	let visible = $state(false);
 	let reducedMotion = $state(false);
 	let lastFrame = 0;
@@ -58,28 +60,28 @@
 		{ label: 'IT JUST WORKS', start: 18.05, end: duration }
 	];
 
-	let activeChapter = $derived(Math.max(0, chapters.findIndex((chapter) => elapsed >= chapter.start && elapsed < chapter.end)));
+	let activeChapter = $derived(Math.max(0, chapters.findIndex((chapter) => story >= chapter.start && story < chapter.end)));
 	let sceneTitle = $derived(
-		elapsed < 1.65 ? 'One website.' :
-		elapsed < 7.55 ? 'Then the tools start piling up.' :
-		elapsed < 12.15 ? 'Now it is your second job.' :
-		elapsed < 13.55 ? 'Until something breaks.' :
-		elapsed < 18.05 ? 'Give the whole system one owner.' :
+		story < 1.65 ? 'One website.' :
+		story < 7.55 ? 'Then the tools start piling up.' :
+		story < 12.15 ? 'Now it is your second job.' :
+		story < 13.55 ? 'Until something breaks.' :
+		story < 18.05 ? 'Give the whole system one owner.' :
 		'Back to a website that just works.'
 	);
 	let notionSplit = $derived(
-		ramp(elapsed, 7.65, 8.5) * Math.max(
-			1 - ramp(elapsed, 13.15, 13.55),
-			ramp(elapsed, 16.7, 17.1) * (1 - ramp(elapsed, 21.1, 21.7))
+		ramp(story, 7.65, 8.5) * Math.max(
+			1 - ramp(story, 13.15, 13.55),
+			ramp(story, 16.7, 17.1) * (1 - ramp(story, 21.1, 21.7))
 		)
 	);
-	let isFailure = $derived(elapsed >= 12.15 && elapsed < 13.55 || elapsed >= 21.75 && elapsed < 22.55);
-	let isSearch = $derived(elapsed >= 13.55 && elapsed < 15.35);
-	let isConsulting = $derived(elapsed >= 15.35 && elapsed < 21.75);
-	let isResolved = $derived(elapsed >= 22.55);
-	let notionVisible = $derived(ramp(elapsed, 7.15, 7.55) * (1 - ramp(elapsed, 21.15, 21.55)));
-	let helpVisible = $derived(ramp(elapsed, 13.45, 13.8) * (1 - ramp(elapsed, 21.45, 21.8)));
-	let queryCharacters = $derived(Math.floor(21 * ramp(elapsed, 14.05, 15.05)));
+	let isFailure = $derived(story >= 12.15 && story < 13.55 || story >= 21.75 && story < 22.55);
+	let isSearch = $derived(story >= 13.55 && story < 15.35);
+	let isConsulting = $derived(story >= 15.35 && story < 21.75);
+	let isResolved = $derived(story >= 22.55);
+	let notionVisible = $derived(ramp(story, 7.15, 7.55) * (1 - ramp(story, 21.15, 21.55)));
+	let helpVisible = $derived(ramp(story, 13.45, 13.8) * (1 - ramp(story, 21.45, 21.8)));
+	let queryCharacters = $derived(Math.floor(21 * ramp(story, 14.05, 15.05)));
 
 	function clamp(value: number) {
 		return Math.max(0, Math.min(1, value));
@@ -94,18 +96,18 @@
 	}
 
 	function tabAmount(index: number) {
-		const opened = ramp(elapsed, 1.6 + index * 0.5, 1.88 + index * 0.5);
+		const opened = ramp(story, 1.6 + index * 0.5, 1.88 + index * 0.5);
 		const reverseIndex = tabs.length - 1 - index;
-		const closed = ramp(elapsed, 19.35 + reverseIndex * 0.18, 19.58 + reverseIndex * 0.18);
+		const closed = ramp(story, 19.35 + reverseIndex * 0.18, 19.58 + reverseIndex * 0.18);
 		return opened * (1 - closed);
 	}
 
 	function taskAmount(index: number) {
-		return ramp(elapsed, 8.3 + index * 0.45, 8.58 + index * 0.45);
+		return ramp(story, 8.3 + index * 0.45, 8.58 + index * 0.45);
 	}
 
 	function taskComplete(index: number) {
-		return ramp(elapsed, 17.25 + index * 0.31, 17.48 + index * 0.31);
+		return ramp(story, 17.25 + index * 0.31, 17.48 + index * 0.31);
 	}
 
 	function cursorStyle() {
@@ -113,22 +115,22 @@
 		let y = 8;
 		let opacity = 0;
 
-		if (elapsed >= 7.05 && elapsed < 8.55) {
-			const drag = ramp(elapsed, 7.35, 8.35);
+		if (story >= 7.05 && story < 8.55) {
+			const drag = ramp(story, 7.35, 8.35);
 			x = mix(89, 76, drag);
 			y = mix(8, 43, drag);
-			opacity = ramp(elapsed, 7.05, 7.25);
-		} else if (elapsed >= 13.25 && elapsed < 16.9) {
+			opacity = ramp(story, 7.05, 7.25);
+		} else if (story >= 13.25 && story < 16.9) {
 			opacity = 1;
-			const address = ramp(elapsed, 13.45, 14.05);
-			const button = ramp(elapsed, 15.35, 16.35);
+			const address = ramp(story, 13.45, 14.05);
+			const button = ramp(story, 15.35, 16.35);
 			x = mix(95, 53, address);
 			y = mix(8, 13, address);
 			x = mix(x, 42, button);
 			y = mix(y, 69, button);
-		} else if (elapsed >= 21.25 && elapsed < 23.05) {
-			opacity = 1 - ramp(elapsed, 22.8, 23.05);
-			const refresh = ramp(elapsed, 21.75, 22.42);
+		} else if (story >= 21.25 && story < 23.05) {
+			opacity = 1 - ramp(story, 22.8, 23.05);
+			const refresh = ramp(story, 21.75, 22.42);
 			x = mix(83, 7.2, refresh);
 			y = mix(8, 13, refresh);
 		}
@@ -143,7 +145,7 @@
 
 	onMount(() => {
 		reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-		if (reducedMotion) elapsed = duration - 1;
+		if (reducedMotion) elapsed = HOLD + duration - 1;
 		let stopIntro = () => {};
 		if (!reducedMotion) {
 			const forceReplay = new URLSearchParams(window.location.search).get('replay') === '1';
@@ -188,7 +190,7 @@
 			if (!lastFrame) lastFrame = now;
 			if (visible && !reducedMotion) {
 				elapsed += Math.min((now - lastFrame) / 1000, 0.1);
-				if (elapsed >= duration) elapsed = 0;
+				if (elapsed >= duration + HOLD) elapsed = 0;
 			}
 			lastFrame = now;
 			frame = requestAnimationFrame(tick);
@@ -255,7 +257,7 @@
 						</div>
 
 						<div class="address-row">
-							<span>‹</span><span>›</span><span class="refresh" class:pulse={elapsed >= 22.2 && elapsed < 22.75}>↻</span>
+							<span>‹</span><span>›</span><span class="refresh" class:pulse={story >= 22.2 && story < 22.75}>↻</span>
 							<div>{isSearch ? 'Search or enter address' : isConsulting ? 'jwlutz.com/consulting' : 'yourbusiness.com'}</div>
 							<b>⋯</b>
 						</div>
@@ -283,7 +285,7 @@
 
 								<div class="consulting-page" class:visible={isConsulting}>
 									<nav><span><ConsultingMark size={18} title="" /> Lutz Consulting Group</span><small>WORK · SERVICES · APPROACH</small></nav>
-									<div><small>WEBSITES / AI INTEGRATIONS / ANALYTICS</small><h3>Don’t let your website become your <em>second job.</em></h3><button class:clicked={elapsed >= 16.35}>Start a project</button></div>
+									<div><small>WEBSITES / AI INTEGRATIONS / ANALYTICS</small><h3>Don’t let your website become your <em>second job.</em></h3><button class:clicked={story >= 16.35}>Start a project</button></div>
 								</div>
 							</div>
 
@@ -319,8 +321,8 @@
 			<button type="button" onclick={replay} aria-label="Replay the website ownership story"><i></i> Replay</button>
 			<div class="story-progress" aria-hidden="true">
 				{#each chapters as chapter}
-					{@const amount = ramp(elapsed, chapter.start, chapter.end)}
-					<i class:active={elapsed >= chapter.start && elapsed < chapter.end}><b style={`transform:scaleX(${amount})`}></b></i>
+					{@const amount = ramp(story, chapter.start, chapter.end)}
+					<i class:active={story >= chapter.start && story < chapter.end}><b style={`transform:scaleX(${amount})`}></b></i>
 				{/each}
 			</div>
 		</div>

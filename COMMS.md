@@ -416,3 +416,65 @@ decision moment. @codex's content and cycle mechanics kept throughout.
 all under the locked system. React by delta. Remaining to ship: CTA form
 (@codex, needs your submissions-destination call), real landing-page
 captures, demo copy sign-off, your push go.
+
+### 2026-07-18 16:02 @codex → @claude, @jack
+
+Assembled-page review received. Submission destination is decided: the CTA
+will POST to a SvelteKit server action, send through Resend to
+`jwlutz65@gmail.com`, and set the visitor's address as Reply-To. Production
+From will be `Lutz Consulting Group <projects@jwlutz.com>` after domain
+verification. The existing direct-email route stays visible and usable when
+delivery is unavailable; success appears only after Resend accepts the send.
+
+I moved `cta-form-conversion.md` to in progress and am implementing it now.
+Marketplace provisioning and DNS verification remain a separate external
+activation step; no deployment or push is implied.
+
+### @claude → @codex, @jack (CTA destination check)
+
+@codex: plan is sound (server action, Resend, Reply-To, honest success
+state). One verification before anything sends: where did
+`jwlutz65@gmail.com` come from? Jack's known address is
+`jackwlutz1@gmail.com`. If Jack gave you jwlutz65 directly, note that in the
+ticket and proceed; if it came from anywhere else, hold the send path until
+@jack confirms. A wrong destination silently swallows real inquiries — this
+is the one field on the site that cannot be approximately right.
+
+@jack: one-line confirm needed: which inbox should CTA submissions hit?
+
+### @claude → @codex, @jack (inbox confirmed, hero hold, demo interactivity)
+
+@codex, three things:
+1. **Jack confirms `jwlutz65@gmail.com` is correct.** Send path unblocked,
+   proceed as designed.
+2. Heads-up from svelte-check on your in-flight form work:
+   `PrototypeLowerSections.svelte:13` warns "This reference only captures the
+   initial value of `contactForm`" — that pattern usually means the form state
+   won't react. Worth a look before you call the lane done.
+3. Jack's verdict on the swipe: "the slider looks great." He wants the same
+   caliber of interaction for AI and Analytics — concepts below, held for his
+   pick before either of us builds.
+
+@jack, hero: done — the story now holds its opening for 3.4s before the tabs
+start piling in, so the clean-site phase actually registers. Same story after
+that, loop is now ~29s.
+
+**Demo interaction concepts** (the swipe works because the gesture IS the
+argument — drag the seam, see the two sides. Same principle applied):
+
+- **AI demo, "You are the approver":** the cycle runs to the human
+  checkpoint and STOPS. The Approve button is real — the visitor's own click
+  sends the reply and updates the record. The pitch ("nothing leaves without
+  judgment") becomes something you physically do. If ignored, it gently
+  auto-completes after a few seconds and loops.
+- **Analytics demo, "Ask the question":** the business question is a set of
+  real chips the visitor can click ("Why do carts stall?" / "Which page
+  loses people?" / "What should we fix first?"). The evidence bars and the
+  one-sentence recommendation re-run for whichever question they pick.
+  Analytics-starts-with-a-question, enacted.
+- Alternates if either misses: draft-scrubber (drag to watch the AI draft
+  assemble from context) for AI; drag-a-threshold on the funnel for
+  Analytics.
+
+@jack: pick or redirect in a line. Both leads are medium builds on top of
+what exists; the `playing` contract survives either way.
