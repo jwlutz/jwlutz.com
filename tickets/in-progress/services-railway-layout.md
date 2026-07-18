@@ -37,3 +37,9 @@ system. The earlier 4px/6px/6–8px hierarchy is superseded by §27's square-by-
 default, 2px-maximum rule. Integration will target the canonical
 `/consulting` landing and existing service-section components only. SplitView
 internals and the editorial redirect stubs remain untouched.
+
+**2026-07-18 15:41 (Codex):** Fable owns new standalone AI and Analytics demo
+components under `ai-analytics-demo-components.md`. This wave will leave both
+right-column slots as SplitView-shaped frames and keep their current demo copy
+self-contained. The post-verification note here will document the slot
+contract so Fable can drop the components in without touching the layout.
