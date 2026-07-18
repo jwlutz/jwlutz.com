@@ -1,51 +1,138 @@
+<!--
+	AI OFFERING DEMO — an automation flow being built, then run.
+	Jack's direction (2026-07-18): "the whole point of the AI is me building AI
+	integrations and automations for them and their business... an n8n style
+	workflow." The cycle constructs the flow node by node, then executes it;
+	the human-approval node is the emphasized beat (nothing sends itself).
+	`playing` contract per Codex's layout wiring; shell dims unchanged.
+-->
 <script lang="ts">
+	// build: nodes+edges assemble · run: execution passes through · done: logged
+	const TIMELINE: [number, string][] = [
+		[0, 'b1'], [550, 'b2'], [1100, 'b3'], [1650, 'b4'], [2200, 'b5'], [2750, 'b6'],
+		[4100, 'r1'], [4700, 'r2'], [5300, 'r3'], [5900, 'r4'],
+		[7000, 'approve'], [7800, 'r5'], [8400, 'r6'], [9000, 'done'], [11400, 'idle']
+	];
+	const CYCLE = 12000;
+	const ORDER = ['idle', 'b1', 'b2', 'b3', 'b4', 'b5', 'b6', 'r1', 'r2', 'r3', 'r4', 'approve', 'r5', 'r6', 'done'];
+
 	let { playing = false }: { playing?: boolean } = $props();
+	let phase = $state('idle');
+	let frame = 0;
+	let cycleStart = 0;
+	let reducedMotion = $state(false);
+
+	const past = (p: string) => ORDER.indexOf(phase) >= ORDER.indexOf(p);
+
+	$effect(() => {
+		reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+		if (reducedMotion) { phase = 'done'; return; }
+		if (!playing) { phase = 'idle'; cycleStart = 0; cancelAnimationFrame(frame); return; }
+		function tick(now: number) {
+			frame = requestAnimationFrame(tick);
+			if (!cycleStart) cycleStart = now;
+			const t = (now - cycleStart) % CYCLE;
+			let next = 'idle';
+			for (const [at, p] of TIMELINE) if (t >= at) next = p;
+			phase = next;
+		}
+		frame = requestAnimationFrame(tick);
+		return () => cancelAnimationFrame(frame);
+	});
 </script>
 
-<div class="demo" class:playing aria-label="An AI-assisted inquiry moving through context gathering, drafting, human approval, and follow-up">
-	<header><span>WORKFLOW / NEW CUSTOMER INQUIRY</span><small>AI prepares · a person decides</small></header>
-	<div class="workspace">
-		<section class="inbox">
-			<div class="panel-bar"><span>INBOX</span><small>1 new</small></div>
-			<div class="message">
-				<div><i>AM</i><span><strong>Alex Morgan</strong><small>2 minutes ago</small></span></div>
-				<h4>We need to replace our Squarespace site.</h4>
-				<p>We also lose track of inquiries between the website, email, and our customer list.</p>
-			</div>
-			<div class="source-tags"><span>Website form</span><span>Existing customer</span></div>
-		</section>
+<div class="demo" class:playing role="img" aria-label="An automation being built node by node, then run: a new inquiry triggers AI classification and drafting, a person approves, and the reply sends while the CRM updates.">
+	<header><span>AUTOMATION / INQUIRY TO REPLY</span><small class:on={past('done')}>{past('done') ? 'run complete · logged' : past('r1') ? 'running' : 'building'}</small></header>
 
-		<section class="context">
-			<div class="panel-bar"><span>ATTACHED CONTEXT</span><small>Kept together</small></div>
-			<div class="context-items">
-				<div><i></i><span><strong>Current website</strong><small>Pages, forms, platform</small></span></div>
-				<div><i></i><span><strong>Prior conversation</strong><small>Needs and timeline</small></span></div>
-				<div><i></i><span><strong>Customer record</strong><small>History and contact details</small></span></div>
-			</div>
-			<div class="draft">
-				<small>PREPARED RESPONSE</small>
-				<p>Thanks, Alex. The right first move is to map the current inquiry flow before rebuilding the site…</p>
-				<span><i></i>Generated from attached context</span>
-			</div>
-		</section>
+	<div class="canvas">
+		<svg class="edges" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+			<!-- base edges -->
+			<g class="wire">
+				<polyline class:on={past('b2')} points="20,26 34,26" />
+				<polyline class:on={past('b3')} points="54,26 66,26" />
+				<polyline class:on={past('b4')} points="79,32 79,44 48,44 48,56" />
+				<polyline class:on={past('b5')} points="48,68 48,78 62,78" />
+				<polyline class:on={past('b6')} points="55,64 68,64 68,58" />
+			</g>
+			<!-- brass run overlay -->
+			<g class="live">
+				<polyline class:on={past('r2')} points="20,26 34,26" />
+				<polyline class:on={past('r3')} points="54,26 66,26" />
+				<polyline class:on={past('r4')} points="79,32 79,44 48,44 48,56" />
+				<polyline class:on={past('r6')} points="48,68 48,78 62,78" />
+				<polyline class:on={past('r5')} points="55,64 68,64 68,58" />
+			</g>
+		</svg>
 
-		<aside class="approval">
-			<div class="panel-bar"><span>HUMAN CHECKPOINT</span><small>Required</small></div>
-			<div class="review">
-				<small>READY FOR REVIEW</small>
-				<strong>Nothing leaves without judgment.</strong>
-				<ul><li><i></i>Scope is accurate</li><li><i></i>No invented promises</li><li><i></i>Clear next step</li></ul>
-				<div><button>Revise</button><button class="approve">Approve and send</button></div>
-			</div>
-			<div class="completed"><i></i><span><strong>Follow-up sent</strong><small>Email and customer record updated</small></span></div>
-			<i class="cursor"></i>
-		</aside>
+		<div class="node trigger" class:on={past('b1')} class:hit={past('r1')} style="left:4%;top:20%">
+			<small>TRIGGER</small><strong>New inquiry</strong><span>website form · webhook</span>
+		</div>
+		<div class="node ai" class:on={past('b2')} class:hit={past('r2')} style="left:34%;top:20%">
+			<small>AI STEP</small><strong>Read + classify</strong><span>intent · urgency · customer</span>
+		</div>
+		<div class="node ai" class:on={past('b3')} class:hit={past('r3')} style="left:66%;top:20%">
+			<small>AI STEP</small><strong>Draft the reply</strong><span>from your docs and history</span>
+		</div>
+		<div class="node human" class:on={past('b4')} class:hit={past('r4')} style="left:34%;top:56%">
+			<small>HUMAN CHECKPOINT</small><strong>You approve</strong>
+			<b class="chip" class:pressed={past('approve')}>Approve</b>
+		</div>
+		<div class="node act" class:on={past('b6')} class:hit={past('r5')} style="left:66%;top:50%">
+			<small>ACTION</small><strong>Send the reply</strong><i class:done={past('r5')}>✓</i>
+		</div>
+		<div class="node act" class:on={past('b5')} class:hit={past('r6')} style="left:66%;top:74%">
+			<small>ACTION</small><strong>Update the CRM</strong><i class:done={past('r6')}>✓</i>
+		</div>
 	</div>
+
+	<footer><span>Built for your tools, run on your rules.</span><small class:on={past('done')}><i>✓</i>every run logged</small></footer>
 	<i class="progress" aria-hidden="true"></i>
 </div>
 
 <style>
-	.demo{position:relative;height:610px;overflow:hidden;border:1px solid rgba(240,239,233,.18);background:#0d100e;box-shadow:0 36px 100px rgba(0,0,0,.34);contain:layout paint}.demo>header{height:54px;padding:0 20px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(240,239,233,.09);color:#848a83;background:#101411;font:500 7px var(--proto-mono);letter-spacing:.1em}.demo>header small{color:#b49a67;font:inherit}.workspace{height:calc(100% - 54px);display:grid;grid-template-columns:.72fr 1.15fr .9fr}.inbox,.context,.approval{position:relative;min-width:0;border-right:1px solid rgba(240,239,233,.08);background:#101411}.context{background:#0e120f}.approval{border-right:0;background:#111512}.panel-bar{height:40px;padding:0 13px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(240,239,233,.07);color:#9aa09a;font:500 7px var(--proto-mono)}.panel-bar small{color:#666d66;font:inherit}.message{margin:19px 15px;padding:17px;border:1px solid rgba(240,239,233,.1);background:#161a16;opacity:0;transform:translateY(14px)}.playing .message{animation:message 9s ease infinite}.message>div{display:flex;gap:10px;align-items:center}.message>div>i{width:28px;height:28px;display:grid;place-items:center;border-radius:50%;color:#f0ece4;background:#774633;font:600 8px var(--proto-sans);font-style:normal}.message span strong,.message span small{display:block}.message span strong{color:#dcdfd8;font-size:9px}.message span small{margin-top:3px;color:#6e746d;font-size:6px}.message h4{margin:21px 0 9px;color:#e9ebe4;font-size:13px;line-height:1.35}.message p{margin:0;color:#8b9089;font-size:8px;line-height:1.65}.source-tags{padding:0 15px;display:flex;gap:6px;flex-wrap:wrap}.source-tags span{padding:7px 8px;border:1px solid rgba(180,154,103,.22);color:#9b9d98;background:rgba(180,154,103,.05);font:6px var(--proto-mono);opacity:0}.playing .source-tags span{animation:tag 9s ease infinite}.source-tags span+span{animation-delay:.35s}.context-items{margin:10px 16px}.context-items>div{min-height:67px;padding:10px 4px;display:flex;align-items:center;gap:11px;border-bottom:1px solid rgba(240,239,233,.065);opacity:.25;transform:translateX(-8px)}.playing .context-items>div{animation:context 9s ease infinite}.context-items>div:nth-child(2){animation-delay:.4s}.context-items>div:nth-child(3){animation-delay:.8s}.context-items>div>i{width:24px;height:30px;border:1px solid #6e6553;border-radius:2px;background:linear-gradient(135deg,rgba(180,154,103,.16),transparent)}.context-items strong,.context-items small{display:block}.context-items strong{color:#bcc1ba;font-size:9px}.context-items small{margin-top:4px;color:#6b716a;font-size:6px}.draft{margin:16px;padding:18px;border:1px solid rgba(180,154,103,.3);background:linear-gradient(145deg,rgba(180,154,103,.09),rgba(180,154,103,.02));opacity:0;transform:translateY(10px)}.playing .draft{animation:draft 9s ease infinite}.draft>small{color:#b49a67;font:6px var(--proto-mono);letter-spacing:.09em}.draft p{min-height:63px;margin:12px 0;color:#ccd0c8;font-size:9px;line-height:1.65}.draft>span{display:flex;align-items:center;gap:7px;color:#70766f;font-size:6px}.draft>span i{width:5px;height:5px;border-radius:50%;background:#b49a67}.review{margin:18px 15px;padding:18px;border:1px solid rgba(180,154,103,.24);background:#191610;opacity:.28}.playing .review{animation:review 9s ease infinite}.review>small{color:#b49a67;font:6px var(--proto-mono);letter-spacing:.09em}.review>strong{display:block;margin:13px 0 19px;color:#e5e0d7;font:400 20px/1.05 var(--proto-display)}.review ul{list-style:none;margin:0 0 22px;padding:0}.review li{padding:9px 0;display:flex;align-items:center;gap:9px;border-bottom:1px solid rgba(240,239,233,.06);color:#979188;font-size:8px}.review li i{width:11px;height:11px;border:1px solid #766c59;border-radius:50%}.review>div{display:flex;gap:7px}.review button{padding:9px 10px;border:1px solid rgba(240,239,233,.12);color:#8b9089;background:transparent;font-size:7px}.review .approve{color:#15120d;background:#d7cab0}.completed{position:absolute;left:15px;right:15px;bottom:18px;padding:14px;display:flex;align-items:center;gap:11px;border:1px solid rgba(180,154,103,.3);background:#14120d;opacity:0;transform:translateY(10px)}.playing .completed{animation:completed 9s ease infinite}.completed>i{position:relative;width:24px;height:24px;border:1px solid #b49a67;border-radius:50%}.completed>i::after{content:'';position:absolute;left:7px;top:5px;width:7px;height:10px;border-right:1px solid #b49a67;border-bottom:1px solid #b49a67;transform:rotate(45deg)}.completed strong,.completed small{display:block}.completed strong{color:#ddd5c6;font-size:9px}.completed small{margin-top:4px;color:#8d8571;font-size:6px}.cursor{position:absolute;right:22%;top:59%;width:0;height:0;border-top:12px solid #f0efe9;border-right:7px solid transparent;filter:drop-shadow(0 1px 2px #000);opacity:0}.playing .cursor{animation:cursor 9s ease infinite}.playing .review .approve{animation:approve-press 9s ease infinite}.progress{position:absolute;left:0;right:0;bottom:0;height:2px;background:#b49a67;transform:scaleX(0);transform-origin:left}.playing .progress{animation:progress 9s linear infinite}
-	@keyframes message{0%,5%{opacity:0;transform:translateY(14px)}13%,88%{opacity:1;transform:none}97%,100%{opacity:0}}@keyframes tag{0%,14%{opacity:0;transform:translateY(6px)}23%,88%{opacity:1;transform:none}97%,100%{opacity:0}}@keyframes context{0%,22%{opacity:.25;transform:translateX(-8px)}34%,88%{opacity:1;transform:none}97%,100%{opacity:.25}}@keyframes draft{0%,38%{opacity:0;transform:translateY(10px)}49%,88%{opacity:1;transform:none}97%,100%{opacity:0}}@keyframes review{0%,52%{opacity:.28}62%,88%{opacity:1}97%,100%{opacity:.28}}@keyframes cursor{0%,58%{opacity:0;right:40%;top:40%}64%{opacity:1}73%{right:22%;top:59%;opacity:1}79%,100%{opacity:0}}@keyframes completed{0%,73%{opacity:0;transform:translateY(10px)}82%,91%{opacity:1;transform:none}98%,100%{opacity:0}}@keyframes progress{to{transform:scaleX(1)}}@keyframes approve-press{0%,72%{transform:none}74.5%,76.5%{transform:scale(.94);background:#b49a67}79%,100%{transform:none}}
-	@media(max-width:1050px){.workspace{grid-template-columns:.8fr 1.2fr}.approval{display:none}.context{border-right:0}}@media(max-width:680px){.demo{height:520px}.workspace{grid-template-columns:1fr}.inbox{display:none}.context{border-right:0}.draft{margin-top:24px}.demo>header small{display:none}}@media(prefers-reduced-motion:reduce){.demo *{animation:none!important}.message,.source-tags span,.context-items>div,.draft,.review,.completed{opacity:1;transform:none}.progress{transform:scaleX(1)}}
+	.demo{position:relative;height:610px;display:flex;flex-direction:column;overflow:hidden;border:1px solid rgba(240,239,233,.18);background:#0d100e;box-shadow:0 36px 100px rgba(0,0,0,.34);contain:layout paint}
+	.demo>header{flex:0 0 54px;padding:0 20px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(240,239,233,.09);color:#848a83;background:#101411;font:500 7px var(--proto-mono);letter-spacing:.1em}
+	.demo>header small{color:#666d66;font:inherit;transition:color .4s ease}
+	.demo>header small.on{color:#b49a67}
+	.canvas{position:relative;flex:1;min-height:0;background-image:radial-gradient(rgba(240,239,233,.07) 1px,transparent 1px);background-size:22px 22px}
+	.edges{position:absolute;inset:0;width:100%;height:100%}
+	.wire polyline,.live polyline{fill:none;stroke-width:1.5;vector-effect:non-scaling-stroke}
+	.wire polyline{stroke:rgba(240,239,233,.16);opacity:0;transition:opacity .45s ease}
+	.wire polyline.on{opacity:1}
+	.live polyline{stroke:#b49a67;opacity:0;transition:opacity .35s ease}
+	.live polyline.on{opacity:.85}
+	.node{position:absolute;width:28%;min-height:52px;padding:10px 12px;border:1px solid rgba(240,239,233,.16);border-radius:2px;background:#121613;box-shadow:0 1px 0 rgba(255,255,255,.05) inset,0 14px 30px rgba(0,0,0,.3);opacity:0;transform:translateY(8px) scale(.96);transition:opacity .4s ease,transform .4s ease,border-color .35s ease}
+	.node.on{opacity:1;transform:none}
+	.node.hit{border-color:rgba(180,154,103,.75)}
+	.node small{display:block;margin-bottom:5px;font:500 6px var(--proto-mono);letter-spacing:.12em;color:#666d66}
+	.node.hit small{color:#b49a67}
+	.node strong{display:block;color:#e6e8e1;font:500 10.5px var(--proto-sans)}
+	.node span{display:block;margin-top:4px;color:#82887f;font-size:7.5px}
+	.node.trigger{border-left:2px solid #774633}
+	.node.ai{border-left:2px solid #2d8064}
+	.node.human{border-left:2px solid #b49a67;background:#15130d}
+	.node.act i{position:absolute;right:10px;top:10px;color:transparent;font-style:normal;font-size:10px;transition:color .35s ease}
+	.node.act i.done{color:#b49a67}
+	.chip{display:inline-block;margin-top:8px;padding:6px 10px;border-radius:2px;background:#dad6cc;color:#171914;font:500 8px var(--proto-sans);transition:transform .18s ease,background .18s ease}
+	.chip.pressed{transform:scale(.94);background:#b49a67}
+	.demo>footer{flex:0 0 44px;padding:0 20px;display:flex;align-items:center;justify-content:space-between;border-top:1px solid rgba(240,239,233,.09);background:#101411}
+	.demo>footer span{color:#9b9d98;font-size:10px;font-style:italic;font-family:var(--proto-display)}
+	.demo>footer small{display:flex;gap:6px;align-items:center;color:transparent;font:500 7px var(--proto-mono);letter-spacing:.1em;transition:color .4s ease}
+	.demo>footer small.on{color:#8d8571}
+	.demo>footer small i{font-style:normal;color:inherit}
+	.demo>footer small.on i{color:#b49a67}
+	.progress{position:absolute;left:0;right:0;bottom:0;height:2px;background:#b49a67;transform:scaleX(0);transform-origin:left}
+	.playing .progress{animation:flow-progress 12s linear infinite}
+	@keyframes flow-progress{to{transform:scaleX(1)}}
+	@media(max-width:680px){
+		.demo{height:520px}
+		.node{width:30%;padding:8px 9px;min-height:44px}
+		.node strong{font-size:8.5px}
+		.node span{display:none}
+		.demo>footer span{font-size:8.5px}
+	}
+	@media(prefers-reduced-motion:reduce){
+		.demo *{animation:none!important;transition:none!important}
+		.progress{transform:scaleX(1)}
+	}
 </style>

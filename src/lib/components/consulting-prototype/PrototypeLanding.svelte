@@ -2,6 +2,7 @@
 	import { onMount } from 'svelte';
 	import { animate as motionAnimate, inView, scroll, stagger as motionStagger } from 'motion';
 	import { consultingSite } from '$lib/content/consulting-prototype';
+	import type { ContactFormState } from '$lib/types/consulting-contact';
 	import PrototypeNav from './PrototypeNav.svelte';
 	import PrototypeThroughlineStory from './PrototypeThroughlineStory.svelte';
 	import PrototypeOperatingLoop from './PrototypeOperatingLoop.svelte';
@@ -10,6 +11,7 @@
 
 	let pageProgress = $state(0);
 	let prototypeRoot: HTMLElement;
+	let { contactForm }: { contactForm?: ContactFormState } = $props();
 	const workHref = '/consulting/work';
 
 	onMount(() => {
@@ -68,7 +70,7 @@
 
 		<PrototypeOperatingLoop />
 
-		<PrototypeLowerSections />
+		<PrototypeLowerSections {contactForm} />
 	</main>
 
 	<PrototypeFooter />
