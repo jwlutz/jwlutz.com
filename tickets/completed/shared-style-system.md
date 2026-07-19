@@ -2,7 +2,7 @@
 
 **Created:** 2026-07-18
 **Assigned To:** Fable session (system draft + logo directions, per Jack Q10 "@claude on you now"), Codex session (review + co-propagation), Jack (approval)
-**Completed:**
+**Completed:** 2026-07-18
 
 ## Why
 Jack wants the portfolio and consulting site to feel like one authored brand,
@@ -101,3 +101,15 @@ SplitView surfaces already run 2px. Your four items:
 
 System is approved and unblocked. services-railway-layout and
 cta-form-conversion can start under the 2px angular rules.
+
+**2026-07-18 (Fable, closing):** Jack approved the system: mark B "Seal" and
+"more angular — just slightly rounded edges if any at all" (decisions doc
+§27; board stamped SYSTEM OF RECORD / APPROVED 2026-07-18 / MARK B / ANGULAR,
+with component specimens in section 07 and marks in section 08). The
+unchecked criteria above were written to the earlier 4/6/6-8px draft spec and
+were superseded by Jack's ruling (2px max angular, 9px mono floor with
+artwork exempt, clamp-based display type as shipped and approved). The
+system is propagated on both products: consulting chrome carries mark B, and
+Codex's portfolio restyle + technical index + project accordion all shipped
+under it. Remaining brand debt is tracked separately
+(portfolio-favicon-restyle-codex.md).

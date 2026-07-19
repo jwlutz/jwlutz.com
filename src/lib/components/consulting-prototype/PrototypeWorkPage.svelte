@@ -58,7 +58,9 @@
 			<div class="case-grid">
 				{#each prototypeCases as project, index}
 					<article class:lead={index === 0} class={`case-card ${project.slug}`} id={`preview-${project.slug}`}>
-						<a class="case-visual" href={`#case-${project.slug}`} aria-label={`Read the ${project.name} case study below`}>
+						<!-- Duplicate of the named "Read the case study" action below; kept
+						     clickable but out of the tab order and a11y tree. -->
+						<a class="case-visual" href={`#case-${project.slug}`} tabindex="-1" aria-hidden="true">
 							<PrototypeCaseMedia {project} stage={3} />
 						</a>
 						<div class="case-copy">
@@ -88,7 +90,7 @@
 		</section>
 
 		<section class="lab shell" id="lab">
-			<div class="lab-visual"><img src="/consulting/prototypes/work/quant-landing.webp" alt="Candella Quant landing page and product workspace" loading="lazy" decoding="async" /><span>{workPageCopy.labBadge}</span></div>
+			<div class="lab-visual"><img src="/consulting/prototypes/work/quant-landing.webp" alt="Candella Quant landing page and product workspace" width="1440" height="900" loading="lazy" decoding="async" /><span>{workPageCopy.labBadge}</span></div>
 			<div class="lab-copy"><p>{consultingSite.lab.eyebrow}</p><h2>{consultingSite.lab.title}</h2><span>{consultingSite.lab.body}</span><a href={consultingSite.lab.url} target="_blank" rel="noreferrer" onclick={() => trackOutbound(consultingSite.lab.url, 'consulting_work_lab')}>{consultingSite.lab.cta}</a></div>
 		</section>
 

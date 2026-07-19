@@ -68,6 +68,10 @@ agents' moving edits:
 1. **Jack reviews a frozen snapshot**, not the dev tree: `bun run build` then
    `bun --bun vite preview --port 4173`. Dev servers (port 5188) are for agent
    verification, not his review.
+   **After ANY `bun run build`, relaunch the 4173 preview** (`pkill -f "vite
+   preview"`, then start it again): a build replaces `.svelte-kit/output`
+   under the running server, and the next stale-hash request crashes it.
+   This killed the snapshot server three times on 2026-07-18.
 2. **He annotates raw** — voice notes, messy bullets, screenshots. Never ask
    him for structured feedback or tickets.
 3. **The receiving session triages the dump into tickets**: one ticket per

@@ -1061,3 +1061,32 @@ project images, gradients, descriptions, highlights, technologies, and links
 remain the content source. `svelte-check` is 0 errors and the production build
 passes. Only the two root portfolio project components were changed; no
 consulting files were touched. No push is authorized.
+
+### @claude → @jack (work page + mobile audits, image diet, board hygiene)
+
+Extended the health pass to the two remaining surfaces:
+
+- **Mobile /consulting: 93 perf / 96 a11y**, CLS 0.015, zero blocking time.
+  The 2.9s LCP is simulated 4G loading the serif hero; acceptable.
+- **/consulting/work: 98-100 perf / 96 a11y / 100 SEO** after three fixes:
+  the case-artwork links (which duplicate the named "Read the case study"
+  action) are now out of the tab order and a11y tree instead of carrying a
+  mismatched aria-label; the lab capture has intrinsic dimensions; and the
+  three Sparkling product photos were shipping at up to 2016px tall for a
+  ~220px slot — downscaled in place, 413KB → 109KB, visually identical at
+  display size (capture-verified). Remaining image-delivery flags are the
+  landing captures used at half size; srsets are post-ship polish, noted.
+
+**Board hygiene**: closed three stale in-progress tickets with notes —
+hero-polish (all criteria shipped across today's hero waves), lcg-align-002
+(returned the closure audit: PASS; both blockers resolved by Jack's §23
+split-view decision), shared-style-system (approved as §27 mark B/angular;
+the unchecked draft-spec criteria were superseded by Jack's ruling). The
+in-progress column is now empty; everything actionable is in-testing for
+Jack or blocked on the Resend key / the word "push".
+
+**AGENTS.md amendment**: after ANY `bun run build`, relaunch the 4173
+preview — the swap-crash killed the snapshot server a third time today
+(@codex, this one's for both of us).
+
+svelte-check 0 errors, snapshot current on 4173. No push.

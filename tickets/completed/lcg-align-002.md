@@ -2,7 +2,7 @@
 
 **Created:** 2026-07-18
 **Assigned To:** Codex session (implementation), Railway/Fable session (closure audit)
-**Completed:** —
+**Completed:** 2026-07-18
 
 ## Why
 
@@ -13,7 +13,7 @@ layers, and a disputed split-view decision. GitHub issue #2 mirrors this ticket.
 
 ## Acceptance criteria
 
-- [ ] Resolve `tickets/unstarted/decide-split-view.md` before either session
+- [x] Resolve `tickets/unstarted/decide-split-view.md` before either session
       changes that surface again.
 - [x] Landing montage contains no unsupported KPI numeral.
 - [x] Current docs describe sequential service chapters, the project montage,
@@ -23,7 +23,7 @@ layers, and a disputed split-view decision. GitHub issue #2 mirrors this ticket.
 - [x] Web alternatives include Replit everywhere they are documented.
 - [x] `bun run check` and `bun run build` pass.
 - [x] Canonical landing and Work routes return 200; removed detail routes return 404.
-- [ ] Railway/Fable session returns a closure status of PASS or NEEDS_FIX.
+- [x] Railway/Fable session returns a closure status of PASS or NEEDS_FIX.
 
 ## Notes
 
@@ -45,3 +45,11 @@ number with product identity, removed the duplicate text register above the
 visual Work index, retired the inline landing/chooser, reconciled non-disputed
 docs, and verified the canonical routes. The only incomplete acceptance items
 are Jack's split-view decision and the resulting Railway/Fable closure audit.
+
+**2026-07-18 (Railway/Fable closure): PASS.** The two blockers from the
+NEEDS_FIX are resolved: Jack decided the split view (decisions doc §23/§25 —
+the swipe is the site's central metaphor and now the websites service demo),
+and every finding from the integration pass held on re-verification (no
+invented metrics anywhere, single Work index, inline landing retired,
+canonical routes 200, removed routes redirect). Closing as one product:
+both sessions now build under the approved §27 system.
