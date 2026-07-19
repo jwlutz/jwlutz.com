@@ -118,7 +118,7 @@
 	<div class="skills-field" aria-hidden="true">LANGUAGES / SYSTEMS / MODELS / METHODS</div>
 	<div class="section-shell">
 		<div class="section-header-sticky">
-			<p class="section-label">03 / Technical range</p>
+			<p class="section-label">Technical range</p>
 			<div class="skills-heading">
 				<h2 class="section-heading">Built across the stack</h2>
 				<p>A moving index of the languages, systems, models, and methods behind the work. Hover to slow it down.</p>

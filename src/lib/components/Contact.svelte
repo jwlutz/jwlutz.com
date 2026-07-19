@@ -6,7 +6,7 @@
 
 <section id="contact" class="contact-section">
 	<div class="contact-shell">
-		<div class="contact-label"><span>04 / Contact</span><i></i><span>Las Vegas / Los Angeles</span></div>
+		<div class="contact-label"><span>Contact</span><i></i><span>Las Vegas / Los Angeles</span></div>
 		<div class="contact-grid">
 			<div><p>Have a difficult problem or an ambitious build?</p><h2>Let’s make it <em>work.</em></h2></div>
 			<div class="contact-actions">

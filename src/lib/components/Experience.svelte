@@ -8,7 +8,7 @@
 <section id="experience" class="experience-section">
 	<div class="section-shell">
 		<div class="section-header-sticky">
-			<p class="section-label">02 / Background</p>
+			<p class="section-label">Background</p>
 			<h2 class="section-heading">Experience</h2>
 		</div>
 

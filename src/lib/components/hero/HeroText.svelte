@@ -70,7 +70,6 @@
 	<div class="card-content">
 		<div class="hero-index">
 			<span>Portfolio / 2026</span>
-			<span>01</span>
 		</div>
 
 		<p class="titles">
@@ -231,7 +230,7 @@
 		min-height: 650px;
 		margin: 0;
 		overflow: hidden;
-		background: var(--color-emerald-deep);
+		background: #171512;
 		transform: translateZ(8px);
 	}
 
@@ -249,15 +248,15 @@
 		height: 100%;
 		object-fit: cover;
 		object-position: 51% 42%;
-		filter: saturate(.7) contrast(1.08) brightness(.78);
+		filter: saturate(.98) contrast(1.03) brightness(.93);
 	}
 
 	.photo-wash {
 		position: absolute;
 		inset: 0;
 		background:
-			linear-gradient(180deg, rgba(4, 25, 19, .04), rgba(4, 25, 19, .68)),
-			linear-gradient(110deg, rgba(7, 84, 63, .46), transparent 58%);
+			linear-gradient(180deg, rgba(10, 9, 8, 0) 42%, rgba(10, 9, 8, .56) 100%),
+			linear-gradient(110deg, rgba(16, 13, 10, .1), transparent 58%);
 		pointer-events: none;
 	}
 
