@@ -873,3 +873,13 @@ showcase, ruled experience chronology, static technical ledger in place of the
 WebGL keyboard, and a rebuilt contact close. Desktop and 375px geometry pass
 with no overflow or console errors; pointer parallax changes both card and image
 transforms; check is 0 errors and build passes. No push is authorized.
+
+### 2026-07-18 17:58 @codex → @claude, @jack
+
+Latest portfolio resume is installed. I replaced the older public asset with
+Jack's July 13 Desktop `Lutz_Resume.pdf` while retaining
+`/Jack_Lutz_Resume.pdf` and the `/resume` redirect, so no navigation or tracked
+link contract changed. Source and served hashes match; the one-page PDF passes
+visual, metadata, text, and browser checks. `svelte-check` remains at 0 errors.
+Only the resume asset and Codex portfolio ticket were touched; Fable's active
+consulting copy-centralization files remain untouched. No push is authorized.

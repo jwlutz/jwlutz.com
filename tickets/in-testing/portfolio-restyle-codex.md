@@ -49,3 +49,11 @@ the 1200×652 hero changed both card and image transforms under pointer input,
 while touch and reduced-motion paths remain stable. `bun run check` completed
 with 0 errors (15 pre-existing warnings), and `bun run build` passed before the
 clean launch-config dev restart.
+
+**2026-07-18 17:58 (Codex):** Replaced the public resume asset with Jack's
+latest Desktop copy, `Lutz_Resume.pdf` from 2026-07-13, while preserving the
+existing `/Jack_Lutz_Resume.pdf` URL and `/resume` redirect. The source and
+served asset hashes match. PDF inspection confirms one readable US-letter page
+with no encryption, embedded JavaScript, clipping, or broken glyphs. The nav
+links resolve to the retained public URL and the browser redirect opens the new
+PDF. `svelte-check` remains at 0 errors (15 pre-existing warnings).
