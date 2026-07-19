@@ -40,6 +40,7 @@
 			detail: 'Implementation across data, backend, systems, and interface work.',
 			items: skills.languages,
 			duration: 42,
+			angle: -1.4,
 			reverse: false
 		},
 		{
@@ -48,6 +49,7 @@
 			detail: 'APIs, storage, deployment, infrastructure, and maintained product systems.',
 			items: systemItems,
 			duration: 54,
+			angle: 0.8,
 			reverse: true
 		},
 		{
@@ -56,6 +58,7 @@
 			detail: 'Analysis, forecasting, optimization, retrieval, and production machine learning.',
 			items: modelItems,
 			duration: 64,
+			angle: -0.6,
 			reverse: false
 		},
 		{
@@ -64,6 +67,7 @@
 			detail: 'The mathematical and computer science foundations behind the implementation.',
 			items: skills.coursework,
 			duration: 58,
+			angle: 1.2,
 			reverse: true
 		}
 	]);
@@ -112,7 +116,11 @@
 
 			<div class="rails" aria-label="Technical skills index">
 				{#each rails as rail}
-					<div class="rail" class:reverse={rail.reverse} style={`--duration: ${rail.duration}s`}>
+					<div
+						class="rail"
+						class:reverse={rail.reverse}
+						style={`--duration: ${rail.duration}s; --angle: ${rail.angle}deg`}
+					>
 						<div class="rail-label">
 							<span>{rail.code}</span>
 							<strong>{rail.label}</strong>
@@ -120,7 +128,8 @@
 						</div>
 
 						<div class="rail-window">
-							<div class="rail-track">
+							<div class="rail-plane">
+								<div class="rail-track">
 								<div class="rail-sequence">
 									{#each rail.items as item, itemIndex}
 										<button
@@ -148,6 +157,7 @@
 											<strong>{item}</strong>
 										</span>
 									{/each}
+								</div>
 								</div>
 							</div>
 						</div>
@@ -275,7 +285,7 @@
 	.rail:last-child { border-bottom: 0; }
 
 	.rail-label {
-		min-height: 76px;
+		min-height: 104px;
 		padding: 14px 17px;
 		display: grid;
 		grid-template-columns: 24px minmax(0, 1fr);
@@ -305,8 +315,20 @@
 
 	.rail-window {
 		min-width: 0;
+		height: 104px;
+		display: flex;
+		align-items: center;
 		overflow: hidden;
 		contain: layout paint;
+	}
+
+	.rail-plane {
+		width: calc(100% + 96px);
+		margin-left: -48px;
+		flex: none;
+		transform: rotate(var(--angle));
+		transform-origin: center;
+		will-change: transform;
 	}
 
 	.rail-track {
@@ -415,12 +437,14 @@
 		}
 		.rail-label small { grid-column: 3; }
 		.rail-window {
+			height: 66px;
 			overflow-x: auto;
 			scroll-snap-type: x proximity;
 			scrollbar-width: none;
 			-webkit-overflow-scrolling: touch;
 		}
 		.rail-window::-webkit-scrollbar { display: none; }
+		.rail-plane { width: 100%; margin-left: 0; transform: none; }
 		.rail-track { animation: none !important; transform: none !important; }
 		.rail-sequence-copy { display: none; }
 		.tech-token { min-width: 140px; height: 66px; padding: 10px 16px; }
@@ -435,6 +459,7 @@
 			-webkit-overflow-scrolling: touch;
 		}
 		.rail-window::-webkit-scrollbar { display: none; }
+		.rail-plane { width: 100%; margin-left: 0; transform: none; }
 		.rail-track { animation: none !important; transform: none !important; }
 		.rail-sequence-copy { display: none; }
 		.tech-token { scroll-snap-align: start; }

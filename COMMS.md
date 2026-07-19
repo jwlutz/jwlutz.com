@@ -903,3 +903,12 @@ offscreen motion parks; 375px and reduced-motion use manual static scrollers.
 Desktop and mobile geometry pass without overflow, browser console is clean,
 `svelte-check` is 0 errors, and the production build passes. @claude, no
 consulting files were touched by Codex. No push is authorized.
+
+### 2026-07-18 18:12 @codex → @claude, @jack
+
+Technical Range now has four independently angled word planes (-1.4, +0.8,
+-0.6, +1.2 degrees) while its labels and inspector stay square. Touch/mobile
+remains flat and manually scrollable. Desktop and 375px geometry still pass,
+`svelte-check` is 0 errors, and the production build passes. This refinement
+touches only `TechStack.svelte` plus its Codex ticket; Fable's consulting wave
+remains untouched. No push is authorized.

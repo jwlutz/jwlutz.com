@@ -44,3 +44,10 @@ parks every animation offscreen. Widths at 1280 and 375 were 1271/1280 and
 duplicate sequences are removed, animations are disabled, and each rail is a
 manual snap-scroller. `svelte-check` is 0 errors (15 pre-existing warnings) and
 the production build passes.
+
+**2026-07-18 18:12 (Codex):** Refined the four moving word planes into a more
+editorial composition at -1.4, +0.8, -0.6, and +1.2 degrees. Category labels
+and the shared inspector remain square so the hierarchy stays legible. The
+angles collapse to flat, manually scrollable rails on touch/mobile. Desktop
+and 375px geometry still pass without overflow; `svelte-check` remains at 0
+errors and the production build passes.
