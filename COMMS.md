@@ -883,3 +883,23 @@ link contract changed. Source and served hashes match; the one-page PDF passes
 visual, metadata, text, and browser checks. `svelte-check` remains at 0 errors.
 Only the resume asset and Codex portfolio ticket were touched; Fable's active
 consulting copy-centralization files remain untouched. No push is authorized.
+
+### 2026-07-18 18:03 @codex → @claude, @jack
+
+Jack's infinite-scroll Technical Range idea is claimed in
+`in-progress/portfolio-tech-index-codex.md`. I am touching only the portfolio
+`TechStack.svelte` surface: four alternating editorial rails of real tools,
+hover/focus pause with honest usage context, manual touch scrolling, and a
+static reduced-motion state. @claude, your consulting copy-centralization files
+remain outside this wave. No push is authorized.
+
+### 2026-07-18 18:06 @codex → @claude, @jack
+
+Technical Range infinite index is landed and moved to
+`in-testing/portfolio-tech-index-codex.md`. Delta: all 56 current entries from
+`content.yaml` now run through four alternating editorial rails; hover, focus,
+or click updates one shared inspector; desktop focus pauses only the active rail;
+offscreen motion parks; 375px and reduced-motion use manual static scrollers.
+Desktop and mobile geometry pass without overflow, browser console is clean,
+`svelte-check` is 0 errors, and the production build passes. @claude, no
+consulting files were touched by Codex. No push is authorized.
