@@ -102,8 +102,9 @@
 	// The three contacts never overlap, so one ring serves all. [t, x, y, maxScale, dur]
 	let ring = $derived.by(() => {
 		const hits: [number, number, number, number, number][] = [
-			[7.55, 86, 4.4, 1.9, 0.34],
-			[16.35, 11, 66.6, 2.7, 0.42],
+			[7.55, 86.1, 4.4, 1.9, 0.34],
+			[14.0, 50, 63.7, 2.4, 0.4],
+			[16.35, 11.2, 66.6, 2.7, 0.42],
 			[22.48, 4.7, 10.6, 2.5, 0.4]
 		];
 		for (const [t, x, y, mx, dur] of hits) {
@@ -159,30 +160,54 @@
 		return ramp(story, 17.25 + index * 0.31, 17.48 + index * 0.31);
 	}
 
-	// The cursor is a persistent character: it fades in once (~1.4s) and then
-	// stays on screen, travelling between targets and resting between actions.
-	// Coordinates are % of .screen-content, MEASURED from the live DOM so the
-	// pointer actually lands on each element. [story, x, y]
+	// The cursor is the AGENT: it opens each tool tab, grabs Notion open, clicks
+	// the search box, clicks Start a project, checks off each to-do, then hits
+	// refresh — resting between. It fades in once (~1.5s) and never leaves.
+	// Every coordinate is % of .screen-content, MEASURED from the live DOM so
+	// the pointer lands on the real element. [story, x, y]
 	const cursorPath: [number, number, number][] = [
-		[1.4, 58, 44],
-		[3.6, 52, 39],
-		[6.9, 59, 47],
-		[7.5, 86, 4.4], // Notion tab — grab at 7.55
-		[8.4, 80, 24], // drag the panel open
-		[9.0, 80, 31], // settle onto the to-do list
-		[12.2, 80, 39], // drift down the list as tasks fill
-		[13.4, 80, 39], // hold as the site breaks
-		[14.0, 22, 10.6], // address bar — focus at 14.1
-		[15.3, 22, 10.6], // hold while the URL types
-		[16.2, 11, 66.6], // Start a project button — click at 16.35
-		[17.4, 11, 66.6], // hold after the click
-		[19.8, 42, 41], // drift to center as the tabs close
-		[21.4, 42, 41],
-		[22.35, 4.7, 10.6], // refresh control — click at 22.48
+		[1.5, 14.9, 4.5], // arrive at the tab strip
+		[1.8, 14.9, 4.5], // open each tool tab, left to right...
+		[2.3, 22, 4.5],
+		[2.8, 29.1, 4.5],
+		[3.3, 36.2, 4.5],
+		[3.8, 43.3, 4.5],
+		[4.3, 50.5, 4.5],
+		[4.8, 57.6, 4.5],
+		[5.3, 64.7, 4.5],
+		[5.8, 71.8, 4.5],
+		[6.3, 78.9, 4.5], // ...through the tenth
+		[7.5, 86.1, 4.4], // Notion tab — grab at 7.55
+		[8.4, 82, 22], // pull the panel open
+		[9.0, 80, 30], // settle onto the to-do list (problems appear)
+		[12.2, 80, 40], // read down the list
+		[13.4, 80, 40], // hold as the site breaks
+		[13.95, 50, 63.7], // the search box — click at 14.0
+		[15.2, 50, 63.7], // hold while the URL types
+		[16.2, 11.2, 66.6], // Start a project — click at 16.35
+		[17.0, 11.2, 66.6], // hold after the click
+		[17.3, 68.8, 47.4], // check off each to-do, top to bottom...
+		[17.61, 68.8, 54],
+		[17.92, 68.8, 60.6],
+		[18.23, 68.8, 67.3],
+		[18.54, 68.8, 73.9],
+		[18.85, 68.8, 80.5],
+		[19.16, 68.8, 87.1],
+		[19.47, 68.8, 93.7], // ...through the last
+		[20.6, 52, 56], // drift away as the tabs close
+		[21.4, 52, 56],
+		[22.4, 4.7, 10.6], // refresh — click at 22.48
 		[23.4, 4.7, 10.6], // hold after refresh
 		[24.8, 46, 50], // rest on the resolved site
 		[duration, 46, 50]
 	];
+	const tabTapTimes = [1.8, 2.3, 2.8, 3.3, 3.8, 4.3, 4.8, 5.3, 5.8, 6.3];
+	const boxTapTimes = [17.3, 17.61, 17.92, 18.23, 18.54, 18.85, 19.16, 19.47];
+	function taps(times: number[]) {
+		let s = 0;
+		for (const t of times) s += pressAmt(t);
+		return s;
+	}
 	function cursorPos() {
 		const kf = cursorPath;
 		if (story <= kf[0][0]) return { x: kf[0][1], y: kf[0][2] };
@@ -200,8 +225,11 @@
 	function cursorStyle() {
 		const p = cursorPos();
 		const opacity = ramp(story, 1.2, 1.8); // fade in once, then persist
-		// The four contact envelopes never overlap, so summing is safe.
-		const press = Math.min(1, grabPress + pressAmt(14.1) + buttonPress + refreshPress);
+		// Every action's press envelope; none overlap, so the sum stays <= 1.
+		const press = Math.min(
+			1,
+			taps(tabTapTimes) + grabPress + pressAmt(14.0) + buttonPress + taps(boxTapTimes) + refreshPress
+		);
 		return `--cx:${p.x};--cy:${p.y};--press:${press};opacity:${opacity}`;
 	}
 

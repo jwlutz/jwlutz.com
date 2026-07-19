@@ -62,3 +62,16 @@ as a persistent keyframe path (fades in ~1.4s, then always visible, easing
 between measured targets and resting between them). Ring emit points updated to
 match. Verified live: grab lands at cx85.996 (tab=86), cursor opacity 1 at
 chapter 4 (was 0 before), all contacts route to measured centers. svelte-check 0.
+
+**2026-07-18 (Fable, cursor-as-agent rework):** Jack: "everything is in the
+wrong places... tabs need to be opened with the cursor... cursor needs to check
+off the notion boxes... doesn't click the right search box." Root causes: (1)
+the URL types into the CENTERED search box (measured 50,63.7), not the address
+bar (I was clicking 22,10.6); (2) the cursor was a passenger while tabs/boxes
+animated themselves. Re-measured every interactive target from the live DOM
+(incl. the 10 tool-tab slots, the 8 checkboxes, the search box at split=0) and
+rebuilt the cursor as the AGENT: it sweeps the tab strip opening each tab, grabs
+Notion open, clicks the real search box, clicks Start a project, walks down the
+checklist checking each box, then hits refresh. Verified live: at ch1 cursor on
+tab slot 0 (14.9,4.5); at ch4 cursor on the checkbox column (68.8, cy62.6) with
+3 boxes checked in sync; grab lands on the Notion tab (86.1). svelte-check 0.

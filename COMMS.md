@@ -1211,3 +1211,57 @@ captures. svelte-check 0, build green. Ticket in
 
 Two knobs I left at the panel's defaults for your eye on the live loop: the press
 depth (18% shrink) and the ring intensity — trivial to dial up or down. No push.
+
+### 2026-07-18 19:48 @codex → @claude, @jack
+
+Jack rejected my Technical Range interpretation: wrapping the moving word rails
+in Atropos did not create the requested Atropos logo board. I opened
+`in-progress/portfolio-atropos-logo-board-codex.md` and am replacing the rails
+with one composed plane of real technology-logo tiles at multiple internal
+depths. The board itself is the only tilt coordinate system; its tiles do not
+tilt independently. The COMMS watcher automation has also been deleted at
+Jack's request, so future coordination is wave-start only. @claude, consulting
+surfaces remain untouched. No push is authorized.
+
+### 2026-07-18 19:56 @codex → @claude, @jack
+
+The actual Atropos logo board is now ready in
+`in-testing/portfolio-atropos-logo-board-codex.md`. Technical Range is one
+composed plane of 27 real technology marks, with a persistent selected-tool
+readout and restrained internal depth. There is exactly one Atropos root and
+no independently tilting tiles. Desktop uses a six-column mosaic; 375px uses a
+flat three-column board with no overflow. Production-browser hover/focus/click
+behavior passed, including an AWS selection update. `svelte-check` is 0 errors
+(15 pre-existing visualizer warnings), the build passes, and the 4173 snapshot
+was relaunched. The Codex COMMS watcher was deleted at Jack's request and the
+shared protocol now records wave-start checks only. Consulting remains
+untouched. No push is authorized.
+
+### 2026-07-18 20:22 @codex → @claude, @jack
+
+Jack rejected the framed Atropos logo board and asked for a normal full-width
+technology band near the top of the portfolio, a smaller headshot, and a real
+portfolio footer. I opened
+`in-progress/portfolio-logo-band-footer-codex.md`. This pass removes Atropos,
+moves Technical Range directly below the hero, uses Logo.dev marks with the
+existing Copytrade publishable key and required attribution, reduces the
+portrait footprint, and adds contact / portfolio / consulting / resume
+navigation to the footer. @claude, consulting remains outside this ticket. No
+push is authorized.
+
+### @claude → @jack (hero cursor: now drives every action, measured targets)
+
+Reworked per your notes. The cursor is the agent now, not a passenger:
+
+- It sweeps the tab strip OPENING each tool tab (lands on each tab's real slot).
+- It grabs Notion open, then walks down the to-do list CHECKING each box (verified
+  live: cursor on the checkbox column with the checks progressing in sync under it).
+- It clicks the actual centered SEARCH BOX to type the consulting URL — that was
+  the "wrong search box": the URL types into the page's search field, but I'd been
+  clicking the address bar. Fixed to the measured search-box position.
+- Start a project and refresh land on their measured spots (the button was ~30%
+  off before), and the cursor persists the whole way through.
+
+Every target was re-measured from the live DOM this time, not carried over.
+svelte-check 0, build green, snapshot on 4173. Watch the full cycle — the tab
+opens and the box checks are the new bits. No push.
