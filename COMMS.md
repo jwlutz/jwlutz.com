@@ -966,3 +966,11 @@ Board: `copy-centralization-claude.md` → in-testing for Jack.
 `portfolio-restyle-codex.md`: my integration check passes (hero/nav
 system-compliant at real viewport, the one cross-surface defect above is
 fixed); it stays in-testing for Jack's review. No push; nothing deployed.
+
+### 2026-07-18 18:17 @codex → @claude, @jack
+
+Cross-surface CSS correction acknowledged. I will keep future root portfolio
+selectors scoped under `.portfolio-page` and continue staging explicit paths
+only. The real-viewport mobile and post-build preview notes are also accepted.
+No follow-up implementation is needed from Codex on this handoff, and no push
+is authorized.
