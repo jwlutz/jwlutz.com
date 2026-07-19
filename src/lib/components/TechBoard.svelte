@@ -54,7 +54,6 @@
 		{ tech: 'Go', label: 'Go', group: 'Language', detail: 'Fast data collection and production services.' },
 		{ tech: 'C++', label: 'C++', group: 'Language', detail: 'Performance-sensitive systems and quantitative engines.' },
 		{ tech: 'C', label: 'C', group: 'Language', detail: 'Low-level systems programming and memory-aware code.' },
-		{ tech: 'C#', label: 'C#', group: 'Language', detail: '.NET applications, services, and tooling.' },
 		{ tech: 'Rust', label: 'Rust', group: 'Language', detail: 'Memory-safe systems software and native applications.' },
 		{ tech: 'SQL', label: 'SQL', group: 'Language', detail: 'Relational queries, transformations, and analytical models.' },
 		{ tech: 'Bash', label: 'Bash', group: 'Language', detail: 'Shell automation and repeatable development workflows.' },
@@ -70,7 +69,6 @@
 		{ tech: 'CSS', label: 'CSS', group: 'Web', detail: 'Responsive layout, visual systems, and interface motion.' },
 		{ tech: 'Expo', label: 'Expo', group: 'Web', detail: 'Cross-platform React Native product development.' },
 		{ tech: 'Astro', label: 'Astro', group: 'Web', detail: 'Content-driven sites with minimal client JavaScript.' },
-		{ tech: 'WebSockets', label: 'WebSockets', group: 'Web', detail: 'Persistent realtime communication between clients and services.' },
 		{ tech: 'Three.js', label: 'Three.js', group: 'Web', detail: 'Interactive 3D scenes and WebGL experiences.' },
 
 		{ tech: 'PyTorch', label: 'PyTorch', group: 'Machine learning', detail: 'Neural networks, experimentation, and model training.' },
@@ -128,8 +126,8 @@
 		'SQL', 'Redis', 'MongoDB', 'JavaScript', 'Drizzle', 'Sentry',
 		'Figma', 'Clerk', 'Stripe', 'n8n', 'Hugging Face', 'LangChain',
 		'CUDA', 'OpenCV', 'JAX', 'Keras', 'Apache Spark', 'Airflow',
-		'GraphQL', 'WebSockets', 'Three.js', 'Vite', 'HTML', 'CSS',
-		'Expo', 'Astro', 'Go', 'C++', 'C', 'C#', 'Rust', 'Bash',
+		'GraphQL', 'Three.js', 'Vite', 'HTML', 'CSS',
+		'Expo', 'Astro', 'Go', 'C++', 'C', 'Rust', 'Bash',
 		'Solidity', 'Swift', 'R', 'matplotlib', 'SQLite', 'Linux',
 		'Kafka', 'Obsidian', 'Notion'
 	];
@@ -144,7 +142,7 @@
 
 	function gridDimensions(): GridDimensions {
 		const width = fieldElement?.clientWidth ?? 0;
-		const columns = width < 700 ? 7 : width < 1050 ? 11 : 13;
+		const columns = width < 700 ? 7 : width < 1050 ? 9 : 13;
 		return { columns, rows: Math.ceil(logoItems.length / columns) };
 	}
 
@@ -173,59 +171,59 @@
 		return positions;
 	}
 
-	function wrappedDistance(value: number, period: number) {
-		return ((value + period / 2) % period + period) % period - period / 2;
+	function clamp(value: number, minimum: number, maximum: number) {
+		return Math.max(minimum, Math.min(maximum, value));
 	}
 
-	function closestEquivalent(desired: number, current: number, period: number) {
-		while (desired - current > period / 2) desired -= period;
-		while (desired - current < -period / 2) desired += period;
-		return desired;
-	}
-
-	function renderSphere() {
+	function renderLens() {
 		if (!fieldElement) return;
 		const width = fieldElement.clientWidth;
-		const height = fieldElement.clientHeight;
 		const { columns, rows } = gridDimensions();
 		const centerColumn = (columns - 1) / 2;
 		const centerRow = (rows - 1) / 2;
-		const mobileProjection = width < 700;
-		const compactProjection = width < 1050;
-		const radiusX = width * (mobileProjection ? 0.5 : compactProjection ? 0.46 : 0.43);
-		const radiusY = height * (mobileProjection ? 0.52 : compactProjection ? 0.36 : 0.38);
-		const verticalArc = mobileProjection ? 1.3 : compactProjection ? 1.16 : 1.08;
+		const mobileLens = width < 700;
+		const compactLens = width < 1050;
+		const firstTile = tileElements[0];
+		const tileWidth = firstTile?.offsetWidth ?? (mobileLens ? 46 : compactLens ? 72 : 84);
+		const tileHeight = firstTile?.offsetHeight ?? (mobileLens ? 46 : compactLens ? 64 : 70);
+		const horizontalCap = mobileLens ? 60 : compactLens ? 88 : 96;
+		const gapX = Math.min(horizontalCap, Math.max(tileWidth + (mobileLens ? 5 : 7), width / (columns + 0.35)));
+		const gapY = tileHeight + (mobileLens ? 5 : 8);
 		const positions = gridPositions(columns, rows);
 
 		logoItems.forEach((_, index) => {
-			const tile = tileElements[index];
-			if (!tile) return;
+			const itemTile = tileElements[index];
+			if (!itemTile) return;
 
 			const { column, row } = positions[index];
-			const columnDistance = wrappedDistance(column + currentColumnOffset - centerColumn, columns);
-			const rowDistance = wrappedDistance(row + currentRowOffset - centerRow, rows);
-			const xAngle = (columnDistance / Math.max(1, centerColumn)) * 1.32;
-			const yAngle = (rowDistance / Math.max(1, centerRow)) * verticalArc;
-			const depth = Math.max(0.05, Math.cos(xAngle) * Math.cos(yAngle));
-			const scale = 0.34 + depth * 0.74;
-			const opacity = 0.12 + Math.pow(depth, 1.5) * 0.88;
-			const x = Math.sin(xAngle) * radiusX;
-			const y = Math.sin(yAngle) * radiusY;
+			const columnDistance = column + currentColumnOffset - centerColumn;
+			const rowDistance = row + currentRowOffset - centerRow;
+			const normalizedDistance = Math.hypot(
+				columnDistance / Math.max(1, columns * 0.51),
+				rowDistance / Math.max(1, rows * 0.55)
+			);
+			const depth = clamp(1 - normalizedDistance, 0, 1);
+			const easedDepth = Math.pow(depth, 0.72);
+			const scale = 0.48 + easedDepth * 0.52;
+			const opacity = 0.08 + Math.pow(depth, 1.12) * 0.92;
+			const x = columnDistance * gapX;
+			const y = rowDistance * gapY;
 
-			tile.style.transform = `translate(-50%, -50%) translate3d(${x.toFixed(2)}px, ${y.toFixed(2)}px, 0) scale(${scale.toFixed(3)})`;
-			tile.style.opacity = opacity.toFixed(3);
-			tile.style.zIndex = `${Math.round(depth * 100)}`;
-			tile.style.pointerEvents = depth < 0.16 ? 'none' : 'auto';
+			itemTile.style.transform = `translate(-50%, -50%) translate3d(${x.toFixed(2)}px, ${y.toFixed(2)}px, 0) scale(${scale.toFixed(3)})`;
+			itemTile.style.opacity = opacity.toFixed(3);
+			itemTile.style.zIndex = `${Math.round(depth * 100)}`;
+			itemTile.style.pointerEvents = depth < 0.08 ? 'none' : 'auto';
 		});
 	}
 
 	function syncTarget() {
-		targetColumnOffset = anchorColumnOffset + pointerColumnBias + scrollColumnBias;
-		targetRowOffset = anchorRowOffset + pointerRowBias + scrollRowBias;
+		const { columns, rows } = gridDimensions();
+		targetColumnOffset = clamp(anchorColumnOffset + pointerColumnBias + scrollColumnBias, -(columns - 1) / 2, (columns - 1) / 2);
+		targetRowOffset = clamp(anchorRowOffset + pointerRowBias + scrollRowBias, -(rows - 1) / 2, (rows - 1) / 2);
 		requestRender();
 	}
 
-	function animateSphere(timestamp: number) {
+	function animateLens(timestamp: number) {
 		frame = 0;
 		if (!inView) {
 			lastFrameTime = 0;
@@ -238,10 +236,11 @@
 			&& (Math.abs(edgeColumnVelocity) > 0.0001 || Math.abs(edgeRowVelocity) > 0.0001);
 
 		if (edgeDrifting) {
-			anchorColumnOffset += edgeColumnVelocity * elapsedFrames;
-			anchorRowOffset += edgeRowVelocity * elapsedFrames;
-			targetColumnOffset = anchorColumnOffset + pointerColumnBias + scrollColumnBias;
-			targetRowOffset = anchorRowOffset + pointerRowBias + scrollRowBias;
+			const { columns, rows } = gridDimensions();
+			anchorColumnOffset = clamp(anchorColumnOffset + edgeColumnVelocity * elapsedFrames, -(columns - 1) / 2, (columns - 1) / 2);
+			anchorRowOffset = clamp(anchorRowOffset + edgeRowVelocity * elapsedFrames, -(rows - 1) / 2, (rows - 1) / 2);
+			targetColumnOffset = clamp(anchorColumnOffset + pointerColumnBias + scrollColumnBias, -(columns - 1) / 2, (columns - 1) / 2);
+			targetRowOffset = clamp(anchorRowOffset + pointerRowBias + scrollRowBias, -(rows - 1) / 2, (rows - 1) / 2);
 		}
 
 		const columnDelta = targetColumnOffset - currentColumnOffset;
@@ -249,17 +248,17 @@
 		const ease = motionAllowed ? 0.13 : 1;
 		currentColumnOffset += columnDelta * ease;
 		currentRowOffset += rowDelta * ease;
-		renderSphere();
+		renderLens();
 
 		if (edgeDrifting || Math.abs(columnDelta) > 0.0005 || Math.abs(rowDelta) > 0.0005) {
-			frame = requestAnimationFrame(animateSphere);
+			frame = requestAnimationFrame(animateLens);
 		} else {
 			lastFrameTime = 0;
 		}
 	}
 
 	function requestRender() {
-		if (!frame && inView) frame = requestAnimationFrame(animateSphere);
+		if (!frame && inView) frame = requestAnimationFrame(animateLens);
 	}
 
 	function centerItem(index: number, instant = false) {
@@ -268,17 +267,21 @@
 		const centerColumn = (columns - 1) / 2;
 		const centerRow = (rows - 1) / 2;
 		activeIndex = index;
-		const desiredColumnOffset = closestEquivalent(centerColumn - column, currentColumnOffset, columns);
-		const desiredRowOffset = closestEquivalent(centerRow - row, currentRowOffset, rows);
-		anchorColumnOffset = desiredColumnOffset - pointerColumnBias - scrollColumnBias;
-		anchorRowOffset = desiredRowOffset - pointerRowBias - scrollRowBias;
+		pointerColumnBias = 0;
+		pointerRowBias = 0;
+		edgeColumnVelocity = 0;
+		edgeRowVelocity = 0;
+		const desiredColumnOffset = centerColumn - column;
+		const desiredRowOffset = centerRow - row;
+		anchorColumnOffset = desiredColumnOffset - scrollColumnBias;
+		anchorRowOffset = desiredRowOffset - scrollRowBias;
 		targetColumnOffset = desiredColumnOffset;
 		targetRowOffset = desiredRowOffset;
 
 		if (instant || !motionAllowed) {
 			currentColumnOffset = targetColumnOffset;
 			currentRowOffset = targetRowOffset;
-			renderSphere();
+			renderLens();
 			return;
 		}
 
@@ -294,10 +297,10 @@
 		const edgeY = Math.max(0, (Math.abs(y) - 0.72) / 0.28);
 
 		pointerInside = true;
-		pointerColumnBias = -x * 0.18;
-		pointerRowBias = -y * 0.1;
-		edgeColumnVelocity = -Math.sign(x) * edgeX * edgeX * 0.026;
-		edgeRowVelocity = -Math.sign(y) * edgeY * edgeY * 0.014;
+		pointerColumnBias = -x * 0.2;
+		pointerRowBias = -y * 0.11;
+		edgeColumnVelocity = -Math.sign(x) * edgeX * edgeX * 0.013;
+		edgeRowVelocity = -Math.sign(y) * edgeY * edgeY * 0.008;
 		syncTarget();
 	}
 
@@ -320,8 +323,8 @@
 			const rect = fieldElement.getBoundingClientRect();
 			const travel = window.innerHeight + rect.height;
 			const progress = Math.max(0, Math.min(1, (window.innerHeight - rect.top) / travel));
-			nextColumnBias = Math.sin((progress - 0.5) * Math.PI) * 0.46;
-			nextRowBias = (progress - 0.5) * 4.8;
+			nextColumnBias = Math.sin((progress - 0.5) * Math.PI) * 0.26;
+			nextRowBias = (progress - 0.5) * 0.9;
 		}
 
 		if (Math.abs(nextColumnBias - scrollColumnBias) < 0.0005
@@ -420,7 +423,7 @@
 		<div class="field-instruction" aria-hidden="true">
 			<span class="desktop-instruction">Move or hold an edge to explore</span>
 			<span class="mobile-instruction">Scroll to explore</span>
-			<span>65 technologies · select a mark to hold it</span>
+			<span>{logoItems.length} technologies · select a mark to hold it</span>
 		</div>
 		<div class="sphere-cloud">
 			{#each logoItems as item, index}
@@ -527,7 +530,7 @@
 
 	.sphere-field {
 		position: relative;
-		height: clamp(500px, 43vw, 600px);
+		height: clamp(470px, 38vw, 540px);
 		overflow: hidden;
 		border-top: 1px solid var(--field-border);
 		border-bottom: 1px solid var(--field-border);
@@ -559,15 +562,15 @@
 		position: absolute;
 		z-index: 2;
 		inset: 0;
-		mask-image: radial-gradient(ellipse 79% 78% at 50% 51%, black 48%, rgba(0, 0, 0, .96) 65%, rgba(0, 0, 0, .28) 88%, transparent 100%);
+		mask-image: radial-gradient(ellipse 80% 80% at 50% 51%, black 47%, rgba(0, 0, 0, .96) 65%, rgba(0, 0, 0, .3) 88%, transparent 100%);
 	}
 
 	.sphere-tile {
 		position: absolute;
 		left: 50%;
 		top: 50%;
-		width: 98px;
-		height: 82px;
+		width: clamp(74px, 6.4vw, 84px);
+		height: 70px;
 		padding: 0;
 		border: 0;
 		border-radius: 16px;
@@ -647,9 +650,9 @@
 		.sphere-readout,
 		.method-index { width: calc(100% - 48px); }
 		.sphere-intro { gap: 44px; }
-		.sphere-field { height: clamp(500px, 55vw, 570px); }
+		.sphere-field { height: clamp(500px, 58vw, 560px); }
 		.field-instruction { left: 24px; right: 24px; }
-		.sphere-tile { width: 82px; height: 70px; border-radius: 14px; }
+		.sphere-tile { width: clamp(66px, 8vw, 72px); height: 64px; border-radius: 14px; }
 		.tile-face { border-radius: 14px; }
 		.sphere-tile :global(.tech-mark) { width: 40px; height: 40px; }
 	}
@@ -661,13 +664,13 @@
 		.sphere-intro { min-height: 0; padding: 42px 0 34px; grid-template-columns: 1fr; gap: 24px; }
 		.sphere-intro h2 { font-size: 52px; }
 		.sphere-intro > p { font-size: 12px; }
-		.sphere-field { height: 440px; }
+		.sphere-field { height: 460px; }
 		.field-instruction { top: 17px; left: 16px; right: 16px; }
 		.desktop-instruction { display: none; }
 		.mobile-instruction { display: inline; }
 		.field-instruction span:last-child { display: none; }
 		.sphere-cloud { mask-image: radial-gradient(ellipse 93% 82% at 50% 51%, black 46%, rgba(0, 0, 0, .92) 67%, rgba(0, 0, 0, .2) 90%, transparent 100%); }
-		.sphere-tile { width: 56px; height: 48px; border-radius: 12px; }
+		.sphere-tile { width: clamp(44px, 12vw, 52px); height: clamp(42px, 11vw, 48px); border-radius: 12px; }
 		.tile-face { border-radius: 12px; }
 		.sphere-tile :global(.tech-mark) { width: 29px; height: 29px; }
 		.sphere-readout { min-height: 148px; padding: 22px 0 25px; grid-template-columns: 1fr; gap: 12px; }
