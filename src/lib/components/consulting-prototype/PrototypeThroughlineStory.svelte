@@ -14,7 +14,7 @@
 		siNotion
 	} from 'simple-icons';
 	import ConsultingMark from '$lib/components/ConsultingMark.svelte';
-	import { consultingSite } from '$lib/content/consulting-prototype';
+	import { consultingSite, heroScene } from '$lib/content/consulting-prototype';
 	import { track } from '$lib/analytics';
 
 	let { storageKey: _storageKey, workHref }: { storageKey: string; workHref: string } = $props();
@@ -42,32 +42,24 @@
 		{ name: 'PostHog', job: 'Analytics', icon: siPosthog, color: '#f59e0b' },
 		{ name: 'Sentry', job: 'Errors', icon: siSentry, color: '#a279ff' }
 	];
-	const tasks = [
-		'Fix mobile checkout',
-		'Repair contact form',
-		'Update customer login',
-		'Check missing payments',
-		'Restore analytics',
-		'Investigate production error',
-		'Finish the AI-generated change',
-		'Figure out why deployment failed'
-	];
+	const tasks = heroScene.notion.tasks;
+	// Timing and icons stay here; the visible labels come from heroScene.chapters.
 	const chapters = [
-		{ label: 'Start a Site', start: 0, end: 1.65, icon: '<rect x="1.5" y="2.5" width="9" height="7.5"/><line x1="1.5" y1="4.5" x2="10.5" y2="4.5"/>' },
-		{ label: 'Complexity Grows', start: 1.65, end: 7.55, icon: '<path d="M6 1.5L10.5 4 6 6.5 1.5 4z"/><path d="M1.5 6.5L6 9l4.5-2.5"/><path d="M1.5 8.8L6 11.3l4.5-2.5"/>' },
-		{ label: 'Things Break', start: 7.55, end: 13.45, icon: '<path d="M7.5 1L3.5 6.8h2.6L4.5 11 9 5.4H6.2z"/>' },
-		{ label: 'We Take Over', start: 13.45, end: 18.05, icon: '<path d="M1.5 6h6.5"/><path d="M5.5 3.5L8 6 5.5 8.5"/><path d="M10.5 2.5v7"/>' },
-		{ label: 'It Just Works', start: 18.05, end: duration, icon: '<circle cx="6" cy="6" r="4.5"/><path d="M4 6.2l1.4 1.4 2.6-3"/>' }
+		{ label: heroScene.chapters[0], start: 0, end: 1.65, icon: '<rect x="1.5" y="2.5" width="9" height="7.5"/><line x1="1.5" y1="4.5" x2="10.5" y2="4.5"/>' },
+		{ label: heroScene.chapters[1], start: 1.65, end: 7.55, icon: '<path d="M6 1.5L10.5 4 6 6.5 1.5 4z"/><path d="M1.5 6.5L6 9l4.5-2.5"/><path d="M1.5 8.8L6 11.3l4.5-2.5"/>' },
+		{ label: heroScene.chapters[2], start: 7.55, end: 13.45, icon: '<path d="M7.5 1L3.5 6.8h2.6L4.5 11 9 5.4H6.2z"/>' },
+		{ label: heroScene.chapters[3], start: 13.45, end: 18.05, icon: '<path d="M1.5 6h6.5"/><path d="M5.5 3.5L8 6 5.5 8.5"/><path d="M10.5 2.5v7"/>' },
+		{ label: heroScene.chapters[4], start: 18.05, end: duration, icon: '<circle cx="6" cy="6" r="4.5"/><path d="M4 6.2l1.4 1.4 2.6-3"/>' }
 	];
 
 	let activeChapter = $derived(Math.max(0, chapters.findIndex((chapter) => story >= chapter.start && story < chapter.end)));
 	let sceneTitle = $derived(
-		story < 1.65 ? 'One website.' :
-		story < 7.55 ? 'Then the tools start piling up.' :
-		story < 12.15 ? 'Now it is your second job.' :
-		story < 13.55 ? 'Until something breaks.' :
-		story < 18.05 ? 'Give the whole system one owner.' :
-		'Back to a website that just works.'
+		story < 1.65 ? heroScene.captions.start :
+		story < 7.55 ? heroScene.captions.pileUp :
+		story < 12.15 ? heroScene.captions.secondJob :
+		story < 13.55 ? heroScene.captions.breaks :
+		story < 18.05 ? heroScene.captions.handoff :
+		heroScene.captions.resolved
 	);
 	let notionSplit = $derived(
 		ramp(story, 7.65, 8.5) * Math.max(
@@ -79,9 +71,10 @@
 	let isSearch = $derived(story >= 13.55 && story < 15.35);
 	let isConsulting = $derived(story >= 15.35 && story < 21.75);
 	let isResolved = $derived(story >= 22.55);
+	let bizSite = $derived(isResolved ? heroScene.businessSite.after : heroScene.businessSite.before);
 	let notionVisible = $derived(ramp(story, 7.15, 7.55) * (1 - ramp(story, 21.15, 21.55)));
 	let helpVisible = $derived(ramp(story, 13.45, 13.8) * (1 - ramp(story, 21.45, 21.8)));
-	let queryCharacters = $derived(Math.floor(21 * ramp(story, 14.05, 15.05)));
+	let queryCharacters = $derived(Math.floor(heroScene.browser.typedUrl.length * ramp(story, 14.05, 15.05)));
 
 	function clamp(value: number) {
 		return Math.max(0, Math.min(1, value));
@@ -240,7 +233,7 @@
 					<div class="browser">
 						<div class="tab-strip">
 							<div class="browser-tab business-tab" class:active={!isSearch && !isConsulting}>
-								<i class="site-favicon">Y</i><span>yourbusiness.com</span><b>×</b>
+								<i class="site-favicon">Y</i><span>{heroScene.browser.businessDomain}</span><b>×</b>
 							</div>
 
 							{#each tabs as tab, index}
@@ -258,49 +251,49 @@
 							</div>
 
 							<div class="browser-tab help-tab" class:active={isSearch || isConsulting} style={`--tab-opacity:${helpVisible};--tab-width:${helpVisible};--tab-y:${(1 - helpVisible) * 9}px`}>
-								<i class="help-favicon">{isConsulting ? 'L' : '+'}</i><span>{isConsulting ? 'Lutz Consulting Group' : 'New tab'}</span><b>×</b>
+								<i class="help-favicon">{isConsulting ? 'L' : '+'}</i><span>{isConsulting ? heroScene.browser.consultingTabLabel : heroScene.browser.newTabLabel}</span><b>×</b>
 							</div>
 							<div class="new-tab">+</div>
 						</div>
 
 						<div class="address-row">
 							<span>‹</span><span>›</span><span class="refresh" class:pulse={story >= 22.2 && story < 22.75}>↻</span>
-							<div>{isSearch ? 'Search or enter address' : isConsulting ? 'jwlutz.com/consulting' : 'yourbusiness.com'}</div>
+							<div>{isSearch ? heroScene.browser.searchPlaceholder : isConsulting ? heroScene.browser.typedUrl : heroScene.browser.businessDomain}</div>
 							<b>⋯</b>
 						</div>
 
 						<div class="browser-workspace">
 							<div class="page-pane" style={`--split:${notionSplit}`}>
 								<div class="business-page" class:resolved={isResolved} class:hidden={isFailure || isSearch || isConsulting}>
-									<nav><strong>YOUR BUSINESS</strong><span>Work</span><span>About</span><button>Get in touch</button></nav>
+									<nav><strong>{heroScene.businessSite.brand}</strong>{#each heroScene.businessSite.links as link}<span>{link}</span>{/each}<button>{heroScene.businessSite.cta}</button></nav>
 									<div class="business-copy">
-								<h3>{#if isResolved}Your website<br />that just works.{:else}Your business,<br />online.{/if}</h3>
-								<p>{isResolved ? 'Maintained, connected, and ready for what comes next.' : 'Clear, useful, and ready for customers.'}</p>
+								<h3>{bizSite.headline[0]}<br />{bizSite.headline[1]}</h3>
+								<p>{bizSite.body}</p>
 									</div>
 									<div class="site-visual"><i></i><i></i><i></i><b></b></div>
-									<footer class:visible={isResolved}><span>© YOUR BUSINESS</span><b>Made by LCG</b></footer>
+									<footer class:visible={isResolved}><span>{heroScene.businessSite.footer.left}</span><b>{heroScene.businessSite.footer.right}</b></footer>
 								</div>
 
 								<div class="error-page" class:visible={isFailure}>
-								<strong>404</strong><span>YOURBUSINESS.COM IS NOT RESPONDING</span>
+								<strong>{heroScene.errorPage.code}</strong><span>{heroScene.errorPage.message}</span>
 								</div>
 
 								<div class="search-page" class:visible={isSearch}>
 								<div class="search-symbol"><i></i></div>
-									<div class="search-input"><span>{'jwlutz.com/consulting'.slice(0, queryCharacters)}</span><i></i></div>
+									<div class="search-input"><span>{heroScene.browser.typedUrl.slice(0, queryCharacters)}</span><i></i></div>
 								</div>
 
 								<div class="consulting-page" class:visible={isConsulting}>
-									<nav><span><ConsultingMark size={18} title="" /> Lutz Consulting Group</span><small>WORK · SERVICES · APPROACH</small></nav>
-									<div><small>WEBSITES / AI INTEGRATIONS / ANALYTICS</small><h3>Don’t let your website become your <em>second job.</em></h3><button class:clicked={story >= 16.35}>Start a project</button></div>
+									<nav><span><ConsultingMark size={18} title="" /> {consultingSite.brand}</span><small>{heroScene.consultingCard.navNote}</small></nav>
+									<div><small>{consultingSite.hero.eyebrow}</small><h3>{consultingSite.hero.title.lead} <em>{consultingSite.hero.title.emphasis}</em></h3><button class:clicked={story >= 16.35}>{consultingSite.hero.primaryCta}</button></div>
 								</div>
 							</div>
 
 							<div class="notion-pane" style={`--split:${notionSplit}`}>
-								<div class="notion-head"><span><i>{@html siNotion.svg}</i>Notion</span><b>Website to-do</b><small>•••</small></div>
+								<div class="notion-head"><span><i>{@html siNotion.svg}</i>Notion</span><b>{heroScene.notion.pageTitle}</b><small>•••</small></div>
 								<div class="notion-page">
 									<i class="notion-icon">{@html siNotion.svg}</i>
-									<h3>Website to-do</h3>
+									<h3>{heroScene.notion.pageTitle}</h3>
 									<div class="task-list">
 										{#each tasks as task, index}
 											{@const amount = taskAmount(index)}
@@ -324,7 +317,7 @@
 
 		<div class="story-caption" aria-live="polite">
 			<p>{sceneTitle}</p>
-			<button type="button" onclick={replay} aria-label="Replay the website ownership story"><i></i> Replay</button>
+			<button type="button" onclick={replay} aria-label="Replay the website ownership story"><i></i> {heroScene.replayLabel}</button>
 			<div class="phase-bar" role="group" aria-label="Story phases">
 				{#each chapters as chapter, index}
 					{@const amount = ramp(story, chapter.start, chapter.end)}

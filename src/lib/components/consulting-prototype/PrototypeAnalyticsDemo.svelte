@@ -9,6 +9,8 @@
 	`playing` contract per Codex's layout wiring; shell dims unchanged.
 -->
 <script lang="ts">
+	import { analyticsDemoCopy as copy } from '$lib/content/consulting-prototype';
+
 	// notebook run: c1 load -> c2 fit -> c3 forecast plot -> c4 optimize -> loop
 	const TIMELINE: [number, string][] = [
 		[500, 'c1'], [1600, 'c1d'], [1900, 'c2'], [3000, 'c2a'], [3800, 'c2d'],
@@ -43,12 +45,12 @@
 </script>
 
 <div class="demo" class:playing role="img" aria-label="An analytics and machine-learning workspace: a live traffic dashboard beside a Jupyter notebook that loads order history, fits a seasonal demand model, plots a forecast with a confidence band, and optimizes reorder points under a service-level constraint.">
-	<header><span>ANALYTICS + ML / WORKSPACE</span><small>live</small></header>
+	<header><span>{copy.header}</span><small>{copy.live}</small></header>
 
 	<div class="workspace">
 		<section class="main">
-			<div class="panel-bar"><span>VISITORS · LAST 30 DAYS</span><small class="pulse-wrap"><i class="pulse"></i>14 on site now</small></div>
-			<div class="chart-legend" aria-hidden="true"><span><i class="lg-now"></i>THIS PERIOD</span><span><i class="lg-prev"></i>LAST PERIOD</span></div>
+			<div class="panel-bar"><span>{copy.visitors.label}</span><small class="pulse-wrap"><i class="pulse"></i>{copy.visitors.now}</small></div>
+			<div class="chart-legend" aria-hidden="true"><span><i class="lg-now"></i>{copy.visitors.legendNow}</span><span><i class="lg-prev"></i>{copy.visitors.legendPrev}</span></div>
 			<div class="chart">
 				<svg viewBox="0 0 100 40" preserveAspectRatio="none" aria-hidden="true">
 					<path class="prev" d="M0,36 C8,35 14,33 22,33.5 C30,34 36,30 44,30.5 C52,31 58,27 66,27.5 C74,28 80,24 88,24.5 C93,24.7 97,23 100,23" />
@@ -56,35 +58,35 @@
 					<path class="line" d="M0,31 C8,29 14,24 22,25 C30,26 36,18 44,19 C52,20 58,12 66,13 C74,14 80,7 88,8 C93,8.5 97,5 100,5" />
 				</svg>
 				<div class="gridlines" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
-				<div class="axis" aria-hidden="true"><span>30 DAYS AGO</span><span>TODAY</span></div>
+				<div class="axis" aria-hidden="true"><span>{copy.visitors.axisStart}</span><span>{copy.visitors.axisEnd}</span></div>
 			</div>
-			<div class="panel-bar sources-bar"><span>WHERE THEY COME FROM</span></div>
+			<div class="panel-bar sources-bar"><span>{copy.sources.label}</span></div>
 			<div class="sources">
-				<div><span>Search</span><i style="--w:86%"></i></div>
-				<div><span>Direct</span><i style="--w:58%"></i></div>
-				<div><span>Social</span><i style="--w:37%"></i></div>
-				<div><span>Referral</span><i style="--w:22%"></i></div>
+				<div><span>{copy.sources.rows[0]}</span><i style="--w:86%"></i></div>
+				<div><span>{copy.sources.rows[1]}</span><i style="--w:58%"></i></div>
+				<div><span>{copy.sources.rows[2]}</span><i style="--w:37%"></i></div>
+				<div><span>{copy.sources.rows[3]}</span><i style="--w:22%"></i></div>
 			</div>
 		</section>
 
 		<aside class="side">
-			<div class="nb-bar"><span>demand_plan.ipynb</span><small><i class="kdot" class:busy={past('c1') && !past('c4d')}></i>{past('c4d') ? 'Python 3 · idle' : past('c1') ? 'Python 3 · running' : 'Python 3'}</small></div>
+			<div class="nb-bar"><span>{copy.notebook.filename}</span><small><i class="kdot" class:busy={past('c1') && !past('c4d')}></i>{past('c4d') ? copy.notebook.kernel.idle : past('c1') ? copy.notebook.kernel.running : copy.notebook.kernel.ready}</small></div>
 
 			<div class="cell" class:ran={past('c1d')}>
 				<b>{past('c1d') ? '[1]' : past('c1') ? '[*]' : '[ ]'}</b>
 				<div>
-					<code>orders = read_orders(months=24)</code>
-					<samp class:show={past('c1d')}>24 months · 8 SKUs · weekly buckets</samp>
+					<code>{copy.notebook.load.code}</code>
+					<samp class:show={past('c1d')}>{copy.notebook.load.out}</samp>
 				</div>
 			</div>
 
 			<div class="cell" class:ran={past('c2d')}>
 				<b>{past('c2d') ? '[2]' : past('c2') ? '[*]' : '[ ]'}</b>
 				<div>
-					<code>fit = sarima(orders).fit()</code>
+					<code>{copy.notebook.fit.code}</code>
 					<samp class:show={past('c2a')}>
 						<span class="loss" aria-hidden="true"><i style="--h:100%"></i><i style="--h:62%"></i><i style="--h:36%"></i><i style="--h:20%"></i><i style="--h:12%"></i><i style="--h:9%"></i><i style="--h:8%"></i></span>
-						{past('c2d') ? 'seasonal terms kept · AIC converged' : 'searching seasonal orders'}
+						{past('c2d') ? copy.notebook.fit.out : copy.notebook.fit.running}
 					</samp>
 				</div>
 			</div>
@@ -92,7 +94,7 @@
 			<div class="cell" class:ran={past('c3d')}>
 				<b>{past('c3d') ? '[3]' : past('c3') ? '[*]' : '[ ]'}</b>
 				<div>
-					<code>fc = fit.forecast(steps=12, ci=0.9)</code>
+					<code>{copy.notebook.forecast.code}</code>
 					<div class="fplot" class:draw={past('c3')} class:full={past('c3d')} aria-hidden="true">
 						<svg viewBox="0 0 100 46" preserveAspectRatio="none">
 							<polygon class="band" points="58,25 70,20 84,17 100,15 100,31 84,29 70,28 58,27" />
@@ -100,7 +102,7 @@
 							<path class="fcast" d="M58,26 C66,24 74,21 84,19.5 C90,18.5 96,17 100,16.5" />
 							<line class="nowline" x1="58" y1="4" x2="58" y2="44" />
 						</svg>
-						<small><span>WEEKS →</span><span>90% BAND</span><span>UNITS ↑</span></small>
+						<small><span>{copy.notebook.forecast.axes[0]}</span><span>{copy.notebook.forecast.axes[1]}</span><span>{copy.notebook.forecast.axes[2]}</span></small>
 					</div>
 				</div>
 			</div>
@@ -108,16 +110,16 @@
 			<div class="cell" class:ran={past('c4d')}>
 				<b>{past('c4d') ? '[4]' : past('c4') ? '[*]' : '[ ]'}</b>
 				<div>
-					<code>plan = argmin(cost) <i class="st">s.t. service ≥ 0.98</i></code>
-					<samp class:show={past('c4d')}><i class="ok">✓</i>reorder points set · holding + stockout cost minimized</samp>
+					<code>{copy.notebook.optimize.code} <i class="st">{copy.notebook.optimize.constraint}</i></code>
+					<samp class:show={past('c4d')}><i class="ok">✓</i>{copy.notebook.optimize.out}</samp>
 				</div>
 			</div>
 
-			<div class="nb-foot" class:show={past('c4d')}><small>ARTIFACTS</small><span>forecast.png · reorder_plan.csv</span><em>→ shared to your dashboard</em></div>
+			<div class="nb-foot" class:show={past('c4d')}><small>{copy.notebook.artifacts.label}</small><span>{copy.notebook.artifacts.files}</span><em>{copy.notebook.artifacts.note}</em></div>
 		</aside>
 	</div>
 
-	<footer><span>Watched by us, readable by you.</span><small>dashboards live · models when they earn it</small></footer>
+	<footer><span>{copy.footer.tagline}</span><small>{copy.footer.note}</small></footer>
 	<i class="progress" aria-hidden="true"></i>
 </div>
 

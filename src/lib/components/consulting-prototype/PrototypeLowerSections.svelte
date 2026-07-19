@@ -2,7 +2,7 @@
 	import { enhance } from '$app/forms';
 	import { tick } from 'svelte';
 	import type { SubmitFunction } from '@sveltejs/kit';
-	import { consultingSite } from '$lib/content/consulting-prototype';
+	import { consultingSite, contactFormCopy, montageCopy } from '$lib/content/consulting-prototype';
 	import { track, trackOutbound } from '$lib/analytics';
 	import type { ContactFormState } from '$lib/types/consulting-contact';
 
@@ -14,7 +14,7 @@
 	let formElement: HTMLFormElement;
 	let response = $state<ContactFormState | undefined>();
 	let activeResponse = $derived(response ?? contactForm);
-	let mailHref = $derived(`mailto:${consultingSite.contactEmail}?subject=${encodeURIComponent(`${selectedOption} project | Lutz Consulting Group`)}&body=${encodeURIComponent(`I’d like help with: ${selectedOption}\n\nHere’s what exists today:\n\nThe part I’d most like to stop carrying:\n\nLinks or context:\n`)}`);
+	let mailHref = $derived(`mailto:${consultingSite.contactEmail}?subject=${encodeURIComponent(`${selectedOption} project | ${consultingSite.brand}`)}&body=${encodeURIComponent(`${contactFormCopy.mailIntro} ${selectedOption}\n\n${contactFormCopy.mailPrompts.join('\n\n')}\n`)}`);
 
 	$effect(() => {
 		if (contactForm) {
@@ -43,7 +43,7 @@
 				return;
 			}
 			if (result.type === 'error') {
-				response = { success: false, message: 'The message did not send. Use the direct email link below instead.' };
+				response = { success: false, message: contactFormCopy.sendFailed };
 				return;
 			}
 			await update();
@@ -61,23 +61,23 @@
 		<div class="project-stage" aria-label="Selected Lutz Consulting Group work" data-motion-item>
 			<div class="stage-depth" aria-hidden="true"></div>
 			<a class="mont mont-window mont-copytrade" href={projects[0].url} target="_blank" rel="noreferrer" aria-label={`Visit ${projects[0].name}`} onclick={() => trackOutbound(projects[0].url, 'proto_work_showcase')}>
-				<div class="window-bar"><i></i><i></i><i></i><small>CANDELLA COPYTRADE / LIVE</small></div>
+				<div class="window-bar"><i></i><i></i><i></i><small>{montageCopy.copytrade}</small></div>
 				<img src={projects[0].image} alt={projects[0].imageAlt} loading="lazy" decoding="async" />
 			</a>
 			<a class="mont mont-window mont-quant" href={projects[1].url} target="_blank" rel="noreferrer" aria-label={`Visit ${projects[1].name}`} onclick={() => trackOutbound(projects[1].url, 'proto_work_showcase')}>
-				<div class="window-bar"><i></i><i></i><i></i><small>CANDELLA QUANT / WORKSPACE</small></div>
+				<div class="window-bar"><i></i><i></i><i></i><small>{montageCopy.quant}</small></div>
 				<img src={projects[1].image} alt={projects[1].imageAlt} loading="lazy" decoding="async" />
 			</a>
 			<a class="mont mont-window mont-tss" href={projects[2].url} target="_blank" rel="noreferrer" aria-label={`Visit ${projects[2].name}`} onclick={() => trackOutbound(projects[2].url, 'proto_work_showcase')}>
-				<div class="window-bar"><i></i><i></i><i></i><small>THE SPARKLING SHOE / COMMERCE</small></div>
+				<div class="window-bar"><i></i><i></i><i></i><small>{montageCopy.tss}</small></div>
 				<img src={projects[2].image} alt={projects[2].imageAlt} loading="lazy" decoding="async" />
 			</a>
 			<a class="mont mont-shoe" href={projects[2].url} target="_blank" rel="noreferrer" aria-label="Toe-tally Fresh pointe shoe inserts by The Sparkling Shoe" onclick={() => trackOutbound(projects[2].url, 'proto_work_showcase')}>
 				<img src="/consulting/prototypes/sparkling-fresh.jpg" alt="Toe-tally Fresh pointe shoe inserts" loading="lazy" decoding="async" />
-				<span>TOE-TALLY FRESH / PRODUCT</span>
+				<span>{montageCopy.shoe}</span>
 			</a>
 			<a class="mont mont-mind" href={projects[3].url} target="_blank" rel="noreferrer" aria-label={`Visit ${projects[3].name}`} onclick={() => trackOutbound(projects[3].url, 'proto_work_showcase')}>
-				<small>MINDLSN / ADAPTIVE PRODUCT</small><strong>MindLSN</strong><span>Adaptive drills · ELO ratings · integrity checks</span>
+				<small>{montageCopy.mind.tag}</small><strong>{montageCopy.mind.title}</strong><span>{montageCopy.mind.sub}</span>
 			</a>
 		</div>
 	</section>
@@ -92,9 +92,9 @@
 		</div>
 
 		<form class="brief-builder" method="POST" action="?/contact" use:enhance={enhanceContact} bind:this={formElement} aria-busy={submitting} data-motion-item>
-			<header><span>PROJECT STARTER</span><small>Choose the closest answer</small></header>
+			<header><span>{contactFormCopy.header.title}</span><small>{contactFormCopy.header.hint}</small></header>
 			<div class="brief-question">
-				<small id="project-type-label">WHAT ARE WE STARTING WITH?</small>
+				<small id="project-type-label">{contactFormCopy.question}</small>
 				<div role="radiogroup" aria-labelledby="project-type-label" aria-invalid={Boolean(activeResponse?.errors?.projectType)} aria-describedby={activeResponse?.errors?.projectType ? 'project-type-error' : undefined}>
 					{#each options as option, index}
 						<label class:selected={selectedOption === option}>
@@ -106,29 +106,29 @@
 				{#if activeResponse?.errors?.projectType}<p class="field-error" id="project-type-error">{activeResponse.errors.projectType}</p>{/if}
 			</div>
 			<div class="brief-summary">
-				<div><small>SELECTED STARTING POINT</small><strong>{selectedOption}</strong><p>A link, screen recording, spreadsheet, or rough explanation is enough.</p></div>
+				<div><small>{contactFormCopy.summaryLabel}</small><strong>{selectedOption}</strong><p>{contactFormCopy.summaryNote}</p></div>
 			</div>
 			<div class="contact-fields">
 				<label>
-					<span>YOUR NAME</span>
+					<span>{contactFormCopy.fields.name}</span>
 					<input name="name" autocomplete="name" required maxlength="100" value={activeResponse?.values?.name ?? ''} aria-invalid={Boolean(activeResponse?.errors?.name)} aria-describedby={activeResponse?.errors?.name ? 'contact-name-error' : undefined} />
 					{#if activeResponse?.errors?.name}<small id="contact-name-error">{activeResponse.errors.name}</small>{/if}
 				</label>
 				<label>
-					<span>EMAIL</span>
+					<span>{contactFormCopy.fields.email}</span>
 					<input type="email" name="email" autocomplete="email" required maxlength="254" value={activeResponse?.values?.email ?? ''} aria-invalid={Boolean(activeResponse?.errors?.email)} aria-describedby={activeResponse?.errors?.email ? 'contact-email-error' : undefined} />
 					{#if activeResponse?.errors?.email}<small id="contact-email-error">{activeResponse.errors.email}</small>{/if}
 				</label>
 				<label class="message-field">
-					<span>WHAT EXISTS TODAY?</span>
+					<span>{contactFormCopy.fields.message}</span>
 					<textarea name="message" required minlength="10" maxlength="4000" rows="5" value={activeResponse?.values?.message ?? ''} aria-invalid={Boolean(activeResponse?.errors?.message)} aria-describedby={activeResponse?.errors?.message ? 'contact-message-error' : undefined}></textarea>
 					{#if activeResponse?.errors?.message}<small id="contact-message-error">{activeResponse.errors.message}</small>{/if}
 				</label>
 			</div>
 			<label class="honeypot" aria-hidden="true">Company<input name="company" tabindex="-1" autocomplete="off" /></label>
 			<div class="form-actions">
-				<button class="submit-button" type="submit" disabled={submitting}><span>{submitting ? 'Sending…' : 'Send project brief'}</span><small>Direct to Lutz Consulting Group</small></button>
-				<p>Prefer email? <a href={mailHref} onclick={() => track('email_click', { source: 'consulting_prototype', location: 'final_cta_fallback', project_type: selectedOption })}>{consultingSite.finalCta.emailLabel}</a></p>
+				<button class="submit-button" type="submit" disabled={submitting}><span>{submitting ? contactFormCopy.submit.busy : contactFormCopy.submit.idle}</span><small>{contactFormCopy.submit.note}</small></button>
+				<p>{contactFormCopy.fallbackPrompt} <a href={mailHref} onclick={() => track('email_click', { source: 'consulting_prototype', location: 'final_cta_fallback', project_type: selectedOption })}>{consultingSite.finalCta.emailLabel}</a></p>
 			</div>
 			{#if activeResponse?.message}<p class:success={activeResponse.success} class="form-status" role="status" aria-live="polite">{activeResponse.message}</p>{/if}
 		</form>

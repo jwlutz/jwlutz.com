@@ -7,6 +7,7 @@
 -->
 <script lang="ts">
 	import { siTiktok, siInstagram, siX, siReddit, siPerplexity, siSupabase, siClaude, siGmail, siNotion } from 'simple-icons';
+	import { aiDemoCopy } from '$lib/content/consulting-prototype';
 
 	const TIMELINE: [number, string][] = [
 		[0, 'b1'], [250, 'b2'], [500, 'b3'], [750, 'b4'], [1000, 'b5'], [1250, 'b6'],
@@ -25,14 +26,18 @@
 
 	const past = (p: string) => ORDER.indexOf(phase) >= ORDER.indexOf(p);
 
-	const sources = [
-		{ icon: siTiktok, brand: '#f0efe9', name: 'TikTok', watch: 'comments · sounds', b: 'b1' },
-		{ icon: siInstagram, brand: '#E4405F', name: 'Instagram', watch: 'followers · DMs', b: 'b2' },
-		{ icon: siX, brand: '#f0efe9', name: 'X', watch: 'replies · mentions', b: 'b3' },
-		{ icon: null, brand: '', name: 'LinkedIn', watch: 'connections · posts', b: 'b4' },
-		{ icon: siReddit, brand: '#FF4500', name: 'Reddit', watch: 'threads · subreddits', b: 'b5' },
-		{ icon: null, brand: '', name: 'Company pages', watch: 'sites · careers', b: 'b6', glyph: '⌂' }
+	// Icons and phase wiring stay here; names and watch-lines come from
+	// aiDemoCopy.sources in the same top-to-bottom order.
+	const sourceMeta = [
+		{ icon: siTiktok, brand: '#f0efe9', b: 'b1' },
+		{ icon: siInstagram, brand: '#E4405F', b: 'b2' },
+		{ icon: siX, brand: '#f0efe9', b: 'b3' },
+		{ icon: null, brand: '', b: 'b4' },
+		{ icon: siReddit, brand: '#FF4500', b: 'b5' },
+		{ icon: null, brand: '', b: 'b6', glyph: '⌂' }
 	];
+	const sources = sourceMeta.map((meta, index) => ({ ...meta, ...aiDemoCopy.sources[index] }));
+	const nodes = aiDemoCopy.nodes;
 
 	$effect(() => {
 		reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -52,7 +57,7 @@
 </script>
 
 <div class="demo" class:playing role="img" aria-label="A complete lead engine being built, then run: six social and web sources feed a collector, Perplexity researches each lead, they are ranked on your criteria and stored in Supabase, Claude writes personalized outreach that Gmail sends, unanswered leads loop back through a Claude follow-up, replies land in Notion for the owner to read, and outcomes feed back into the ranking.">
-	<header><span>AUTOMATION / LEAD ENGINE</span><small class:on={past('done')}>{past('done') ? 'run complete · ranking updated' : past('r1') ? 'running' : 'building'}</small></header>
+	<header><span>{aiDemoCopy.header}</span><small class:on={past('done')}>{past('done') ? aiDemoCopy.states.done : past('r1') ? aiDemoCopy.states.running : aiDemoCopy.states.building}</small></header>
 
 	<div class="canvas">
 		<svg class="edges" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
@@ -97,53 +102,53 @@
 
 		<div class="node ai" class:on={past('b7')} class:hit={past('r2')} style="left:24%;top:6%">
 			<i class="logo"><span style="--brand:#1FB8CD">{@html siPerplexity.svg}</span></i>
-			<small>RESEARCH</small><strong>Perplexity</strong><span>who are they, what do they need</span>
-			<samp class:show={past('r2')}>profile + recent posts pulled</samp>
+			<small>{nodes.research.label}</small><strong>{nodes.research.title}</strong><span>{nodes.research.sub}</span>
+			<samp class:show={past('r2')}>{nodes.research.status}</samp>
 		</div>
 		<div class="node ai" class:on={past('b8')} class:hit={past('r3')} style="left:24%;top:40%">
 			<i class="logo"><em class="glyph">✦</em></i>
-			<small>RANK</small><strong>Score on your criteria</strong><span>fit · intent · timing</span>
-			<samp class:show={past('r3')}>fit strong · timing now</samp>
+			<small>{nodes.rank.label}</small><strong>{nodes.rank.title}</strong><span>{nodes.rank.sub}</span>
+			<samp class:show={past('r3')}>{nodes.rank.status}</samp>
 		</div>
 		<div class="node act" class:on={past('b9')} class:hit={past('r4')} style="left:24%;top:74%">
 			<i class="logo"><span style="--brand:#3FCF8E">{@html siSupabase.svg}</span></i>
-			<small>STORE</small><strong>Supabase</strong><span>every lead, deduped</span>
-			<samp class:show={past('r4')}>saved · history attached</samp>
+			<small>{nodes.store.label}</small><strong>{nodes.store.title}</strong><span>{nodes.store.sub}</span>
+			<samp class:show={past('r4')}>{nodes.store.status}</samp>
 		</div>
 
 		<div class="node ai" class:on={past('b10')} class:hit={past('r5')} style="left:53%;top:6%">
 			<i class="logo"><span style="--brand:#D97757">{@html siClaude.svg}</span></i>
-			<small>WRITE</small><strong>Personal outreach</strong><span>their work, your voice</span>
-			<samp class:show={past('r5')}>“Loved your sizing write-up…”</samp>
+			<small>{nodes.write.label}</small><strong>{nodes.write.title}</strong><span>{nodes.write.sub}</span>
+			<samp class:show={past('r5')}>{nodes.write.status}</samp>
 		</div>
 		<div class="node act" class:on={past('b11')} class:hit={past('r6')} style="left:53%;top:40%">
 			<i class="logo"><span style="--brand:#EA4335">{@html siGmail.svg}</span></i>
-			<small>SEND</small><strong>Gmail</strong><span>from your address</span>
-			<samp class:show={past('r6')}>delivered · thread logged</samp>
+			<small>{nodes.send.label}</small><strong>{nodes.send.title}</strong><span>{nodes.send.sub}</span>
+			<samp class:show={past('r6')}>{nodes.send.status}</samp>
 		</div>
 		<div class="node ai" class:on={past('b12')} class:hit={past('r8')} style="left:53%;top:74%">
 			<i class="logo"><span style="--brand:#D97757">{@html siClaude.svg}</span></i>
-			<small>FOLLOW UP</small><strong>Personal follow-up</strong><span>no reply in 3 days</span>
-			<samp class:show={past('r8')}>rewritten, not resent</samp>
+			<small>{nodes.followUp.label}</small><strong>{nodes.followUp.title}</strong><span>{nodes.followUp.sub}</span>
+			<samp class:show={past('r8')}>{nodes.followUp.status}</samp>
 		</div>
 
 		<div class="node human" class:on={past('b13')} class:hit={past('r7')} style="left:81%;top:38%">
 			<i class="logo"><span style="--brand:#f0efe9">{@html siNotion.svg}</span></i>
-			<small>HUMAN CHECKPOINT</small><strong>Replies in Notion</strong><span>you read every one</span>
-			<samp class:show={past('r7')}>2 waiting for you</samp>
+			<small>{nodes.human.label}</small><strong>{nodes.human.title}</strong><span>{nodes.human.sub}</span>
+			<samp class:show={past('r7')}>{nodes.human.status}</samp>
 		</div>
 
-		<div class="rail-label" class:on={past('r8')} style="left:80.5%;top:26%">NO REPLY ↺</div>
-		<div class="rail-label" class:on={past('r9')} style="left:41%;top:61.5%">REPLIES TUNE THE RANKING ↺</div>
+		<div class="rail-label" class:on={past('r8')} style="left:80.5%;top:26%">{aiDemoCopy.rails.noReply}</div>
+		<div class="rail-label" class:on={past('r9')} style="left:41%;top:61.5%">{aiDemoCopy.rails.tune}</div>
 
 		<div class="runlog" aria-hidden="true">
-			<span class:on={past('r4')}>lead qualified → stored</span>
-			<span class:on={past('r6')}>outreach sent → logged</span>
-			<span class:on={past('r9')}>reply read → ranking updated</span>
+			<span class:on={past('r4')}>{aiDemoCopy.runlog[0]}</span>
+			<span class:on={past('r6')}>{aiDemoCopy.runlog[1]}</span>
+			<span class:on={past('r9')}>{aiDemoCopy.runlog[2]}</span>
 		</div>
 	</div>
 
-	<footer><span>Your tools, wired together, run on your rules.</span><small class:on={past('done')}><i>✓</i>every run logged</small></footer>
+	<footer><span>{aiDemoCopy.footer.tagline}</span><small class:on={past('done')}><i>✓</i>{aiDemoCopy.footer.badge}</small></footer>
 	<i class="progress" aria-hidden="true"></i>
 </div>
 

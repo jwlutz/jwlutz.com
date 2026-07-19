@@ -1,7 +1,7 @@
 	<script lang="ts">
 	import { onMount } from 'svelte';
 	import { animate as motionAnimate, inView, scroll, stagger as motionStagger } from 'motion';
-	import { consultingSite } from '$lib/content/consulting-prototype';
+	import { navCopy, siteMeta } from '$lib/content/consulting-prototype';
 	import type { ContactFormState } from '$lib/types/consulting-contact';
 	import PrototypeNav from './PrototypeNav.svelte';
 	import PrototypeThroughlineStory from './PrototypeThroughlineStory.svelte';
@@ -40,12 +40,12 @@
 </script>
 
 <svelte:head>
-	<title>Lutz Consulting Group — Websites, AI Integrations, and Analytics</title>
-	<meta name="description" content="Lutz Consulting Group designs, builds, and operates websites, AI integrations, analytics, and the systems behind them." />
+	<title>{siteMeta.landing.title}</title>
+	<meta name="description" content={siteMeta.landing.description} />
 	<meta property="og:type" content="website" />
 	<meta property="og:site_name" content="Lutz Consulting Group" />
-	<meta property="og:title" content="Lutz Consulting Group — Websites, AI Integrations, and Analytics" />
-	<meta property="og:description" content="We design, build, and operate the digital systems behind your business—so you can keep running the business." />
+	<meta property="og:title" content={siteMeta.landing.title} />
+	<meta property="og:description" content={siteMeta.landing.ogDescription} />
 	<meta name="twitter:card" content="summary" />
 	<link rel="preconnect" href="https://fonts.googleapis.com" />
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
@@ -55,15 +55,7 @@
 <div class="prototype" bind:this={prototypeRoot}>
 	<a class="skip-link" href="#main-content">Skip to main content</a>
 	<div class="page-thread" aria-hidden="true"><i style={`transform:scaleY(${pageProgress})`}></i><b style={`transform:translateY(calc(${pageProgress} * (100vh - 72px)))`}></b></div>
-	<PrototypeNav
-		links={[
-			{ label: 'Services', href: '#services' },
-			{ label: 'Work', href: workHref },
-			{ label: 'Contact', href: '#contact' }
-		]}
-		brandHref="#top"
-		ariaLabel="Prototype navigation"
-	/>
+	<PrototypeNav links={[...navCopy.landingLinks]} brandHref="#top" ariaLabel="Prototype navigation" />
 
 	<main id="main-content">
 		<div id="throughline"><PrototypeThroughlineStory storageKey="lcg_editorial_story_seen" {workHref} /></div>

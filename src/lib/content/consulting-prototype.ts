@@ -1,9 +1,20 @@
 /**
- * EDIT THE CONSULTING SITE HERE
+ * EDIT THE CONSULTING SITE HERE — every word a visitor can read lives in
+ * this file. Layout, motion, and timing live in the components; changing
+ * wording never requires touching them. Edit the strings, keep the keys.
  *
- * This file is the source of truth for the prototype's public copy, links,
- * services, case-study evidence, and narrative. Layout and motion live in the
- * components; routine wording changes should not require touching them.
+ * Map (top to bottom of the page):
+ *   consultingSite ......... headlines, services, work cards, case studies
+ *   siteMeta ............... browser-tab titles + search descriptions
+ *   navCopy ................ top bar links + mobile menu
+ *   heroScene .............. text INSIDE the hero browser animation
+ *   splitScene ............. text INSIDE the drag demo (service 01)
+ *   aiDemoCopy ............. text INSIDE the lead-engine demo (service 02)
+ *   analyticsDemoCopy ...... text INSIDE the analytics demo (service 03)
+ *   montageCopy ............ labels on the Selected Work collage
+ *   contactFormCopy ........ the Project Starter form
+ *   footerCopy ............. the site footer
+ *   workPageCopy ........... /consulting/work extras
  */
 
 export type PrototypeEvidence = {
@@ -249,3 +260,302 @@ export const prototypeCases: PrototypeCase[] = [
 		responsibilities: ['Squarespace to Shopify migration', 'Website and product design', 'Mobile commerce', 'Analytics and social growth']
 	}
 ];
+
+/* ════════════════════════════════════════════════════════════════════
+   BROWSER TAB TITLES + SEARCH DESCRIPTIONS
+   ════════════════════════════════════════════════════════════════════ */
+
+export const siteMeta = {
+	landing: {
+		title: 'Lutz Consulting Group — Websites, AI Integrations, and Analytics',
+		description:
+			'Lutz Consulting Group designs, builds, and operates websites, AI integrations, analytics, and the systems behind them.',
+		ogDescription:
+			'We design, build, and operate the digital systems behind your business, so you can keep running the business.'
+	},
+	work: {
+		title: 'Selected Work | Lutz Consulting Group',
+		description:
+			'Case studies of websites, products, AI workflows, and analytics systems designed and operated by Lutz Consulting Group.',
+		ogDescription: 'Three different businesses. One standard of care.'
+	}
+};
+
+/* ════════════════════════════════════════════════════════════════════
+   NAV — top bar + mobile menu
+   ════════════════════════════════════════════════════════════════════ */
+
+export const navCopy = {
+	landingLinks: [
+		{ label: 'Services', href: '#services' },
+		{ label: 'Work', href: '/consulting/work' },
+		{ label: 'Contact', href: '#contact' }
+	],
+	workLinks: [
+		{ label: 'Consulting', href: '/consulting' },
+		{ label: 'Case studies', href: '#cases' },
+		{ label: 'Contact', href: '#contact' }
+	],
+	mobileCtaHint: 'tell us what you need'
+};
+
+/* ════════════════════════════════════════════════════════════════════
+   HERO SCENE — text inside the animated browser story.
+   Caption keys map to moments in the timeline; edit words, not keys.
+   ════════════════════════════════════════════════════════════════════ */
+
+export const heroScene = {
+	// The five phase-bar tabs, in story order.
+	chapters: ['Start a Site', 'Complexity Grows', 'Things Break', 'We Take Over', 'It Just Works'],
+	captions: {
+		start: 'One website.',
+		pileUp: 'Then the tools start piling up.',
+		secondJob: 'Now it is your second job.',
+		breaks: 'Until something breaks.',
+		handoff: 'Give the whole system one owner.',
+		resolved: 'Back to a website that just works.'
+	},
+	replayLabel: 'Replay',
+	browser: {
+		businessDomain: 'yourbusiness.com',
+		searchPlaceholder: 'Search or enter address',
+		typedUrl: 'jwlutz.com/consulting', // what gets typed into the address bar
+		newTabLabel: 'New tab',
+		consultingTabLabel: 'Lutz Consulting Group'
+	},
+	// The imaginary client site shown inside the animation.
+	businessSite: {
+		brand: 'YOUR BUSINESS',
+		links: ['Work', 'About'],
+		cta: 'Get in touch',
+		before: { headline: ['Your business,', 'online.'], body: 'Clear, useful, and ready for customers.' },
+		after: {
+			headline: ['Your website', 'that just works.'],
+			body: 'Maintained, connected, and ready for what comes next.'
+		},
+		footer: { left: '© YOUR BUSINESS', right: 'Made by LCG' }
+	},
+	errorPage: { code: '404', message: 'YOURBUSINESS.COM IS NOT RESPONDING' },
+	notion: {
+		pageTitle: 'Website to-do',
+		tasks: [
+			'Fix mobile checkout',
+			'Repair contact form',
+			'Update customer login',
+			'Check missing payments',
+			'Restore analytics',
+			'Investigate production error',
+			'Finish the AI-generated change',
+			'Figure out why deployment failed'
+		]
+	},
+	// The mini LCG page at the end reuses consultingSite.hero for its
+	// headline and button so it always matches the real hero above it.
+	consultingCard: { navNote: 'WORK · SERVICES · APPROACH' }
+};
+
+/* ════════════════════════════════════════════════════════════════════
+   SPLIT-VIEW SCENE — text inside the drag demo (service 01).
+   The section heading/labels live in consultingSite.splitView above.
+   ════════════════════════════════════════════════════════════════════ */
+
+export const splitScene = {
+	client: {
+		brand: 'YOUR BUSINESS',
+		links: ['Shop', 'About', 'Contact'],
+		cta: 'Get in touch',
+		badge: 'OPEN FOR BUSINESS',
+		headline: ['Your website', 'that just works.'],
+		body: 'Fast, maintained, and ready for what comes next.',
+		link: 'Explore the collection',
+		imageryCard: { tag: 'THIS SEASON', title: 'New arrivals' },
+		strip: ['Bestsellers', 'Our story', 'Visit the shop'],
+		toast: { title: 'New order', detail: 'Confirmation sent' },
+		footer: { left: '© YOUR BUSINESS', right: 'Made by LCG' }
+	},
+	dev: {
+		tiles: [
+			{ label: 'DEPLOY', value: 'clean · 41s' },
+			{ label: 'BACKUP', value: 'verified' },
+			{ label: 'OVERNIGHT', value: 'no errors' }
+		],
+		statusline: { words: ['watching', 'deploys', 'backups', 'on call'], signature: 'lutz consulting group' }
+	}
+};
+
+/* ════════════════════════════════════════════════════════════════════
+   LEAD-ENGINE DEMO — text inside the automation demo (service 02).
+   `sources` order matters: it matches the six chips top to bottom.
+   Each node: LABEL (small caps), title, subtitle, and the status line
+   that lights up when the run reaches it.
+   ════════════════════════════════════════════════════════════════════ */
+
+export const aiDemoCopy = {
+	header: 'AUTOMATION / LEAD ENGINE',
+	states: { building: 'building', running: 'running', done: 'run complete · ranking updated' },
+	sources: [
+		{ name: 'TikTok', watch: 'comments · sounds' },
+		{ name: 'Instagram', watch: 'followers · DMs' },
+		{ name: 'X', watch: 'replies · mentions' },
+		{ name: 'LinkedIn', watch: 'connections · posts' },
+		{ name: 'Reddit', watch: 'threads · subreddits' },
+		{ name: 'Company pages', watch: 'sites · careers' }
+	],
+	nodes: {
+		research: {
+			label: 'RESEARCH',
+			title: 'Perplexity',
+			sub: 'who are they, what do they need',
+			status: 'profile + recent posts pulled'
+		},
+		rank: {
+			label: 'RANK',
+			title: 'Score on your criteria',
+			sub: 'fit · intent · timing',
+			status: 'fit strong · timing now'
+		},
+		store: { label: 'STORE', title: 'Supabase', sub: 'every lead, deduped', status: 'saved · history attached' },
+		write: {
+			label: 'WRITE',
+			title: 'Personal outreach',
+			sub: 'their work, your voice',
+			status: '“Loved your sizing write-up…”'
+		},
+		send: { label: 'SEND', title: 'Gmail', sub: 'from your address', status: 'delivered · thread logged' },
+		followUp: {
+			label: 'FOLLOW UP',
+			title: 'Personal follow-up',
+			sub: 'no reply in 3 days',
+			status: 'rewritten, not resent'
+		},
+		human: {
+			label: 'HUMAN CHECKPOINT',
+			title: 'Replies in Notion',
+			sub: 'you read every one',
+			status: '2 waiting for you'
+		}
+	},
+	rails: { noReply: 'NO REPLY ↺', tune: 'REPLIES TUNE THE RANKING ↺' },
+	runlog: ['lead qualified → stored', 'outreach sent → logged', 'reply read → ranking updated'],
+	footer: { tagline: 'Your tools, wired together, run on your rules.', badge: 'every run logged' }
+};
+
+/* ════════════════════════════════════════════════════════════════════
+   ANALYTICS DEMO — text inside the dashboard + notebook (service 03).
+   ════════════════════════════════════════════════════════════════════ */
+
+export const analyticsDemoCopy = {
+	header: 'ANALYTICS + ML / WORKSPACE',
+	live: 'live',
+	visitors: {
+		label: 'VISITORS · LAST 30 DAYS',
+		now: '14 on site now',
+		legendNow: 'THIS PERIOD',
+		legendPrev: 'LAST PERIOD',
+		axisStart: '30 DAYS AGO',
+		axisEnd: 'TODAY'
+	},
+	sources: { label: 'WHERE THEY COME FROM', rows: ['Search', 'Direct', 'Social', 'Referral'] },
+	notebook: {
+		filename: 'demand_plan.ipynb',
+		kernel: { ready: 'Python 3', running: 'Python 3 · running', idle: 'Python 3 · idle' },
+		load: { code: 'orders = read_orders(months=24)', out: '24 months · 8 SKUs · weekly buckets' },
+		fit: {
+			code: 'fit = sarima(orders).fit()',
+			running: 'searching seasonal orders',
+			out: 'seasonal terms kept · AIC converged'
+		},
+		forecast: {
+			code: 'fc = fit.forecast(steps=12, ci=0.9)',
+			axes: ['WEEKS →', '90% BAND', 'UNITS ↑']
+		},
+		optimize: {
+			code: 'plan = argmin(cost)',
+			constraint: 's.t. service ≥ 0.98',
+			out: 'reorder points set · holding + stockout cost minimized'
+		},
+		artifacts: { label: 'ARTIFACTS', files: 'forecast.png · reorder_plan.csv', note: '→ shared to your dashboard' }
+	},
+	footer: { tagline: 'Watched by us, readable by you.', note: 'dashboards live · models when they earn it' }
+};
+
+/* ════════════════════════════════════════════════════════════════════
+   WORK MONTAGE — labels on the Selected Work collage.
+   Card copy (names, descriptions, links) lives in
+   consultingSite.workPreview.projects above.
+   ════════════════════════════════════════════════════════════════════ */
+
+export const montageCopy = {
+	copytrade: 'CANDELLA COPYTRADE / LIVE',
+	quant: 'CANDELLA QUANT / WORKSPACE',
+	tss: 'THE SPARKLING SHOE / COMMERCE',
+	shoe: 'TOE-TALLY FRESH / PRODUCT',
+	mind: {
+		tag: 'MINDLSN / ADAPTIVE PRODUCT',
+		title: 'MindLSN',
+		sub: 'Adaptive drills · ELO ratings · integrity checks'
+	}
+};
+
+/* ════════════════════════════════════════════════════════════════════
+   CONTACT FORM — the Project Starter. The section heading and the
+   choice buttons live in consultingSite.finalCta above.
+   ════════════════════════════════════════════════════════════════════ */
+
+export const contactFormCopy = {
+	header: { title: 'PROJECT STARTER', hint: 'Choose the closest answer' },
+	question: 'WHAT ARE WE STARTING WITH?',
+	summaryLabel: 'SELECTED STARTING POINT',
+	summaryNote: 'A link, screen recording, spreadsheet, or rough explanation is enough.',
+	fields: { name: 'YOUR NAME', email: 'EMAIL', message: 'WHAT EXISTS TODAY?' },
+	submit: { idle: 'Send project brief', busy: 'Sending…', note: 'Direct to Lutz Consulting Group' },
+	fallbackPrompt: 'Prefer email?',
+	sendFailed: 'The message did not send. Use the direct email link below instead.',
+	// The prefilled email a visitor gets from "Email us directly".
+	mailIntro: 'I’d like help with:',
+	mailPrompts: ['Here’s what exists today:', 'The part I’d most like to stop carrying:', 'Links or context:']
+};
+
+/* ════════════════════════════════════════════════════════════════════
+   FOOTER
+   ════════════════════════════════════════════════════════════════════ */
+
+export const footerCopy = {
+	brandTagline: 'Websites, AI integrations, and analytics.',
+	line: { lead: 'The next change is a text away.', emphasis: 'Not a ticket, not a quote, not a project.' },
+	exploreLabel: 'Explore',
+	explore: [
+		{ label: 'Services', href: '/consulting#services' },
+		{ label: 'Selected work', href: '/consulting#work' },
+		{ label: 'Case studies', href: '/consulting/work' },
+		{ label: 'Personal portfolio', href: '/' }
+	],
+	contactLabel: 'Start something',
+	contactNote: 'A current site, a manual process, or a half-formed idea is enough.',
+	copyrightName: 'Lutz Consulting Group',
+	madeBy: 'Made and maintained by LCG',
+	backToTop: 'Back to top'
+};
+
+/* ════════════════════════════════════════════════════════════════════
+   WORK PAGE EXTRAS — /consulting/work strings not already covered by
+   consultingSite.workPage / lab / finalCta above.
+   ════════════════════════════════════════════════════════════════════ */
+
+export const workPageCopy = {
+	skipLink: 'Skip to case studies',
+	caseActions: { read: 'Read the case study', visit: 'Visit the live site' },
+	ownedLabel: 'What we owned',
+	stories: {
+		eyebrow: 'THE FULL STORIES',
+		title: ['What happened', 'behind the screen.'],
+		body: 'Scroll through the need, the difficult part, what we built, and what continued after launch.'
+	},
+	labBadge: 'ACTIVE PRODUCT DEVELOPMENT',
+	cta: {
+		title: ['Have a system', 'worth untangling?'],
+		body: 'A polished brief is optional. The current link, problem, or process is enough to start.',
+		button: 'Start a project',
+		buttonNote: 'Project starter'
+	}
+};

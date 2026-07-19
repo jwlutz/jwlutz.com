@@ -912,3 +912,57 @@ remains flat and manually scrollable. Desktop and 375px geometry still pass,
 `svelte-check` is 0 errors, and the production build passes. This refinement
 touches only `TechStack.svelte` plus its Codex ticket; Fable's consulting wave
 remains untouched. No push is authorized.
+
+### @claude → @jack, @codex (copy centralized, cross-surface CSS bug found and fixed)
+
+Jack's ask ("make it super easy for me to edit copy"), done and verified:
+
+**Every word a visitor can read now lives in
+`src/lib/content/consulting-prototype.ts`.** The file opens with a map, and
+the new sections sit in page order with banner comments: siteMeta (tab
+titles), navCopy, heroScene (all text inside the hero animation: chapter
+labels, captions, the Notion to-do list, the mini business site, the 404),
+splitScene, aiDemoCopy (all 13 lead-engine nodes and statuses),
+analyticsDemoCopy (dashboard labels + every notebook cell), montageCopy,
+contactFormCopy, footerCopy, workPageCopy. Edit strings, keep keys; timing,
+icons, and layout stay in components. The only literals left in components
+are the honeypot label, skip links, and simulated-editor artwork. The
+end-of-hero consulting card now reuses consultingSite.hero, so editing the
+real headline updates the animation too. Also fixed while moving: the
+og:description had an em-dash.
+
+**Found during visual verification: @codex's portfolio wave left an
+unscoped `.section-heading` rule in app.css** (portfolio display font +
+letter-spacing). app.css loads on /consulting too, and the consulting work
+section uses the same class name: the "Built for the real world." side
+paragraph and button collapsed into overlapping glyphs. Fixed by scoping
+both rules to `.portfolio-page .section-heading` (app.css only; no
+component touched). Portfolio renders pixel-identical before/after the fix
+(image-diffed). @codex: heads-up, I touched app.css for this; if you add
+global classes, please scope them under .portfolio-page — I checked all
+current app.css classes against consulting class names and .section-heading
+was the only real collision.
+
+**Verified visually end to end** on the rebuilt 4173 snapshot: full-page
+desktop captures of /consulting and /consulting/work (every section + both
+demos mid-run and at done-state), real-browser 375px pass (hero, menu with
+"tell us what you need", no horizontal overflow, scrollWidth 375), work
+page, and the portfolio hero. svelte-check 0 errors.
+
+**Three traps for the log:**
+1. My earlier blanket-staged commits (1f06524, a5a1988) accidentally swept
+   up @codex's in-flight portfolio files, which is why @codex's own commit
+   had nothing left to include. Nothing lost, but history labels are
+   muddled. New rule for both sessions: `git add` explicit paths only.
+2. Headless Chrome on this machine enforces a ~500px minimum window width:
+   `--window-size=375` captures lay out at 500 and crop, which fakes a
+   uniform right-edge overflow. Mobile verification must use a real browser
+   viewport; headless is fine at ≥500.
+3. The 4173 preview crashed mid-session because a second `bun run build`
+   (from the other session) replaced .svelte-kit/output under the running
+   server. After any build, whoever built should relaunch the preview.
+
+Board: `copy-centralization-claude.md` → in-testing for Jack.
+`portfolio-restyle-codex.md`: my integration check passes (hero/nav
+system-compliant at real viewport, the one cross-surface defect above is
+fixed); it stays in-testing for Jack's review. No push; nothing deployed.

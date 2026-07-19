@@ -9,7 +9,7 @@
 -->
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { consultingSite } from '$lib/content/consulting-prototype';
+	import { consultingSite, splitScene } from '$lib/content/consulting-prototype';
 	import { track } from '$lib/analytics';
 
 	// embedded: render only the interactive stage (no section shell, heading,
@@ -186,29 +186,29 @@
 			<div class="pane pane-yours" aria-hidden="true">
 				<div class="client-world">
 					<nav>
-						<strong>YOUR BUSINESS</strong>
-						<span>Shop</span><span>About</span><span>Contact</span>
-						<b>Get in touch</b>
+						<strong>{splitScene.client.brand}</strong>
+						{#each splitScene.client.links as link}<span>{link}</span>{/each}
+						<b>{splitScene.client.cta}</b>
 					</nav>
 					<div class="client-main">
 						<div class="client-copy">
-							<small>OPEN FOR BUSINESS</small>
-							<h3>Your website<br />that just works.</h3>
-							<p>Fast, maintained, and ready for what comes next.</p>
-							<span class="client-link">Explore the collection</span>
+							<small>{splitScene.client.badge}</small>
+							<h3>{splitScene.client.headline[0]}<br />{splitScene.client.headline[1]}</h3>
+							<p>{splitScene.client.body}</p>
+							<span class="client-link">{splitScene.client.link}</span>
 						</div>
 						<div class="client-imagery">
 							<div class="imagery-photo"></div>
-							<div class="imagery-card"><small>THIS SEASON</small><b>New arrivals</b></div>
+							<div class="imagery-card"><small>{splitScene.client.imageryCard.tag}</small><b>{splitScene.client.imageryCard.title}</b></div>
 						</div>
 					</div>
 					<div class="client-strip">
-						<div><i class="swatch swatch-a"></i><span>Bestsellers</span></div>
-						<div><i class="swatch swatch-b"></i><span>Our story</span></div>
-						<div><i class="swatch swatch-c"></i><span>Visit the shop</span></div>
+						<div><i class="swatch swatch-a"></i><span>{splitScene.client.strip[0]}</span></div>
+						<div><i class="swatch swatch-b"></i><span>{splitScene.client.strip[1]}</span></div>
+						<div><i class="swatch swatch-c"></i><span>{splitScene.client.strip[2]}</span></div>
 					</div>
-					<div class="client-toast"><div><strong>New order</strong><span>Confirmation sent</span></div></div>
-					<footer><span>© YOUR BUSINESS</span><b>Made by LCG</b></footer>
+					<div class="client-toast"><div><strong>{splitScene.client.toast.title}</strong><span>{splitScene.client.toast.detail}</span></div></div>
+					<footer><span>{splitScene.client.footer.left}</span><b>{splitScene.client.footer.right}</b></footer>
 				</div>
 				<span class="pane-label label-yours">{content.yoursLabel}</span>
 			</div>
@@ -243,9 +243,7 @@
 							<b class="live">live</b>
 						</div>
 						<div class="dash-tiles">
-							<div><small>DEPLOY</small><b>clean · 41s</b></div>
-							<div><small>BACKUP</small><b>verified</b></div>
-							<div><small>OVERNIGHT</small><b>no errors</b></div>
+							{#each splitScene.dev.tiles as tile}<div><small>{tile.label}</small><b>{tile.value}</b></div>{/each}
 						</div>
 						<div class="dash-log">
 							{#each content.logLines as line, lineIndex}<p style={`--i:${lineIndex}`}><i>✓</i>{line}</p>{/each}
@@ -253,7 +251,7 @@
 						</div>
 					</div>
 
-					<div class="dev-statusline"><span>watching</span><i></i><span>deploys</span><i></i><span>backups</span><i></i><span>on call</span><em>lutz consulting group</em></div>
+					<div class="dev-statusline">{#each splitScene.dev.statusline.words as word, wordIndex}{#if wordIndex > 0}<i></i>{/if}<span>{word}</span>{/each}<em>{splitScene.dev.statusline.signature}</em></div>
 				</div>
 				<span class="pane-label label-ours">{content.oursLabel}</span>
 			</div>

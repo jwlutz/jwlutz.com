@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { consultingSite, prototypeCases } from '$lib/content/consulting-prototype';
+	import { consultingSite, navCopy, prototypeCases, siteMeta, workPageCopy } from '$lib/content/consulting-prototype';
 	import PrototypeNav from './PrototypeNav.svelte';
 	import PrototypeFooter from './PrototypeFooter.svelte';
 	import PrototypeCaseMedia from './PrototypeCaseMedia.svelte';
@@ -10,12 +10,12 @@
 </script>
 
 <svelte:head>
-	<title>Selected Work | Lutz Consulting Group</title>
-	<meta name="description" content="Case studies of websites, products, AI workflows, and analytics systems designed and operated by Lutz Consulting Group." />
+	<title>{siteMeta.work.title}</title>
+	<meta name="description" content={siteMeta.work.description} />
 	<meta property="og:type" content="website" />
 	<meta property="og:site_name" content="Lutz Consulting Group" />
-	<meta property="og:title" content="Selected Work | Lutz Consulting Group" />
-	<meta property="og:description" content="Three different businesses. One standard of care." />
+	<meta property="og:title" content={siteMeta.work.title} />
+	<meta property="og:description" content={siteMeta.work.ogDescription} />
 	<meta name="twitter:card" content="summary" />
 	<link rel="preconnect" href="https://fonts.googleapis.com" />
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
@@ -23,16 +23,8 @@
 </svelte:head>
 
 <div class="work-prototype" id="top">
-	<a class="skip-link" href="#cases">Skip to case studies</a>
-	<PrototypeNav
-		links={[
-			{ label: 'Consulting', href: '/consulting' },
-			{ label: 'Case studies', href: '#cases' },
-			{ label: 'Contact', href: '#contact' }
-		]}
-		brandHref="/consulting"
-		ariaLabel="Selected work navigation"
-	/>
+	<a class="skip-link" href="#cases">{workPageCopy.skipLink}</a>
+	<PrototypeNav links={[...navCopy.workLinks]} brandHref="/consulting" ariaLabel="Selected work navigation" />
 
 	<main>
 		<section class="work-hero shell">
@@ -67,8 +59,8 @@
 								{#each project.evidence as item}<div><strong>{item.value}</strong><span>{item.label}</span></div>{/each}
 							</div>
 							<div class="case-actions">
-								<a class="primary" href={`#case-${project.slug}`}>Read the case study</a>
-								<a href={project.liveUrl} target="_blank" rel="noreferrer" onclick={() => trackOutbound(project.liveUrl, 'consulting_work_index')}>Visit the live site</a>
+								<a class="primary" href={`#case-${project.slug}`}>{workPageCopy.caseActions.read}</a>
+								<a href={project.liveUrl} target="_blank" rel="noreferrer" onclick={() => trackOutbound(project.liveUrl, 'consulting_work_index')}>{workPageCopy.caseActions.visit}</a>
 							</div>
 						</div>
 					</article>
@@ -78,23 +70,23 @@
 
 		<section class="full-cases shell" aria-label="Complete case studies">
 			<header class="full-cases-heading">
-				<p>THE FULL STORIES</p>
-				<h2>What happened<br /><em>behind the screen.</em></h2>
-				<span>Scroll through the need, the difficult part, what we built, and what continued after launch.</span>
+				<p>{workPageCopy.stories.eyebrow}</p>
+				<h2>{workPageCopy.stories.title[0]}<br /><em>{workPageCopy.stories.title[1]}</em></h2>
+				<span>{workPageCopy.stories.body}</span>
 			</header>
 			{#each prototypeCases as project}<PrototypeCaseStudy {project} />{/each}
 		</section>
 
 		<section class="lab shell" id="lab">
-			<div class="lab-visual"><img src="/consulting/prototypes/work/quant-landing.webp" alt="Candella Quant landing page and product workspace" loading="lazy" decoding="async" /><span>ACTIVE PRODUCT DEVELOPMENT</span></div>
+			<div class="lab-visual"><img src="/consulting/prototypes/work/quant-landing.webp" alt="Candella Quant landing page and product workspace" loading="lazy" decoding="async" /><span>{workPageCopy.labBadge}</span></div>
 			<div class="lab-copy"><p>{consultingSite.lab.eyebrow}</p><h2>{consultingSite.lab.title}</h2><span>{consultingSite.lab.body}</span><a href={consultingSite.lab.url} target="_blank" rel="noreferrer" onclick={() => trackOutbound(consultingSite.lab.url, 'consulting_work_lab')}>{consultingSite.lab.cta}</a></div>
 		</section>
 
 		<section class="work-cta" id="contact">
 			<p>{consultingSite.finalCta.eyebrow}</p>
-			<h2>Have a system<br /><em>worth untangling?</em></h2>
-			<span>A polished brief is optional. The current link, problem, or process is enough to start.</span>
-			<a href={contactHref} onclick={() => track('cta_click', { source: 'consulting_prototype', location: 'work_index_cta' })}>Start a project <small>Project starter</small></a>
+			<h2>{workPageCopy.cta.title[0]}<br /><em>{workPageCopy.cta.title[1]}</em></h2>
+			<span>{workPageCopy.cta.body}</span>
+			<a href={contactHref} onclick={() => track('cta_click', { source: 'consulting_prototype', location: 'work_index_cta' })}>{workPageCopy.cta.button} <small>{workPageCopy.cta.buttonNote}</small></a>
 		</section>
 	</main>
 

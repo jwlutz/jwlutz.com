@@ -1,6 +1,6 @@
 <script lang="ts">
 	import ConsultingMark from '$lib/components/ConsultingMark.svelte';
-	import { consultingSite } from '$lib/content/consulting-prototype';
+	import { consultingSite, navCopy } from '$lib/content/consulting-prototype';
 	import { track } from '$lib/analytics';
 
 	let {
@@ -46,7 +46,7 @@
 		<nav aria-label={`${ariaLabel} (mobile)`}>
 			{#each links as link, index}<a href={link.href} style={`--i:${index}`} onclick={close}>{link.label}</a>{/each}
 		</nav>
-		<a class="menu-cta" href="#contact" onclick={() => { close(); track('cta_click', { source: 'consulting_prototype', location: 'mobile_menu' }); }}>{consultingSite.hero.primaryCta}<small>tell us what you need</small></a>
+		<a class="menu-cta" href="#contact" onclick={() => { close(); track('cta_click', { source: 'consulting_prototype', location: 'mobile_menu' }); }}>{consultingSite.hero.primaryCta}<small>{navCopy.mobileCtaHint}</small></a>
 	</div>
 {/if}
 

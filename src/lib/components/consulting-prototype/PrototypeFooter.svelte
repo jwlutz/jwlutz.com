@@ -1,6 +1,6 @@
 <script lang="ts">
 	import ConsultingMark from '$lib/components/ConsultingMark.svelte';
-	import { consultingSite } from '$lib/content/consulting-prototype';
+	import { consultingSite, footerCopy } from '$lib/content/consulting-prototype';
 	import { track } from '$lib/analytics';
 
 	const year = new Date().getFullYear();
@@ -9,21 +9,18 @@
 
 <footer class="site-footer">
 	<div class="footer-main">
-		<div class="footer-lead"><a class="footer-brand" href="/consulting#top"><ConsultingMark size={42} /><span><b>{consultingSite.brand}</b><small>Websites, AI integrations, and analytics.</small></span></a><p class="footer-line">The next change is a text away. <em>Not a ticket, not a quote, not a project.</em></p></div>
+		<div class="footer-lead"><a class="footer-brand" href="/consulting#top"><ConsultingMark size={42} /><span><b>{consultingSite.brand}</b><small>{footerCopy.brandTagline}</small></span></a><p class="footer-line">{footerCopy.line.lead} <em>{footerCopy.line.emphasis}</em></p></div>
 		<nav aria-label="Footer navigation">
-			<p>Explore</p>
-			<a href="/consulting#services">Services</a>
-			<a href="/consulting#work">Selected work</a>
-			<a href="/consulting/work">Case studies</a>
-			<a href="/">Personal portfolio</a>
+			<p>{footerCopy.exploreLabel}</p>
+			{#each footerCopy.explore as link}<a href={link.href}>{link.label}</a>{/each}
 		</nav>
 		<div class="footer-contact">
-			<p>Start something</p>
+			<p>{footerCopy.contactLabel}</p>
 			<a href={email} onclick={() => track('email_click', { source: 'consulting_prototype', location: 'footer' })}>{consultingSite.finalCta.emailLabel}</a>
-			<span>A current site, a manual process, or a half-formed idea is enough.</span>
+			<span>{footerCopy.contactNote}</span>
 		</div>
 	</div>
-	<div class="footer-bottom"><span>© {year} Lutz Consulting Group</span><b>Made and maintained by LCG</b><a href="#top">Back to top</a></div>
+	<div class="footer-bottom"><span>© {year} {footerCopy.copyrightName}</span><b>{footerCopy.madeBy}</b><a href="#top">{footerCopy.backToTop}</a></div>
 </footer>
 
 <style>

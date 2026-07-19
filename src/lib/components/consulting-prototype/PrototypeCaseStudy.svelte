@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import type { PrototypeCase } from '$lib/content/consulting-prototype';
+	import { workPageCopy, type PrototypeCase } from '$lib/content/consulting-prototype';
 	import PrototypeCaseMedia from './PrototypeCaseMedia.svelte';
 
 	let { project, compact = false }: { project: PrototypeCase; compact?: boolean } = $props();
@@ -57,7 +57,7 @@
 		</div>
 
 		<div class="responsibilities">
-			<p>What we owned</p>
+			<p>{workPageCopy.ownedLabel}</p>
 			<ul>{#each project.responsibilities as item}<li>{item}</li>{/each}</ul>
 		</div>
 	</div>
