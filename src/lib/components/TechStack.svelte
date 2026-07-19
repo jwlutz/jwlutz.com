@@ -3,6 +3,7 @@
 	import Atropos, { type AtroposInstance } from 'atropos';
 	import 'atropos/css';
 	import type { Skills as SkillsType } from '$lib/types';
+	import TechMark from './TechMark.svelte';
 
 	let { skills }: { skills: SkillsType } = $props();
 
@@ -138,7 +139,7 @@
 								</div>
 								<div class="readout-detail">
 									<p>{active.category}</p>
-									<h3>{active.name}</h3>
+									<div class="readout-title"><TechMark tech={active.name} size="feature" /><h3>{active.name}</h3></div>
 									<span>{active.detail}</span>
 								</div>
 							</div>
@@ -169,8 +170,8 @@
 																onclick={() => inspect(rail, item, itemIndex)}
 																aria-label={`${item}. ${rail.detail}`}
 															>
-																<span>{rail.code}.{String(itemIndex + 1).padStart(2, '0')}</span>
-																<strong>{item}</strong>
+																<span class="token-code">{rail.code}.{String(itemIndex + 1).padStart(2, '0')}</span>
+																<span class="token-name"><TechMark tech={item} size="rail" /><strong>{item}</strong></span>
 															</button>
 														{/each}
 													</div>
@@ -182,8 +183,8 @@
 																role="presentation"
 																onmouseenter={() => inspect(rail, item, itemIndex)}
 															>
-																<span>{rail.code}.{String(itemIndex + 1).padStart(2, '0')}</span>
-																<strong>{item}</strong>
+																<span class="token-code">{rail.code}.{String(itemIndex + 1).padStart(2, '0')}</span>
+																<span class="token-name"><TechMark tech={item} size="rail" /><strong>{item}</strong></span>
 															</span>
 														{/each}
 													</div>
@@ -336,6 +337,20 @@
 		letter-spacing: -.03em;
 	}
 
+	.readout-title {
+		min-width: 0;
+		display: flex;
+		align-items: end;
+		gap: 15px;
+	}
+
+	.readout-title h3 {
+		min-width: 0;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+
 	.readout-detail > span {
 		align-self: end;
 		color: var(--color-text-secondary);
@@ -439,11 +454,17 @@
 		transition: background 180ms ease, color 180ms ease;
 	}
 
-	.tech-token > span {
+	.tech-token .token-code {
 		color: var(--color-text-muted);
 		font: 500 7px var(--font-family-mono);
 		letter-spacing: .08em;
 		transition: color 180ms ease;
+	}
+
+	.token-name {
+		display: flex;
+		align-items: center;
+		gap: 10px;
 	}
 
 	.tech-token strong {
@@ -460,9 +481,13 @@
 	}
 
 	button.tech-token:focus-visible { box-shadow: inset 0 -2px var(--color-brass); }
-	button.tech-token:hover > span,
-	button.tech-token:focus-visible > span,
-	.tech-token-copy:hover > span { color: var(--color-brass); }
+	button.tech-token:hover .token-code,
+	button.tech-token:focus-visible .token-code,
+	.tech-token-copy:hover .token-code { color: var(--color-brass); }
+
+	button.tech-token:hover :global(.tech-mark),
+	button.tech-token:focus-visible :global(.tech-mark),
+	.tech-token-copy:hover :global(.tech-mark) { transform: translateY(-2px); }
 
 	.tech-token-copy { pointer-events: auto; }
 
@@ -515,7 +540,7 @@
 		.rail-plane { width: 100%; margin-left: 0; transform: none; }
 		.rail-track { animation: none !important; transform: none !important; }
 		.rail-sequence-copy { display: none; }
-		.tech-token { min-width: 140px; height: 66px; padding: 10px 16px; }
+		.tech-token { min-width: 154px; height: 66px; padding: 8px 16px; }
 		.tech-token strong { font-size: 19px; }
 	}
 

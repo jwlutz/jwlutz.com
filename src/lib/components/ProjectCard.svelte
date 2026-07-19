@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { Project } from '$lib/types';
 	import { track } from '$lib/analytics';
+	import TechMark from './TechMark.svelte';
 
 	let {
 		project,
@@ -43,7 +44,7 @@
 		onkeydown={onNavigate}
 	>
 		<span class="trigger-number">{number}</span>
-		<span class="trigger-monogram" aria-hidden="true">{monogram}</span>
+		<span class="trigger-mark" aria-hidden="true"><TechMark tech={project.tech[0]} size="small" /></span>
 		<span class="trigger-title">{project.title}</span>
 		<span class="trigger-state">{active ? 'Viewing' : 'Open'}</span>
 	</button>
@@ -66,7 +67,7 @@
 				<div class="media-wash" aria-hidden="true"></div>
 				<div class="media-meta">
 					<span>{project.featuredTag || 'Built project'}</span>
-					<span>{project.tech[0]}</span>
+					<span class="media-tech"><TechMark tech={project.tech[0]} size="tiny" framed={false} />{project.tech[0]}</span>
 				</div>
 			</div>
 
@@ -76,7 +77,9 @@
 					<h3>{project.title}</h3>
 					<p class="description">{project.description}</p>
 					<div class="tech-list" aria-label="Technologies used">
-						{#each project.tech.slice(0, 7) as tech}<span class="tech-tag">{tech}</span>{/each}
+						{#each project.tech.slice(0, 7) as tech}
+							<span class="tech-tag"><TechMark {tech} size="small" framed={false} /><span>{tech}</span></span>
+						{/each}
 					</div>
 				</div>
 
@@ -173,12 +176,11 @@
 	.trigger-number { top: 18px; }
 	.trigger-state { bottom: 18px; }
 
-	.trigger-monogram {
+	.trigger-mark {
 		position: absolute;
 		z-index: 1;
 		top: 74px;
 		left: 50%;
-		font: 400 20px var(--font-family-display);
 		transform: translateX(-50%);
 	}
 
@@ -198,7 +200,7 @@
 
 	.project-accordion-card-active .trigger-number,
 	.project-accordion-card-active .trigger-state,
-	.project-accordion-card-active .trigger-monogram,
+	.project-accordion-card-active .trigger-mark,
 	.project-accordion-card-active .trigger-title {
 		top: 50%;
 		bottom: auto;
@@ -209,8 +211,8 @@
 	}
 
 	.project-accordion-card-active .trigger-number { left: 22px; color: var(--color-brass); }
-	.project-accordion-card-active .trigger-monogram { left: 70px; color: var(--color-text-secondary); font-size: 21px; }
-	.project-accordion-card-active .trigger-title { left: 112px; right: 88px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--color-text-primary); }
+	.project-accordion-card-active .trigger-mark { left: 66px; }
+	.project-accordion-card-active .trigger-title { left: 102px; right: 88px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--color-text-primary); }
 	.project-accordion-card-active .trigger-state { right: 22px; color: var(--color-text-muted); }
 
 	.project-panel {
@@ -235,12 +237,18 @@
 	.project-monogram { position: absolute; inset: 0; display: grid; place-items: center; color: rgba(250,248,240,.85); font: 400 108px var(--font-family-display); }
 	.media-wash { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(8,11,9,.04) 38%, rgba(8,11,9,.74)); }
 	.media-meta { position: absolute; z-index: 1; left: 18px; right: 18px; bottom: 17px; display: flex; justify-content: space-between; gap: 14px; color: rgba(250,248,240,.84); font: 500 8px var(--font-family-mono); letter-spacing: .08em; text-transform: uppercase; }
+	.media-tech { display: inline-flex; align-items: center; gap: 6px; }
 
 	.project-copy { min-width: 0; padding: 30px 34px 28px; display: flex; flex-direction: column; background: color-mix(in srgb, var(--color-emerald-deep) 20%, var(--color-background)); }
 	.project-id { margin: 0; color: var(--color-brass); font: 500 9px var(--font-family-mono); letter-spacing: .1em; text-transform: uppercase; }
 	h3 { max-width: 580px; margin: 22px 0 14px; color: var(--color-text-primary); font: 400 45px/.94 var(--font-family-display); letter-spacing: -.035em; text-wrap: balance; }
 	.description { max-width: 600px; margin: 0; color: var(--color-text-secondary); font-size: 12px; line-height: 1.62; }
 	.tech-list { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 18px; }
+	.tech-list .tech-tag { padding: 4px 8px 4px 5px; background: color-mix(in srgb, var(--color-emerald-deep) 18%, transparent); }
+	.tech-list .tech-tag:hover { background: color-mix(in srgb, var(--color-brass) 5%, transparent); }
+	.project-trigger:hover :global(.tech-mark),
+	.project-trigger:focus-visible :global(.tech-mark),
+	.tech-tag:hover :global(.tech-mark) { transform: translateY(-1px); }
 	ul { margin: 20px 0 0; padding: 16px 0 0; display: grid; gap: 8px; border-top: 1px solid var(--color-border); list-style: none; }
 	li { position: relative; padding-left: 14px; color: var(--color-text-muted); font-size: 10px; line-height: 1.45; }
 	li::before { content: ''; position: absolute; left: 0; top: .68em; width: 6px; height: 1px; background: var(--color-brass); }
@@ -280,11 +288,11 @@
 		.project-accordion-card-active .project-trigger { border-bottom: 1px solid var(--color-border); }
 		.trigger-number,
 		.trigger-state,
-		.trigger-monogram,
+		.trigger-mark,
 		.trigger-title,
 		.project-accordion-card-active .trigger-number,
 		.project-accordion-card-active .trigger-state,
-		.project-accordion-card-active .trigger-monogram,
+		.project-accordion-card-active .trigger-mark,
 		.project-accordion-card-active .trigger-title {
 			top: 50%;
 			bottom: auto;
@@ -296,14 +304,13 @@
 
 		.trigger-number,
 		.project-accordion-card-active .trigger-number { left: 16px; color: var(--color-brass); }
-		.trigger-monogram,
-		.project-accordion-card-active .trigger-monogram { left: 58px; color: rgba(250,248,240,.86); font-size: 20px; }
+		.trigger-mark,
+		.project-accordion-card-active .trigger-mark { left: 58px; }
 		.trigger-title,
 		.project-accordion-card-active .trigger-title { left: 96px; right: 60px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: rgba(250,248,240,.94); }
 		.trigger-state,
 		.project-accordion-card-active .trigger-state { right: 16px; color: rgba(250,248,240,.72); }
 		.project-accordion-card-active .trigger-title { color: var(--color-text-primary); }
-		.project-accordion-card-active .trigger-monogram { color: var(--color-text-secondary); }
 		.project-accordion-card-active .trigger-state { color: var(--color-text-muted); }
 
 		.project-panel { inset: 68px 0 0; display: flex; flex-direction: column; animation-duration: 420ms; }
