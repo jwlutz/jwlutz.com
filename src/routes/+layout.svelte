@@ -1,7 +1,7 @@
 <script lang="ts">
 	import '../app.css';
 	import favicon from '$lib/assets/favicon.svg';
-	import { Nav, Footer, Backdrop, profile } from '$lib';
+	import { Nav, Footer, Backdrop } from '$lib';
 	import { darkMode } from '$lib/stores/darkMode';
 	import { onMount } from 'svelte';
 	import { page } from '$app/stores';
@@ -56,7 +56,7 @@
 {/if}
 
 {#if !isConsulting}
-	<Nav {activeSection} {profile} />
+	<Nav {activeSection} />
 {/if}
 
 <main class:portfolio-main={!isConsulting}>

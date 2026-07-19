@@ -1,153 +1,70 @@
 <script lang="ts">
 	import type { Project } from '$lib/types';
-	import { getTechIcon } from '$lib/data/tech-icons';
 	import { track } from '$lib/analytics';
 
 	let { project, featured = false }: { project: Project; featured?: boolean } = $props();
-
-	function trackClick(target: 'github' | 'live') {
-		track('project_click', { project_id: project.id, target });
-	}
+	function trackClick(target: 'github' | 'live') { track('project_click', { project_id: project.id, target }); }
 </script>
 
-<article class="project-card {featured ? 'project-card-featured' : ''}">
-	<!-- Project Image / Colored Top -->
-	<div
-		class="card-top relative h-48 overflow-hidden"
-		style={project.gradient ? `background: ${project.gradient}` : undefined}
-	>
+<article class="project-card" class:project-card-featured={featured}>
+	<div class="project-media" style={project.gradient ? `background: ${project.gradient}` : undefined}>
 		{#if project.image}
-			<img
-				src={project.image}
-				alt={project.title}
-				loading="lazy"
-				decoding="async"
-				class="w-full h-full {project.imageFit === 'contain' ? 'object-contain' : 'object-cover'}"
-			/>
+			<img src={project.image} alt={project.title} loading="lazy" decoding="async" class:contain={project.imageFit === 'contain'} />
+		{:else}
+			<div class="project-monogram" aria-hidden="true">{project.title.split(' ').slice(0, 2).map((word) => word[0]).join('')}</div>
 		{/if}
-
-		<!-- Featured Badge -->
-		{#if project.featured || project.featuredTag}
-			<div class="absolute top-4 right-4">
-				<span class="featured-badge">
-					{project.featuredTag || 'Featured'}
-				</span>
-			</div>
-		{/if}
+		<div class="media-overlay" aria-hidden="true"></div>
+		<div class="media-meta"><span>{project.featuredTag || 'Built project'}</span><span>{project.tech[0]}</span></div>
 	</div>
 
-	<!-- Content -->
-	<div class="p-6 flex flex-col flex-grow">
-		<h3 class="font-semibold text-lg text-[var(--color-text-primary)] mb-2">
-			{project.title}
-		</h3>
-
-		<p class="text-[var(--color-text-secondary)] text-sm mb-4 leading-relaxed">
-			{project.description}
-		</p>
-
-		<!-- Tech Tags -->
-		<div class="flex flex-wrap gap-2 mb-4">
-			{#each project.tech as tech}
-				{@const iconData = getTechIcon(tech)}
-				<span class="tech-tag" style={iconData ? `--tag-color: ${iconData.color}` : ''}>
-					{#if iconData}
-						<svg
-							viewBox="0 0 24 24"
-							class="tech-icon"
-							style="color: {iconData.color}"
-						>
-							{@html iconData.icon}
-						</svg>
-					{/if}
-					{tech}
-				</span>
-			{/each}
+	<div class="project-copy">
+		<p class="project-id">{project.id.replaceAll('-', ' ')}</p>
+		<h3>{project.title}</h3>
+		<p class="description">{project.description}</p>
+		<div class="tech-list">
+			{#each project.tech.slice(0, 6) as tech}<span class="tech-tag">{tech}</span>{/each}
 		</div>
-
-		<!-- Highlights -->
-		{#if project.highlights && project.highlights.length > 0}
-			<ul class="space-y-1 mb-4 flex-grow">
-				{#each project.highlights as highlight}
-					<li class="text-sm text-[var(--color-text-secondary)] flex items-start gap-2">
-						<span class="text-[var(--color-accent)] mt-0.5">•</span>
-						{highlight}
-					</li>
-				{/each}
+		{#if project.highlights?.length}
+			<ul>
+				{#each project.highlights.slice(0, 2) as highlight}<li>{highlight}</li>{/each}
 			</ul>
 		{/if}
-
-		<!-- Action Buttons -->
-		<div class="flex gap-3 pt-2 mt-auto">
-			{#if project.github}
-				<a
-					href={project.github}
-					target="_blank"
-					rel="noopener noreferrer"
-					class="btn-secondary"
-					onclick={() => trackClick('github')}
-				>
-					GitHub Repo
-				</a>
-			{/if}
-			{#if project.live}
-				<a
-					href={project.live}
-					target={project.live.startsWith('/') ? undefined : '_blank'}
-					rel={project.live.startsWith('/') ? undefined : 'noopener noreferrer'}
-					class="btn-secondary"
-					onclick={() => trackClick('live')}
-				>
-					{project.liveText || (project.live.startsWith('/') ? 'Try Demo' : 'Live Demo')}
-				</a>
-			{/if}
-			{#if !project.github && !project.live}
-				<span class="btn-secondary opacity-50 cursor-default">
-					{project.codeStatus || 'Private'}
-				</span>
-			{/if}
+		<div class="project-actions">
+			{#if project.github}<a href={project.github} target="_blank" rel="noopener noreferrer" onclick={() => trackClick('github')}>View source</a>{/if}
+			{#if project.live}<a href={project.live} target={project.live.startsWith('/') ? undefined : '_blank'} rel={project.live.startsWith('/') ? undefined : 'noopener noreferrer'} onclick={() => trackClick('live')}>{project.liveText || 'Open project'}</a>{/if}
+			{#if !project.github && !project.live}<span>{project.codeStatus || 'Private work'}</span>{/if}
 		</div>
 	</div>
 </article>
 
 <style>
-	/* Default top background when neither image nor custom gradient is provided. */
-	.card-top {
-		background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-	}
+	.project-card { display: grid; grid-template-columns: minmax(0, .92fr) minmax(0, 1.08fr); width: min(880px, calc(100vw - 80px)); min-width: min(880px, calc(100vw - 80px)); height: 570px; }
+	.project-media { position: relative; min-width: 0; overflow: hidden; background: var(--color-emerald-deep); }
+	.project-media img { display: block; width: 100%; height: 100%; object-fit: cover; filter: saturate(.76) contrast(1.06) brightness(.8); transition: transform 700ms cubic-bezier(.2,.75,.2,1); }
+	.project-media img.contain { object-fit: contain; padding: 8%; }
+	.project-card:hover .project-media img { transform: scale(1.025); }
+	.project-monogram { position: absolute; inset: 0; display: grid; place-items: center; color: rgba(240,239,233,.82); font: 400 116px var(--font-family-display); }
+	.media-overlay { position: absolute; inset: 0; background: linear-gradient(180deg, transparent 48%, rgba(8,11,9,.68)); }
+	.media-meta { position: absolute; left: 18px; right: 18px; bottom: 17px; display: flex; justify-content: space-between; gap: 14px; color: rgba(240,239,233,.82); font: 500 8px var(--font-family-mono); letter-spacing: .08em; text-transform: uppercase; }
+	.project-copy { min-width: 0; padding: 34px 36px 30px; display: flex; flex-direction: column; }
+	.project-id { margin: 0; color: var(--color-brass); font: 500 9px var(--font-family-mono); letter-spacing: .1em; text-transform: uppercase; }
+	h3 { margin: 24px 0 15px; color: var(--color-text-primary); font: 400 48px/.92 var(--font-family-display); letter-spacing: -.035em; }
+	.description { margin: 0; color: var(--color-text-secondary); font-size: 13px; line-height: 1.65; }
+	.tech-list { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 20px; }
+	ul { margin: 22px 0 0; padding: 18px 0 0; display: grid; gap: 9px; border-top: 1px solid var(--color-border); list-style: none; }
+	li { position: relative; padding-left: 14px; color: var(--color-text-muted); font-size: 11px; line-height: 1.5; }
+	li::before { content: ''; position: absolute; left: 0; top: .7em; width: 6px; height: 1px; background: var(--color-brass); }
+	.project-actions { margin-top: auto; padding-top: 20px; display: flex; gap: 18px; align-items: center; border-top: 1px solid var(--color-border); }
+	.project-actions a, .project-actions span { padding-bottom: 4px; border-bottom: 1px solid var(--color-border-strong); color: var(--color-text-secondary); font-size: 11px; text-decoration: none; transition: color 180ms ease, border-color 180ms ease; }
+	.project-actions a:hover { color: var(--color-text-primary); border-color: var(--color-brass); }
+	.project-actions span { color: var(--color-text-muted); }
 
-	.tech-icon {
-		width: 14px;
-		height: 14px;
-		fill: currentColor;
-		flex-shrink: 0;
-	}
-
-	.tech-tag {
-		display: inline-flex;
-		align-items: center;
-		gap: 0.375rem;
-		font-size: 0.75rem;
-		padding: 0.25rem 0.625rem;
-		background: var(--color-surface);
-		border: 1px solid var(--color-border);
-		border-radius: 9999px;
-		color: var(--color-text-secondary);
-		transition: all 0.2s ease;
-	}
-
-	.tech-tag:hover {
-		border-color: var(--tag-color, var(--color-accent));
-		color: var(--tag-color, var(--color-accent));
-	}
-
-	.featured-badge {
-		font-size: 0.75rem;
-		font-weight: 500;
-		color: var(--color-text-primary);
-		background: var(--color-surface);
-		padding: 0.25rem 0.5rem;
-		border-radius: 0.25rem;
-		border: 1px solid var(--color-border);
+	@media (max-width: 820px) {
+		.project-card { display: flex; flex-direction: column; width: 324px; min-width: 324px; height: 610px; }
+		.project-media { flex: 0 0 235px; }
+		.project-copy { flex: 1; padding: 24px 22px 22px; }
+		h3 { margin-top: 16px; font-size: 36px; }
+		.description { font-size: 12px; }
+		ul { display: none; }
 	}
 </style>

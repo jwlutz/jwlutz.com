@@ -55,7 +55,6 @@
 
 						<div class="service-summary" data-motion-item>
 						<p>{service.body}</p>
-						<small>{service.detail}</small>
 						</div>
 
 						<div class="feature-list">
@@ -135,7 +134,6 @@
 	.service-copy h3 em { color: var(--proto-paper); font-weight: 400; }
 	.service-summary { margin-top: 30px; }
 	.service-summary > p { max-width: 500px; margin: 0; color: #b2b7b2; font-size: 15px; line-height: 1.72; }
-	.service-summary > small { display: block; margin-top: 22px; color: var(--chapter-accent); font: 500 9px/1.65 var(--proto-mono); letter-spacing: .08em; }
 	.feature-list { margin-top: 42px; border-top: 1px solid var(--proto-line); }
 	.feature-list > div { padding: 18px 0; display: grid; grid-template-columns: 30px 1fr; gap: 12px; border-bottom: 1px solid var(--proto-line); }
 	.feature-list small { padding-top: 3px; color: var(--chapter-accent); font: 500 9px var(--proto-mono); }
@@ -176,7 +174,6 @@
 		.service-copy h3 { font-size: clamp(45px, 12.5vw, 58px); }
 		.service-summary { margin-top: 24px; }
 		.service-summary > p { font-size: 14px; }
-		.service-summary > small { font-size: 9px; }
 		.feature-list { margin-top: 34px; }
 		.feature-list > div { padding: 16px 0; }
 		.alternative-row { padding-top: 20px; align-items: flex-start; flex-direction: column; gap: 15px; }

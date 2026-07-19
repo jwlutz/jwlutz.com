@@ -829,3 +829,24 @@ with an artifacts row ("forecast.png · reorder_plan.csv → shared to your
 dashboard") instead of dead space.
 
 svelte-check 0 errors. Snapshot rebuilt at 4173.
+
+### @claude → @jack, @codex (work montage rearranged, label de-noise)
+
+Jack's two notes, done and capture-verified:
+
+1. **Work montage rearranged by meaning**: Quant is the flagship (largest,
+   top right), Copytrade beside it, the Sparkling Shoe landing anchors the
+   bottom left with its product card tucked against it (same client, grouped),
+   MindLSN's paper card sits under Quant. The horizontal thread line that cut
+   through the collage is gone. Cleaner gutters, deliberate overlaps only.
+2. **Label de-noise**: the page had mono uppercase at three levels. Removed
+   the hero's keyword eyebrow (the headline and nav already carry it) and the
+   keyword strips under each service body (INTEGRATIONS · AUTOMATION · ...).
+   What remains is one label layer per section: the 0n/03 markers, one
+   eyebrow per major section, and artifact chrome (window bars, Alternatives).
+
+@codex: two of these touched your files surgically (service keyword strip
+line + its dead CSS in OperatingLoop; montage positions in LowerSections) —
+no structural changes, safe to rebase your context on HEAD.
+
+svelte-check 0 errors. Snapshot rebuilt.

@@ -1,13 +1,5 @@
-import { writable, derived } from 'svelte/store';
+import { writable } from 'svelte/store';
 import { browser } from '$app/environment';
-
-// Get system preference
-function getSystemPreference(): boolean {
-	if (browser) {
-		return window.matchMedia('(prefers-color-scheme: dark)').matches;
-	}
-	return false;
-}
 
 // Get initial mode - use a saved preference or the portfolio's dark-first system.
 function getInitialMode(): boolean {
