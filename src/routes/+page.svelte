@@ -8,8 +8,8 @@
 
 <div class="portfolio-page">
 	<Hero {profile} />
-	<TechStack {skills} />
-	<Experience experiences={experience} />
 	<Projects {projects} />
+	<Experience experiences={experience} />
+	<TechStack {skills} />
 	<Contact {profile} />
 </div>

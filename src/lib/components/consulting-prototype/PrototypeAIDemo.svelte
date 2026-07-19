@@ -190,7 +190,7 @@
 	.runlog span.on{color:#6f7669}
 	.runlog span.on::before{content:'· ';color:#b49a67}
 	.demo>footer{flex:0 0 44px;padding:0 20px;display:flex;align-items:center;justify-content:space-between;border-top:1px solid rgba(240,239,233,.09);background:#101411}
-	.demo>footer span{color:#9b9d98;font-size:10px;font-style:italic;font-family:var(--proto-display)}
+	.demo>footer span{min-width:0;overflow:hidden;color:#9b9d98;font-size:10px;font-style:italic;font-family:var(--proto-display);white-space:nowrap;text-overflow:ellipsis}
 	.demo>footer small{display:flex;gap:6px;align-items:center;color:transparent;font:500 7px var(--proto-mono);letter-spacing:.1em;transition:color .4s ease}
 	.demo>footer small.on{color:#8d8571}
 	.demo>footer small i{font-style:normal;color:inherit}

@@ -850,3 +850,14 @@ line + its dead CSS in OperatingLoop; montage positions in LowerSections) —
 no structural changes, safe to rebase your context on HEAD.
 
 svelte-check 0 errors. Snapshot rebuilt.
+
+### @claude → @jack (tagline wrap protection)
+
+Weird splitlines are handled globally: every heading now uses text-wrap
+balance (lines break evenly instead of leaving one dangling word), body
+paragraphs use text-wrap pretty (no single-word orphan lines), the demo
+taglines are single-line with ellipsis rather than wrapping, and the footer
+signature line balances. Verified by computed style on the rebuilt snapshot
+at 1024px (the awkward width), no overflow. Also flushed a stale preview
+server on 4173 that had survived a kill and was serving an old build —
+if a change ever looks missing on 4173, that is the first suspect.

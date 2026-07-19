@@ -15,7 +15,7 @@
 	<div class="skills-field" aria-hidden="true">FIRST PRINCIPLES / WORKING SYSTEMS / HUMAN JUDGMENT</div>
 	<div class="section-shell">
 		<div class="section-header-sticky">
-			<p class="section-label">01 / Technical range</p>
+			<p class="section-label">03 / Technical range</p>
 			<div class="skills-heading">
 				<h2 class="section-heading">Tools I reach for</h2>
 				<p>The stack changes with the problem. The standard does not: understand the system, test the assumptions, and own what ships.</p>

@@ -190,7 +190,7 @@
 	.fplot small{display:flex;justify-content:space-between;color:#666d66;font:500 6px var(--proto-mono);letter-spacing:.1em}
 
 	.demo>footer{flex:0 0 44px;padding:0 20px;display:flex;align-items:center;justify-content:space-between;border-top:1px solid rgba(240,239,233,.09);background:#101411}
-	.demo>footer span{color:#9b9d98;font-size:10px;font-style:italic;font-family:var(--proto-display)}
+	.demo>footer span{min-width:0;overflow:hidden;color:#9b9d98;font-size:10px;font-style:italic;font-family:var(--proto-display);white-space:nowrap;text-overflow:ellipsis}
 	.demo>footer small{color:#666d66;font:500 7px var(--proto-mono);letter-spacing:.1em}
 	.progress{position:absolute;left:0;right:0;bottom:0;height:2px;background:#b49a67;transform:scaleX(0);transform-origin:left}
 	.playing .progress{animation:dash-progress 12s linear infinite}

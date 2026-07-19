@@ -16,7 +16,7 @@
 	}
 
 	function handlePointer(event: PointerEvent) {
-		if (!motionAllowed || !card) return;
+		if (!motionAllowed || !card || event.pointerType === 'touch') return;
 		const rect = card.getBoundingClientRect();
 		const x = (event.clientX - rect.left) / rect.width - 0.5;
 		const y = (event.clientY - rect.top) / rect.height - 0.5;
@@ -43,21 +43,18 @@
 
 	onMount(() => {
 		const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
-		const finePointer = window.matchMedia('(pointer: fine)');
 		const updateMotion = () => {
-			motionAllowed = !reduced.matches && finePointer.matches;
+			motionAllowed = !reduced.matches;
 			if (!motionAllowed) resetPointer();
 			updateScrollDepth();
 		};
 
 		updateMotion();
 		reduced.addEventListener('change', updateMotion);
-		finePointer.addEventListener('change', updateMotion);
 		window.addEventListener('scroll', handleScroll, { passive: true });
 
 		return () => {
 			reduced.removeEventListener('change', updateMotion);
-			finePointer.removeEventListener('change', updateMotion);
 			window.removeEventListener('scroll', handleScroll);
 			if (scrollFrame) cancelAnimationFrame(scrollFrame);
 		};

@@ -26,7 +26,7 @@
 	});
 
 	function handleScroll() {
-		const sections = ['home', 'skills', 'experience', 'projects', 'contact'];
+		const sections = ['home', 'projects', 'experience', 'skills', 'contact'];
 		const scrollPosition = window.scrollY + 100;
 
 		for (const section of sections) {

@@ -52,7 +52,7 @@
 <section id="projects" class="projects-section">
 	<div class="section-shell">
 		<div class="section-header-sticky">
-			<p class="section-label">03 / Selected work</p>
+			<p class="section-label">01 / Selected work</p>
 			<div class="projects-heading"><h2 class="section-heading">Projects</h2><p>Software, machine learning, research tools, and systems built from the problem outward.</p></div>
 		</div>
 	</div>
