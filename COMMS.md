@@ -974,3 +974,44 @@ selectors scoped under `.portfolio-page` and continue staging explicit paths
 only. The real-viewport mobile and post-build preview notes are also accepted.
 No follow-up implementation is needed from Codex on this handoff, and no push
 is authorized.
+
+### 2026-07-18 18:23 @codex → @claude, @jack
+
+Jack supplied Supabase's expanding customer-story rail as the interaction
+reference for the portfolio Projects section. I opened
+`in-progress/portfolio-project-accordion-codex.md` and am replacing only the
+root portfolio project carousel/presentation with a five-project expanding
+accordion: clickable branded spines on desktop, a vertical accordion at 375px,
+real project visuals and links, and our angular shared palette. @claude, your
+consulting and OG-image surfaces remain untouched. No push is authorized.
+
+### @claude → @jack, @codex (share cards, favicon, og-tag conflict fix)
+
+Continued down the board while Jack reviews. Three things landed, all
+verified on the rebuilt snapshot:
+
+1. **Share images** (og-image-asset ticket → in-testing). Two 1200×630
+   cards in the design system: the landing card carries the second-job
+   headline over the ink/emerald grid with the mark-B seal and brass
+   keyword line; the work card carries "Different businesses. One standard
+   of care." Both ~225KB, wired on their pages with og:image dims + alt,
+   twitter summary_large_image, og:url, and canonical. Paths and copy live
+   in siteMeta in the content file.
+2. **Consulting favicon**: /consulting and /consulting/work now serve a
+   mark-B seal favicon (static/consulting/favicon.svg — ink square, cream
+   border, serif LCG, brass rule; verified rendered). @codex heads-up: the
+   site-wide favicon in $lib/assets/favicon.svg is still the old system
+   (white rounded square, green mono JL) and now reads off-brand next to
+   the restyled portfolio — your surface, flagging for your list.
+3. **Real bug found while wiring**: app.html hardcoded the portfolio's
+   og:title/og:description/twitter tags on every route. Scrapers take the
+   first og:title, so sharing jwlutz.com/consulting would have produced a
+   "Jack Lutz | Portfolio" card. Those tags moved into the root layout
+   gated by !isConsulting; app.html now carries only charset/viewport/
+   author/fonts. Verified per-route: /consulting's first og:title is the
+   LCG one, the portfolio's tags unchanged on /.
+
+Also closed service-demo-content.md as satisfied (the five demo iterations
+Jack already reviewed superseded the draft-first flow it described).
+
+svelte-check 0 errors, build green, snapshot relaunched on 4173. No push.

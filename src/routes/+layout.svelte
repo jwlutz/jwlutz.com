@@ -46,6 +46,16 @@
 <svelte:head>
 	<link rel="icon" href={favicon} />
 	<title>Jack Lutz | Portfolio</title>
+	{#if !isConsulting}
+		<meta name="description" content="Jack Lutz - Building Systems that Scale, and Finding Answers that Matter. Stats & Data Science @ UCLA '27" />
+		<meta property="og:title" content="Jack Lutz | Portfolio" />
+		<meta property="og:description" content="Building Systems that Scale, and Finding Answers that Matter." />
+		<meta property="og:type" content="website" />
+		<meta property="og:url" content="https://jwlutz.com" />
+		<meta name="twitter:card" content="summary" />
+		<meta name="twitter:title" content="Jack Lutz | Portfolio" />
+		<meta name="twitter:description" content="Building Systems that Scale, and Finding Answers that Matter." />
+	{/if}
 </svelte:head>
 
 <svelte:window onscroll={handleScroll} />

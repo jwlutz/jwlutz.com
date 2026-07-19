@@ -11,12 +11,22 @@
 
 <svelte:head>
 	<title>{siteMeta.work.title}</title>
+	<link rel="icon" href={siteMeta.favicon} />
+	<link rel="canonical" href={siteMeta.work.url} />
 	<meta name="description" content={siteMeta.work.description} />
 	<meta property="og:type" content="website" />
 	<meta property="og:site_name" content="Lutz Consulting Group" />
 	<meta property="og:title" content={siteMeta.work.title} />
 	<meta property="og:description" content={siteMeta.work.ogDescription} />
-	<meta name="twitter:card" content="summary" />
+	<meta property="og:url" content={siteMeta.work.url} />
+	<meta property="og:image" content={siteMeta.work.ogImage} />
+	<meta property="og:image:width" content="1200" />
+	<meta property="og:image:height" content="630" />
+	<meta property="og:image:alt" content={siteMeta.work.ogImageAlt} />
+	<meta name="twitter:card" content="summary_large_image" />
+	<meta name="twitter:title" content={siteMeta.work.title} />
+	<meta name="twitter:description" content={siteMeta.work.ogDescription} />
+	<meta name="twitter:image" content={siteMeta.work.ogImage} />
 	<link rel="preconnect" href="https://fonts.googleapis.com" />
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
 	<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />

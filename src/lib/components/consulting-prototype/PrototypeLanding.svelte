@@ -41,12 +41,22 @@
 
 <svelte:head>
 	<title>{siteMeta.landing.title}</title>
+	<link rel="icon" href={siteMeta.favicon} />
+	<link rel="canonical" href={siteMeta.landing.url} />
 	<meta name="description" content={siteMeta.landing.description} />
 	<meta property="og:type" content="website" />
 	<meta property="og:site_name" content="Lutz Consulting Group" />
 	<meta property="og:title" content={siteMeta.landing.title} />
 	<meta property="og:description" content={siteMeta.landing.ogDescription} />
-	<meta name="twitter:card" content="summary" />
+	<meta property="og:url" content={siteMeta.landing.url} />
+	<meta property="og:image" content={siteMeta.landing.ogImage} />
+	<meta property="og:image:width" content="1200" />
+	<meta property="og:image:height" content="630" />
+	<meta property="og:image:alt" content={siteMeta.landing.ogImageAlt} />
+	<meta name="twitter:card" content="summary_large_image" />
+	<meta name="twitter:title" content={siteMeta.landing.title} />
+	<meta name="twitter:description" content={siteMeta.landing.ogDescription} />
+	<meta name="twitter:image" content={siteMeta.landing.ogImage} />
 	<link rel="preconnect" href="https://fonts.googleapis.com" />
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
 	<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />

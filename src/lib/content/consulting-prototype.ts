@@ -266,18 +266,27 @@ export const prototypeCases: PrototypeCase[] = [
    ════════════════════════════════════════════════════════════════════ */
 
 export const siteMeta = {
+	// Share images live in static/consulting/; regenerate from the design
+	// system if the headline changes (see tickets/og-image-asset.md).
+	favicon: '/consulting/favicon.svg',
 	landing: {
 		title: 'Lutz Consulting Group — Websites, AI Integrations, and Analytics',
 		description:
 			'Lutz Consulting Group designs, builds, and operates websites, AI integrations, analytics, and the systems behind them.',
 		ogDescription:
-			'We design, build, and operate the digital systems behind your business, so you can keep running the business.'
+			'We design, build, and operate the digital systems behind your business, so you can keep running the business.',
+		url: 'https://jwlutz.com/consulting',
+		ogImage: 'https://jwlutz.com/consulting/og-consulting.png',
+		ogImageAlt: 'Lutz Consulting Group: Don’t let your website become your second job.'
 	},
 	work: {
 		title: 'Selected Work | Lutz Consulting Group',
 		description:
 			'Case studies of websites, products, AI workflows, and analytics systems designed and operated by Lutz Consulting Group.',
-		ogDescription: 'Three different businesses. One standard of care.'
+		ogDescription: 'Three different businesses. One standard of care.',
+		url: 'https://jwlutz.com/consulting/work',
+		ogImage: 'https://jwlutz.com/consulting/og-work.png',
+		ogImageAlt: 'Lutz Consulting Group selected work: different businesses, one standard of care.'
 	}
 };
 
