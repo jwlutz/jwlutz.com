@@ -143,7 +143,8 @@
 	const active = $derived(logoItems[activeIndex] ?? toolkit[0]);
 
 	function gridDimensions(): GridDimensions {
-		const columns = fieldElement?.clientWidth < 700 ? 5 : 13;
+		const width = fieldElement?.clientWidth ?? 0;
+		const columns = width < 700 ? 7 : width < 1050 ? 11 : 13;
 		return { columns, rows: Math.ceil(logoItems.length / columns) };
 	}
 
@@ -189,8 +190,11 @@
 		const { columns, rows } = gridDimensions();
 		const centerColumn = (columns - 1) / 2;
 		const centerRow = (rows - 1) / 2;
-		const radiusX = width * (width < 700 ? 0.5 : 0.43);
-		const radiusY = height * (width < 700 ? 0.43 : 0.31);
+		const mobileProjection = width < 700;
+		const compactProjection = width < 1050;
+		const radiusX = width * (mobileProjection ? 0.5 : compactProjection ? 0.46 : 0.43);
+		const radiusY = height * (mobileProjection ? 0.52 : compactProjection ? 0.36 : 0.38);
+		const verticalArc = mobileProjection ? 1.3 : compactProjection ? 1.16 : 1.08;
 		const positions = gridPositions(columns, rows);
 
 		logoItems.forEach((_, index) => {
@@ -201,9 +205,9 @@
 			const columnDistance = wrappedDistance(column + currentColumnOffset - centerColumn, columns);
 			const rowDistance = wrappedDistance(row + currentRowOffset - centerRow, rows);
 			const xAngle = (columnDistance / Math.max(1, centerColumn)) * 1.32;
-			const yAngle = (rowDistance / Math.max(1, centerRow)) * 1.08;
+			const yAngle = (rowDistance / Math.max(1, centerRow)) * verticalArc;
 			const depth = Math.max(0.05, Math.cos(xAngle) * Math.cos(yAngle));
-			const scale = 0.46 + depth * 0.62;
+			const scale = 0.34 + depth * 0.74;
 			const opacity = 0.12 + Math.pow(depth, 1.5) * 0.88;
 			const x = Math.sin(xAngle) * radiusX;
 			const y = Math.sin(yAngle) * radiusY;
@@ -341,6 +345,11 @@
 		requestAnimationFrame(() => tileElements[next]?.focus());
 	}
 
+	function handleFocus(event: FocusEvent, index: number) {
+		const tile = event.currentTarget as HTMLButtonElement;
+		if (tile.matches(':focus-visible')) centerItem(index);
+	}
+
 	onMount(() => {
 		const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 		const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)');
@@ -421,7 +430,7 @@
 					class:active={activeIndex === index}
 					bind:this={tileElements[index]}
 					onclick={() => centerItem(index)}
-					onfocus={() => centerItem(index)}
+					onfocus={(event) => handleFocus(event, index)}
 					onkeydown={(event) => handleKeydown(event, index)}
 					aria-pressed={activeIndex === index}
 					aria-label={`${item.label}. ${item.group}. ${item.detail}`}
@@ -633,6 +642,18 @@
 	.method-index > div { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 7px 20px; }
 	.method-index span { color: #747d77; font-size: 8px; line-height: 1.4; }
 
+	@media (min-width: 701px) and (max-width: 1050px) {
+		.sphere-intro,
+		.sphere-readout,
+		.method-index { width: calc(100% - 48px); }
+		.sphere-intro { gap: 44px; }
+		.sphere-field { height: clamp(500px, 55vw, 570px); }
+		.field-instruction { left: 24px; right: 24px; }
+		.sphere-tile { width: 82px; height: 70px; border-radius: 14px; }
+		.tile-face { border-radius: 14px; }
+		.sphere-tile :global(.tech-mark) { width: 40px; height: 40px; }
+	}
+
 	@media (max-width: 700px) {
 		.sphere-intro,
 		.sphere-readout,
@@ -640,15 +661,15 @@
 		.sphere-intro { min-height: 0; padding: 42px 0 34px; grid-template-columns: 1fr; gap: 24px; }
 		.sphere-intro h2 { font-size: 52px; }
 		.sphere-intro > p { font-size: 12px; }
-		.sphere-field { height: 480px; }
+		.sphere-field { height: 440px; }
 		.field-instruction { top: 17px; left: 16px; right: 16px; }
 		.desktop-instruction { display: none; }
 		.mobile-instruction { display: inline; }
 		.field-instruction span:last-child { display: none; }
 		.sphere-cloud { mask-image: radial-gradient(ellipse 93% 82% at 50% 51%, black 46%, rgba(0, 0, 0, .92) 67%, rgba(0, 0, 0, .2) 90%, transparent 100%); }
-		.sphere-tile { width: 68px; height: 58px; border-radius: 12px; }
+		.sphere-tile { width: 56px; height: 48px; border-radius: 12px; }
 		.tile-face { border-radius: 12px; }
-		.sphere-tile :global(.tech-mark) { width: 34px; height: 34px; }
+		.sphere-tile :global(.tech-mark) { width: 29px; height: 29px; }
 		.sphere-readout { min-height: 148px; padding: 22px 0 25px; grid-template-columns: 1fr; gap: 12px; }
 		.sphere-readout > div { gap: 14px; }
 		.sphere-readout strong { font-size: 30px; }
