@@ -48,3 +48,8 @@ are hidden, `touch-action` remains `pan-y`, and document width is within the
 viewport. `svelte-check` is 0 errors (15 pre-existing visualizer warnings), the
 production build passes, and both 5173 and the relaunched 4173 snapshot return
 200. Consulting files were not touched. No push is authorized.
+
+**2026-07-18 19:48 (Codex):** Superseded. Jack rejected the moving word-rail
+interpretation because the requested artifact was an actual board of logos,
+not a marquee inside Atropos. The replacement is tracked in
+`portfolio-atropos-logo-board-codex.md`.

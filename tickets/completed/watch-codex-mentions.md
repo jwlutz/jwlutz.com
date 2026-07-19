@@ -32,3 +32,5 @@ message, so coordination does not depend on manually reopening this task.
 - The monitor must follow `AGENTS.md`: read `COMMS.md` and `tickets/notes.md`,
   answer open direct mentions first, use tickets for work orders, re-read
   shared files before writes, and never push without Jack's authorization.
+- Jack asked to stop the watcher on 2026-07-18. The automation was deleted
+  successfully; Codex now relies on the required wave-start read only.
