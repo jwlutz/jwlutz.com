@@ -71,7 +71,7 @@
 							<div>
 								{#each service.alternatives as alternative}
 									{@const brand = alternativeBrands[alternative]}
-									<span title={alternative} aria-label={alternative}>{#if 'icon' in brand}<i>{@html brand.icon.svg}</i>{:else}<img src={brand.favicon} alt="" />{/if}</span>
+									<span role="img" title={alternative} aria-label={alternative}>{#if 'icon' in brand}<i>{@html brand.icon.svg}</i>{:else}<img src={brand.favicon} alt="" />{/if}</span>
 								{/each}
 							</div>
 						</div>

@@ -60,23 +60,23 @@
 
 		<div class="project-stage" aria-label="Selected Lutz Consulting Group work" data-motion-item>
 			<div class="stage-depth" aria-hidden="true"></div>
-			<a class="mont mont-window mont-copytrade" href={projects[0].url} target="_blank" rel="noreferrer" aria-label={`Visit ${projects[0].name}`} onclick={() => trackOutbound(projects[0].url, 'proto_work_showcase')}>
+			<a class="mont mont-window mont-copytrade" href={projects[0].url} target="_blank" rel="noreferrer" onclick={() => trackOutbound(projects[0].url, 'proto_work_showcase')}>
 				<div class="window-bar"><i></i><i></i><i></i><small>{montageCopy.copytrade}</small></div>
 				<img src={projects[0].image} alt={projects[0].imageAlt} loading="lazy" decoding="async" />
 			</a>
-			<a class="mont mont-window mont-quant" href={projects[1].url} target="_blank" rel="noreferrer" aria-label={`Visit ${projects[1].name}`} onclick={() => trackOutbound(projects[1].url, 'proto_work_showcase')}>
+			<a class="mont mont-window mont-quant" href={projects[1].url} target="_blank" rel="noreferrer" onclick={() => trackOutbound(projects[1].url, 'proto_work_showcase')}>
 				<div class="window-bar"><i></i><i></i><i></i><small>{montageCopy.quant}</small></div>
 				<img src={projects[1].image} alt={projects[1].imageAlt} loading="lazy" decoding="async" />
 			</a>
-			<a class="mont mont-window mont-tss" href={projects[2].url} target="_blank" rel="noreferrer" aria-label={`Visit ${projects[2].name}`} onclick={() => trackOutbound(projects[2].url, 'proto_work_showcase')}>
+			<a class="mont mont-window mont-tss" href={projects[2].url} target="_blank" rel="noreferrer" onclick={() => trackOutbound(projects[2].url, 'proto_work_showcase')}>
 				<div class="window-bar"><i></i><i></i><i></i><small>{montageCopy.tss}</small></div>
 				<img src={projects[2].image} alt={projects[2].imageAlt} loading="lazy" decoding="async" />
 			</a>
-			<a class="mont mont-shoe" href={projects[2].url} target="_blank" rel="noreferrer" aria-label="Toe-tally Fresh pointe shoe inserts by The Sparkling Shoe" onclick={() => trackOutbound(projects[2].url, 'proto_work_showcase')}>
+			<a class="mont mont-shoe" href={projects[2].url} target="_blank" rel="noreferrer" onclick={() => trackOutbound(projects[2].url, 'proto_work_showcase')}>
 				<img src="/consulting/prototypes/sparkling-fresh.jpg" alt="Toe-tally Fresh pointe shoe inserts" loading="lazy" decoding="async" />
 				<span>{montageCopy.shoe}</span>
 			</a>
-			<a class="mont mont-mind" href={projects[3].url} target="_blank" rel="noreferrer" aria-label={`Visit ${projects[3].name}`} onclick={() => trackOutbound(projects[3].url, 'proto_work_showcase')}>
+			<a class="mont mont-mind" href={projects[3].url} target="_blank" rel="noreferrer" onclick={() => trackOutbound(projects[3].url, 'proto_work_showcase')}>
 				<small>{montageCopy.mind.tag}</small><strong>{montageCopy.mind.title}</strong><span>{montageCopy.mind.sub}</span>
 			</a>
 		</div>

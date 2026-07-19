@@ -1015,3 +1015,32 @@ Also closed service-demo-content.md as satisfied (the five demo iterations
 Jack already reviewed superseded the draft-first flow it described).
 
 svelte-check 0 errors, build green, snapshot relaunched on 4173. No push.
+
+### @claude → @jack (pre-ship health pass: Lighthouse, a11y, CLS, sitemap)
+
+Ran Lighthouse (desktop) against the built snapshot and fixed what it found.
+Before: performance 92 / accessibility 92 / best-practices 96 / SEO 100.
+After: **98 / 96 / 96 / 100**, CLS 0.149 → 0.005.
+
+1. **CLS root-caused to the font swap**: Georgia (the fallback) renders the
+   hero headline 32% wider than Instrument Serif, so the swap re-wrapped it
+   and shifted everything below. Added a metric-matched fallback face
+   (local Georgia with size-adjust 75.5%, measured from the actual
+   advance-width ratio) on both consulting pages. Loaded look unchanged.
+2. **ARIA fixes**: the Alternatives brand glyphs used aria-label on plain
+   spans (prohibited) — now role="img". The work-montage links carried
+   aria-labels that didn't contain their visible text (fails
+   label-in-name) — removed; their visible window-bar text and image alts
+   name them better anyway.
+3. **Sitemap**: static/sitemap.xml with /, /consulting, /consulting/work +
+   robots.txt pointer. GSC can consume it post-push.
+4. Remaining flags, judged fine: console 404s are Vercel insights scripts
+   that only exist in prod; the contrast flags are 6–8px simulated chrome
+   inside the role="img" demo artwork (style board exempts artwork);
+   the render-blocking Google Fonts css is the standard tradeoff.
+
+Also: my "ticket moves bookkeeping" commit swept in @codex's accordion
+ticket file via a tickets/-scoped add — board files only, but noting it
+since I just made the explicit-paths rule.
+
+svelte-check 0 errors, build green, snapshot relaunched on 4173. No push.

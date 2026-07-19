@@ -79,10 +79,18 @@
 </div>
 
 <style>
+	/* Metric-matched fallback: Georgia runs ~32% wider than Instrument Serif,
+	   so the swap re-wrapped the hero headline and logged the page's one CLS.
+	   size-adjust measured 2026-07-18 (1568/2076 advance-width ratio). */
+	@font-face {
+		font-family: 'Instrument Serif Fallback';
+		src: local('Georgia');
+		size-adjust: 75.5%;
+	}
 	:global(html) { scroll-behavior: smooth; background: #080b09; }
 	:global(body) { margin: 0; background: #080b09 !important; }
 	.prototype {
-		--proto-bg:#080b09; --proto-surface:#131815; --proto-surface-2:#19201b; --proto-green:#07543f; --proto-green-light:#2d8064; --proto-green-deep:#0d2d24; --proto-text:#f0efe9; --proto-muted:#9b9d98; --proto-paper:#dad6cc; --proto-leather:#774633; --proto-brass:#b49a67; --proto-line:rgba(240,239,233,.1); --proto-line-strong:rgba(240,239,233,.18); --proto-display:'Instrument Serif',Georgia,serif; --proto-sans:'DM Sans',sans-serif; --proto-mono:'IBM Plex Mono',monospace;
+		--proto-bg:#080b09; --proto-surface:#131815; --proto-surface-2:#19201b; --proto-green:#07543f; --proto-green-light:#2d8064; --proto-green-deep:#0d2d24; --proto-text:#f0efe9; --proto-muted:#9b9d98; --proto-paper:#dad6cc; --proto-leather:#774633; --proto-brass:#b49a67; --proto-line:rgba(240,239,233,.1); --proto-line-strong:rgba(240,239,233,.18); --proto-display:'Instrument Serif','Instrument Serif Fallback',Georgia,serif; --proto-sans:'DM Sans',sans-serif; --proto-mono:'IBM Plex Mono',monospace;
 		background:var(--proto-bg); color:var(--proto-text); font-family:var(--proto-sans); min-height:100vh; overflow:clip;
 	}
 	.prototype, .prototype * { box-sizing: border-box; }
