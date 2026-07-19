@@ -121,7 +121,7 @@
 		--scroll-depth: 0px;
 		position: relative;
 		display: grid;
-		grid-template-columns: minmax(0, 1fr) minmax(300px, 390px);
+		grid-template-columns: minmax(0, 1fr) 350px;
 		width: min(1320px, calc(100vw - 80px));
 		min-height: 610px;
 		overflow: hidden;
@@ -226,9 +226,13 @@
 
 	.photo-panel {
 		position: relative;
+		width: min(300px, calc(100% - 48px));
 		min-width: 0;
-		min-height: 510px;
-		margin: 50px 42px 50px 0;
+		min-height: 0;
+		aspect-ratio: 597 / 600;
+		margin: 0 38px 0 12px;
+		align-self: center;
+		justify-self: end;
 		overflow: hidden;
 		border: 1px solid var(--color-border-strong);
 		background: #171512;
@@ -237,8 +241,8 @@
 
 	.photo-depth {
 		position: absolute;
-		inset: -5%;
-		transform: translate3d(calc(var(--pointer-x) * -1), calc(var(--pointer-y) * -1 + var(--scroll-depth) * .7), 0) scale(1.08);
+		inset: 9px;
+		transform: translate3d(calc(var(--pointer-x) * -.22), calc(var(--pointer-y) * -.22), 0);
 		transition: transform 220ms cubic-bezier(.2,.75,.2,1);
 		will-change: transform;
 	}
@@ -247,17 +251,15 @@
 		display: block;
 		width: 100%;
 		height: 100%;
-		object-fit: cover;
-		object-position: 51% 42%;
-		filter: saturate(.98) contrast(1.03) brightness(.93);
+		object-fit: contain;
+		object-position: center;
+		filter: saturate(.99) contrast(1.02) brightness(.96);
 	}
 
 	.photo-wash {
 		position: absolute;
 		inset: 0;
-		background:
-			linear-gradient(180deg, rgba(10, 9, 8, 0) 42%, rgba(10, 9, 8, .56) 100%),
-			linear-gradient(110deg, rgba(16, 13, 10, .1), transparent 58%);
+		background: linear-gradient(180deg, rgba(10, 9, 8, 0) 62%, rgba(10, 9, 8, .5) 100%);
 		pointer-events: none;
 	}
 
@@ -273,9 +275,9 @@
 	}
 
 	@media (max-width: 980px) {
-		.hero-card { grid-template-columns: 1fr 290px; width: min(100% - 40px, 980px); }
+		.hero-card { grid-template-columns: 1fr 280px; width: min(100% - 40px, 980px); }
 		.card-content { padding: 28px 32px 34px; }
-		.photo-panel { min-height: 470px; margin: 34px 28px 34px 0; }
+		.photo-panel { width: 238px; margin: 0 26px 0 12px; }
 		h1 { font-size: 82px; }
 	}
 
@@ -288,14 +290,14 @@
 			transform: none;
 		}
 		.card-content { min-height: 480px; padding: 20px 20px 26px; transform: none; }
-		.photo-panel { width: calc(100% - 28px); min-height: 250px; margin: 14px auto 0; transform: none; }
-		.photo-depth { inset: -4%; transform: scale(1.08); }
+		.photo-panel { width: min(224px, calc(100% - 70px)); min-height: 0; margin: 18px auto 0; transform: none; }
+		.photo-depth { inset: 8px; transform: none; }
 		.titles { margin-top: 74px; }
 		h1 { font-size: 72px; }
 		.tagline { margin-top: 22px; font-size: 16px; }
 		.meta { align-items: flex-start; flex-direction: column; gap: 9px; }
 		.meta span:last-child { text-align: left; }
-		figcaption { left: 16px; right: 16px; bottom: 16px; font-size: 8px; }
+		figcaption { display: none; }
 	}
 
 	@media (prefers-reduced-motion: reduce) {

@@ -32,6 +32,8 @@
 		"vite": "^7.2.6"
 	},
 	"dependencies": {
+		"@iconify-icons/logos": "^1.2.36",
+		"@iconify/svelte": "^5.2.2",
 		"@types/js-yaml": "^4.0.9",
 		"@vercel/analytics": "^2.0.1",
 		"@vercel/speed-insights": "^2.0.0",

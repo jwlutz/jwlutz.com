@@ -43,3 +43,8 @@ no console errors, and found no horizontal overflow at 1280px or 375px.
 `svelte-check` is 0 errors (15 existing visualizer warnings), the build passes,
 and the 4173 snapshot was relaunched with the publishable key. Consulting
 remains untouched. No push is authorized.
+
+**2026-07-18 21:44 (Codex):** The moving Logo.dev rail portion of this ticket
+was rejected and is superseded by `portfolio-logo-board-correction-codex.md`.
+The footer directory remains. Logo.dev, its runtime key, and its attribution
+were removed in favor of bundled CC0 brand artwork. No push is authorized.

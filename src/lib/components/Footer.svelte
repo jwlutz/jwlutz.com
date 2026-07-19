@@ -44,7 +44,6 @@
 	<div class="footer-utility">
 		<span>© {year} Jack Lutz</span>
 		<span>Las Vegas / Los Angeles</span>
-		<a href="https://logo.dev" target="_blank" rel="noopener noreferrer">Logos by Logo.dev</a>
 		<a href="/#home">Back to top</a>
 	</div>
 </footer>
@@ -66,7 +65,7 @@
 	nav strong { margin-bottom: 9px; color: var(--color-brass); font: 500 8px var(--font-family-mono); letter-spacing: .11em; text-transform: uppercase; }
 	nav a { color: #89918a; font-size: 11px; line-height: 1.4; text-decoration: none; transition: color 180ms ease; }
 	nav a:hover { color: var(--color-cream); }
-	.footer-utility { min-height: 70px; display: grid; grid-template-columns: 1fr 1fr auto auto; gap: 28px; align-items: center; border-top: 1px solid rgba(240,239,233,.08); font: 500 8px var(--font-family-mono); letter-spacing: .07em; text-transform: uppercase; }
+	.footer-utility { min-height: 70px; display: grid; grid-template-columns: 1fr 1fr auto; gap: 28px; align-items: center; border-top: 1px solid rgba(240,239,233,.08); font: 500 8px var(--font-family-mono); letter-spacing: .07em; text-transform: uppercase; }
 	.footer-utility a { color: #707870; text-decoration: none; }
 	.footer-utility a:hover { color: var(--color-cream); }
 
