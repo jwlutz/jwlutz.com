@@ -135,21 +135,6 @@ projects:
     featuredTag: Agent benchmark
     liveText: Play benchmark
 
-  - id: claude-o-meter
-    title: Claude-o-Meter
-    description: >
-      A native macOS menu-bar and Windows tray app for monitoring real Claude
-      and Codex subscription usage windows without opening another dashboard.
-    tech: [Swift, Rust]
-    highlights:
-      - Live 5-hour and weekly windows sourced from the providers' usage data
-      - Swift on macOS and Rust with Tauri on Windows, both released through CI
-    github: https://github.com/jwlutz/claude-o-meter
-    live: null
-    image: /project-claude-o-meter.png
-    imageFit: contain
-    featuredTag: Native utility
-
   - id: learning-ml
     title: Learning ML
     description: >
@@ -194,6 +179,21 @@ projects:
     live: null
     image: null
     featuredTag: Systems infrastructure
+
+  - id: claude-o-meter
+    title: Claude-o-Meter
+    description: >
+      A native macOS menu-bar and Windows tray app for monitoring real Claude
+      and Codex subscription usage windows without opening another dashboard.
+    tech: [Swift, Rust]
+    highlights:
+      - Live 5-hour and weekly windows sourced from the providers' usage data
+      - Swift on macOS and Rust with Tauri on Windows, both released through CI
+    github: https://github.com/jwlutz/claude-o-meter
+    live: null
+    image: /project-claude-o-meter.png
+    imageFit: contain
+    featuredTag: Native utility
 
 
 # -----------------------------------------------------------------------------

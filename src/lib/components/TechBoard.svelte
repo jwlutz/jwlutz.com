@@ -20,7 +20,7 @@
 		row: number;
 	};
 
-	let { skills }: { skills: SkillsType } = $props();
+	let { skills: _skills }: { skills: SkillsType } = $props();
 	let sectionElement: HTMLElement;
 	let fieldElement: HTMLDivElement;
 	let tileElements: HTMLButtonElement[] = [];
@@ -137,12 +137,11 @@
 		- (relevanceRank.get(b.tech) ?? Number.MAX_SAFE_INTEGER)
 	);
 	const positionCache = new Map<string, GridPosition[]>();
-	const methodItems = $derived(skills.coursework.slice(0, 6));
 	const active = $derived(logoItems[activeIndex] ?? toolkit[0]);
 
 	function gridDimensions(): GridDimensions {
 		const width = fieldElement?.clientWidth ?? 0;
-		const columns = width < 700 ? 7 : width < 1050 ? 9 : 13;
+		const columns = width < 700 ? 7 : 9;
 		return { columns, rows: Math.ceil(logoItems.length / columns) };
 	}
 
@@ -175,6 +174,14 @@
 		return Math.max(minimum, Math.min(maximum, value));
 	}
 
+	function wrapDistance(value: number, span: number) {
+		return ((value + span / 2) % span + span) % span - span / 2;
+	}
+
+	function nearestEquivalent(value: number, current: number, span: number) {
+		return current + wrapDistance(value - current, span);
+	}
+
 	function renderLens() {
 		if (!fieldElement) return;
 		const width = fieldElement.clientWidth;
@@ -184,9 +191,9 @@
 		const mobileLens = width < 700;
 		const compactLens = width < 1050;
 		const firstTile = tileElements[0];
-		const tileWidth = firstTile?.offsetWidth ?? (mobileLens ? 46 : compactLens ? 72 : 84);
-		const tileHeight = firstTile?.offsetHeight ?? (mobileLens ? 46 : compactLens ? 64 : 70);
-		const horizontalCap = mobileLens ? 60 : compactLens ? 88 : 96;
+		const tileWidth = firstTile?.offsetWidth ?? (mobileLens ? 46 : compactLens ? 72 : 92);
+		const tileHeight = firstTile?.offsetHeight ?? (mobileLens ? 46 : compactLens ? 64 : 76);
+		const horizontalCap = mobileLens ? 60 : compactLens ? 88 : 132;
 		const gapX = Math.min(horizontalCap, Math.max(tileWidth + (mobileLens ? 5 : 7), width / (columns + 0.35)));
 		const gapY = tileHeight + (mobileLens ? 5 : 8);
 		const positions = gridPositions(columns, rows);
@@ -196,8 +203,8 @@
 			if (!itemTile) return;
 
 			const { column, row } = positions[index];
-			const columnDistance = column + currentColumnOffset - centerColumn;
-			const rowDistance = row + currentRowOffset - centerRow;
+			const columnDistance = wrapDistance(column + currentColumnOffset - centerColumn, columns);
+			const rowDistance = wrapDistance(row + currentRowOffset - centerRow, rows);
 			const normalizedDistance = Math.hypot(
 				columnDistance / Math.max(1, columns * 0.51),
 				rowDistance / Math.max(1, rows * 0.55)
@@ -217,9 +224,8 @@
 	}
 
 	function syncTarget() {
-		const { columns, rows } = gridDimensions();
-		targetColumnOffset = clamp(anchorColumnOffset + pointerColumnBias + scrollColumnBias, -(columns - 1) / 2, (columns - 1) / 2);
-		targetRowOffset = clamp(anchorRowOffset + pointerRowBias + scrollRowBias, -(rows - 1) / 2, (rows - 1) / 2);
+		targetColumnOffset = anchorColumnOffset + pointerColumnBias + scrollColumnBias;
+		targetRowOffset = anchorRowOffset + pointerRowBias + scrollRowBias;
 		requestRender();
 	}
 
@@ -236,11 +242,10 @@
 			&& (Math.abs(edgeColumnVelocity) > 0.0001 || Math.abs(edgeRowVelocity) > 0.0001);
 
 		if (edgeDrifting) {
-			const { columns, rows } = gridDimensions();
-			anchorColumnOffset = clamp(anchorColumnOffset + edgeColumnVelocity * elapsedFrames, -(columns - 1) / 2, (columns - 1) / 2);
-			anchorRowOffset = clamp(anchorRowOffset + edgeRowVelocity * elapsedFrames, -(rows - 1) / 2, (rows - 1) / 2);
-			targetColumnOffset = clamp(anchorColumnOffset + pointerColumnBias + scrollColumnBias, -(columns - 1) / 2, (columns - 1) / 2);
-			targetRowOffset = clamp(anchorRowOffset + pointerRowBias + scrollRowBias, -(rows - 1) / 2, (rows - 1) / 2);
+			anchorColumnOffset += edgeColumnVelocity * elapsedFrames;
+			anchorRowOffset += edgeRowVelocity * elapsedFrames;
+			targetColumnOffset = anchorColumnOffset + pointerColumnBias + scrollColumnBias;
+			targetRowOffset = anchorRowOffset + pointerRowBias + scrollRowBias;
 		}
 
 		const columnDelta = targetColumnOffset - currentColumnOffset;
@@ -271,8 +276,8 @@
 		pointerRowBias = 0;
 		edgeColumnVelocity = 0;
 		edgeRowVelocity = 0;
-		const desiredColumnOffset = centerColumn - column;
-		const desiredRowOffset = centerRow - row;
+		const desiredColumnOffset = nearestEquivalent(centerColumn - column, currentColumnOffset, columns);
+		const desiredRowOffset = nearestEquivalent(centerRow - row, currentRowOffset, rows);
 		anchorColumnOffset = desiredColumnOffset - scrollColumnBias;
 		anchorRowOffset = desiredRowOffset - scrollRowBias;
 		targetColumnOffset = desiredColumnOffset;
@@ -407,10 +412,9 @@
 <section id="skills" class="skills-sphere-section" bind:this={sectionElement}>
 	<div class="sphere-intro">
 		<div>
-			<p class="section-label">Stack</p>
-			<h2>Technical Skills and Technologies.</h2>
+			<p class="section-label">Tech Stack</p>
+			<h2>Skills and Technologies</h2>
 		</div>
-		<p>I choose the stack around the problem, then stay with it through deployment, iteration, and maintenance.</p>
 	</div>
 
 	<div
@@ -420,10 +424,6 @@
 		onpointerleave={resetPointer}
 		aria-label="Interactive technology toolkit"
 	>
-		<div class="field-instruction" aria-hidden="true">
-			<span class="desktop-instruction">Move or hold an edge to explore</span>
-			<span>{logoItems.length} technologies · select a mark to hold it</span>
-		</div>
 		<div class="sphere-cloud">
 			{#each logoItems as item, index}
 				<button
@@ -438,6 +438,7 @@
 					aria-label={`${item.label}. ${item.group}. ${item.detail}`}
 				>
 					<span class="tile-face"><TechMark tech={item.tech} size="feature" framed={false} /></span>
+					<span class="tile-tooltip" aria-hidden="true">{item.label}</span>
 				</button>
 			{/each}
 		</div>
@@ -450,20 +451,13 @@
 		</div>
 		<p>{active.detail}</p>
 	</div>
-
-	<div class="method-index">
-		<strong>Methods underneath</strong>
-		<div>{#each methodItems as method}<span>{method}</span>{/each}</div>
-	</div>
 </section>
 
 <style>
 	.skills-sphere-section {
-		--sphere-line: rgba(240, 239, 233, .13);
+		--sphere-line: var(--color-border-strong);
 		--field-border: rgba(15, 18, 16, .12);
 		--field-background: radial-gradient(ellipse 54% 68% at 50% 51%, rgba(255, 255, 255, .98), rgba(242, 240, 235, .88) 61%, rgba(229, 227, 221, .78) 100%), #e8e6e1;
-		--field-instruction: #777872;
-		--field-instruction-accent: #775f3c;
 		--tile-background: rgba(252, 251, 248, .96);
 		--tile-background-active: #fffefb;
 		--tile-border: rgba(24, 28, 25, .08);
@@ -472,20 +466,21 @@
 		--tile-shadow-hover: 0 12px 30px rgba(29, 32, 29, .1);
 		--tile-shadow-active: 0 15px 34px rgba(29, 32, 29, .13), inset 0 -3px #a5895e;
 		--sphere-mark-color: #151815;
+		--tooltip-background: #121713;
+		--tooltip-color: #f0efe9;
 		position: relative;
 		overflow: hidden;
 		border-top: 1px solid var(--sphere-line);
 		border-bottom: 1px solid var(--sphere-line);
-		background: #090f0c;
-		color: var(--color-cream);
+		background: var(--color-background);
+		color: var(--color-text-primary);
 		contain: layout paint;
+		transition: background 220ms ease, color 220ms ease, border-color 220ms ease;
 	}
 
 	:global(html.dark) .skills-sphere-section {
 		--field-border: rgba(240, 239, 233, .1);
 		--field-background: radial-gradient(ellipse 56% 70% at 50% 51%, rgba(48, 57, 51, .98), rgba(21, 27, 23, .97) 62%, rgba(8, 11, 9, .99) 100%), #080b09;
-		--field-instruction: #9aa29c;
-		--field-instruction-accent: #c0a36e;
 		--tile-background: rgba(239, 237, 230, .96);
 		--tile-background-active: #fffdf7;
 		--tile-border: rgba(240, 239, 233, .14);
@@ -494,22 +489,21 @@
 		--tile-shadow-hover: 0 16px 36px rgba(0, 0, 0, .34);
 		--tile-shadow-active: 0 18px 42px rgba(0, 0, 0, .4), inset 0 -3px #b49a67;
 		--sphere-mark-color: #101411;
+		--tooltip-background: #f0efe9;
+		--tooltip-color: #121713;
 	}
 
 	.sphere-intro,
-	.sphere-readout,
-	.method-index {
+	.sphere-readout {
 		width: min(1320px, calc(100% - 80px));
 		margin: 0 auto;
 	}
 
 	.sphere-intro {
-		min-height: 218px;
+		min-height: 204px;
 		padding: 46px 0 40px;
-		display: grid;
-		grid-template-columns: minmax(0, 1.25fr) minmax(280px, .75fr);
-		align-items: end;
-		gap: 80px;
+		display: flex;
+		align-items: flex-end;
 	}
 
 	.sphere-intro h2 {
@@ -519,17 +513,9 @@
 		letter-spacing: -.045em;
 	}
 
-	.sphere-intro > p {
-		max-width: 430px;
-		margin: 0 0 8px;
-		color: #9ba39d;
-		font-size: 13px;
-		line-height: 1.7;
-	}
-
 	.sphere-field {
 		position: relative;
-		height: clamp(470px, 38vw, 540px);
+		height: clamp(500px, 38vw, 560px);
 		overflow: hidden;
 		border-top: 1px solid var(--field-border);
 		border-bottom: 1px solid var(--field-border);
@@ -539,22 +525,6 @@
 		transition: background 220ms ease, border-color 220ms ease;
 	}
 
-	.field-instruction {
-		position: absolute;
-		z-index: 120;
-		top: 22px;
-		left: 40px;
-		right: 40px;
-		display: flex;
-		justify-content: space-between;
-		color: var(--field-instruction);
-		font: 600 8px var(--font-family-mono);
-		letter-spacing: .1em;
-		text-transform: uppercase;
-		pointer-events: none;
-	}
-
-	.field-instruction span:first-child { color: var(--field-instruction-accent); }
 	.sphere-cloud {
 		position: absolute;
 		z-index: 2;
@@ -566,8 +536,8 @@
 		position: absolute;
 		left: 50%;
 		top: 50%;
-		width: clamp(74px, 6.4vw, 84px);
-		height: 70px;
+		width: clamp(82px, 6.4vw, 92px);
+		height: 76px;
 		padding: 0;
 		border: 0;
 		border-radius: 16px;
@@ -603,11 +573,32 @@
 		box-shadow: var(--tile-shadow-hover);
 	}
 	.sphere-tile:focus-visible { outline: none; }
+	.sphere-tile:hover,
+	.sphere-tile:focus-visible { z-index: 140 !important; }
 	.sphere-tile.active .tile-face {
 		border-color: #9a7c50;
 		background: var(--tile-background-active);
 		box-shadow: var(--tile-shadow-active);
 	}
+	.tile-tooltip {
+		position: absolute;
+		z-index: 3;
+		left: 50%;
+		bottom: calc(100% + 8px);
+		padding: 6px 8px;
+		border-radius: 6px;
+		background: var(--tooltip-background);
+		color: var(--tooltip-color);
+		font: 500 8px/1 var(--font-family-mono);
+		letter-spacing: .04em;
+		white-space: nowrap;
+		pointer-events: none;
+		opacity: 0;
+		transform: translate(-50%, 4px);
+		transition: opacity 150ms ease, transform 150ms ease, background 220ms ease, color 220ms ease;
+	}
+	.sphere-tile:hover .tile-tooltip,
+	.sphere-tile:focus-visible .tile-tooltip { opacity: 1; transform: translate(-50%, 0); }
 
 	.sphere-readout {
 		min-height: 116px;
@@ -625,30 +616,13 @@
 		letter-spacing: .1em;
 		text-transform: uppercase;
 	}
-	.sphere-readout strong { color: #ece9e2; font: 400 34px/.95 var(--font-family-display); letter-spacing: -.02em; }
-	.sphere-readout p { max-width: 620px; margin: 0; color: #919a93; font-size: 12px; line-height: 1.6; }
-
-	.method-index {
-		min-height: 74px;
-		padding: 18px 0;
-		display: grid;
-		grid-template-columns: 180px minmax(0, 1fr);
-		align-items: center;
-		gap: 30px;
-		border-top: 1px solid var(--sphere-line);
-	}
-
-	.method-index strong { color: var(--color-brass); font: 500 8px var(--font-family-mono); letter-spacing: .1em; text-transform: uppercase; }
-	.method-index > div { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 7px 20px; }
-	.method-index span { color: #747d77; font-size: 8px; line-height: 1.4; }
+	.sphere-readout strong { color: var(--color-text-primary); font: 400 34px/.95 var(--font-family-display); letter-spacing: -.02em; }
+	.sphere-readout p { max-width: 620px; margin: 0; color: var(--color-text-secondary); font-size: 12px; line-height: 1.6; }
 
 	@media (min-width: 701px) and (max-width: 1050px) {
 		.sphere-intro,
-		.sphere-readout,
-		.method-index { width: calc(100% - 48px); }
-		.sphere-intro { gap: 44px; }
+		.sphere-readout { width: calc(100% - 48px); }
 		.sphere-field { height: clamp(500px, 58vw, 560px); }
-		.field-instruction { left: 24px; right: 24px; }
 		.sphere-tile { width: clamp(66px, 8vw, 72px); height: 64px; border-radius: 14px; }
 		.tile-face { border-radius: 14px; }
 		.sphere-tile :global(.tech-mark) { width: 40px; height: 40px; }
@@ -656,13 +630,10 @@
 
 	@media (max-width: 700px) {
 		.sphere-intro,
-		.sphere-readout,
-		.method-index { width: calc(100% - 32px); }
-		.sphere-intro { min-height: 0; padding: 42px 0 34px; grid-template-columns: 1fr; gap: 24px; }
+		.sphere-readout { width: calc(100% - 32px); }
+		.sphere-intro { min-height: 0; padding: 42px 0 34px; }
 		.sphere-intro h2 { font-size: 52px; }
-		.sphere-intro > p { font-size: 12px; }
 		.sphere-field { height: 460px; }
-		.field-instruction { display: none; }
 		.sphere-cloud { mask-image: radial-gradient(ellipse 100% 90% at 50% 51%, black 48%, rgba(0, 0, 0, .94) 72%, rgba(0, 0, 0, .68) 100%); }
 		.sphere-tile { width: clamp(44px, 12vw, 52px); height: clamp(42px, 11vw, 48px); border-radius: 12px; }
 		.tile-face { border-radius: 12px; }
@@ -671,12 +642,11 @@
 		.sphere-readout > div { gap: 14px; }
 		.sphere-readout strong { font-size: 30px; }
 		.sphere-readout p { font-size: 10px; }
-		.method-index { min-height: 0; padding: 22px 0 25px; display: block; }
-		.method-index > div { margin-top: 13px; justify-content: flex-start; gap: 7px 15px; }
 	}
 
 	@media (prefers-reduced-motion: reduce) {
 		.sphere-tile,
-		.tile-face { transition: none; }
+		.tile-face,
+		.tile-tooltip { transition: none; }
 	}
 </style>

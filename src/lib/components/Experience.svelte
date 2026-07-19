@@ -7,8 +7,7 @@
 
 <section id="experience" class="experience-section">
 	<div class="section-shell">
-		<div class="section-header-sticky">
-			<p class="section-label">Background</p>
+		<div class="experience-header">
 			<h2 class="section-heading">Experience</h2>
 		</div>
 
@@ -16,7 +15,6 @@
 			{#each experiences as exp, i}
 				<div class="animate-on-scroll" use:inview style="transition-delay: {i * 90}ms">
 					<article class="experience-card">
-						<span class="experience-index">0{i + 1}</span>
 						<div class="experience-heading">
 							<p>{exp.role}</p>
 							{#if exp.id === 'lutz-consulting'}
@@ -41,9 +39,44 @@
 <style>
 	.experience-section { padding: 120px 0 150px; content-visibility: auto; contain-intrinsic-size: 1100px; }
 	.section-shell { width: min(1320px, calc(100% - 80px)); margin: 0 auto; }
+	.experience-header {
+		position: relative;
+		min-height: 190px;
+		padding: 24px 0 34px;
+		display: flex;
+		align-items: flex-end;
+		border-top: 1px solid var(--color-border-strong);
+	}
+	.experience-header::after {
+		content: '';
+		position: absolute;
+		left: 0;
+		top: -1px;
+		width: 72px;
+		height: 2px;
+		background: var(--color-brass);
+	}
 	.experience-list { margin-top: 32px; border-bottom: 1px solid var(--color-border); }
-	.experience-card { display: grid; grid-template-columns: 54px minmax(250px, .78fr) minmax(0, 1.22fr); gap: 36px; }
-	.experience-index { color: var(--color-brass); font: 500 9px var(--font-family-mono); }
+	.experience-card {
+		position: relative;
+		display: grid;
+		grid-template-columns: minmax(250px, .78fr) minmax(0, 1.22fr);
+		gap: 48px;
+		overflow: hidden;
+		isolation: isolate;
+	}
+	.experience-card::before {
+		content: '';
+		position: absolute;
+		z-index: -1;
+		inset: 0;
+		background: color-mix(in srgb, var(--color-surface) 72%, transparent);
+		transform: scaleX(0);
+		transform-origin: left center;
+		transition: transform 420ms cubic-bezier(.2,.75,.2,1), background 220ms ease;
+	}
+	.experience-card:hover::before,
+	.experience-card:focus-within::before { transform: scaleX(1); }
 	.experience-heading p { margin: 0 0 8px; color: var(--color-brass); font: 500 9px var(--font-family-mono); letter-spacing: .1em; text-transform: uppercase; }
 	.experience-heading h3 { margin: 0; color: var(--color-text-primary); font: 400 34px/1 var(--font-family-display); }
 	.experience-heading a { text-decoration: none; }
@@ -57,8 +90,13 @@
 	@media (max-width: 820px) {
 		.experience-section { padding: 78px 0 96px; }
 		.section-shell { width: calc(100% - 32px); }
-		.experience-card { grid-template-columns: 32px minmax(0, 1fr); gap: 18px; }
-		.experience-card ul { grid-column: 2; }
+		.experience-header { min-height: 150px; padding: 20px 0 28px; }
+		.experience-header::after { width: 48px; }
+		.experience-card { grid-template-columns: minmax(0, 1fr); gap: 24px; }
 		.experience-heading h3 { font-size: 30px; }
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.experience-card::before { transition: none; }
 	}
 </style>

@@ -84,7 +84,7 @@
 
 		<div class="hero-actions">
 			<a href="#projects">Projects</a>
-			<a href="/consulting" class="quiet">Consulting practice</a>
+			<a href="/consulting" class="quiet">Consulting</a>
 		</div>
 
 		<div class="meta">
