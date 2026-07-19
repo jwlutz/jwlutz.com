@@ -80,9 +80,9 @@ export const consultingSite = {
 				body: 'We take full advantage of modern tools, and ensure every line of code gets human eyes and human judgement.',
 				detail: 'DESIGN · DEVELOPMENT · COMMERCE · PRODUCTS',
 				features: [
-					{ title: 'Build for your needs', body: 'We scope projects to exactly what your business or project needs to scale at the pace you want.' },
-					{ title: 'Rigorous review cycles', body: 'We review all of our code and integrations before release, so that everything you put in our hands just works.' },
-					{ title: 'Full ownership', body: 'You never have to worry about account management. Domains, integrations, maintenance, and whatever else your business needs stay part of one system.' }
+					{ title: 'Build For Your Needs', body: 'We scope projects to exactly what your business or project needs to scale at the pace you want.' },
+					{ title: 'Rigorous Review Cycles', body: 'We review all of our code and integrations before release, so that everything you put in our hands just works.' },
+					{ title: 'Full Ownership', body: 'You never have to worry about account management. Domains, integrations, maintenance, and whatever else your business needs stay part of one system.' }
 				],
 				alternativeLabel: 'Alternatives',
 				alternatives: ['Lovable', 'Base44', 'Replit']
@@ -94,23 +94,23 @@ export const consultingSite = {
 				body: 'We integrate AI into customer systems to automate boring tasks like lookups, outreach, and document generation, always keeping a human in the loop.',
 				detail: 'INTEGRATIONS · AUTOMATION · INTERNAL TOOLS · AGENTS',
 				features: [
-					{ title: 'Bring your context to your agents', body: 'We put in the time upfront to ensure we have the data to automate tasks in your business’s style, instead of churning out AI slop.' },
-					{ title: 'Put human judgement at the right steps', body: 'Some agent judgement is inherently involved in every step, but when human judgement is required, we make it quick and easy for you to give your input.' },
-					{ title: 'Always finish the job', body: 'We ensure that workflows actually produce work product, instead of leaving you with a thousands-long review queue.' }
+					{ title: 'Bring Your Context To Your Agents', body: 'We put in the time upfront to ensure we have the data to automate tasks in your business’s style, instead of churning out AI slop.' },
+					{ title: 'Put Human Judgement At The Right Steps', body: 'Some agent judgement is inherently involved in every step, but when human judgement is required, we make it quick and easy for you to give your input.' },
+					{ title: 'Always Finish The Job', body: 'We ensure that workflows actually produce work product, instead of leaving you with a thousands-long review queue.' }
 				],
 				alternativeLabel: 'Alternatives',
 				alternatives: ['Zapier', 'Make', 'Gumloop']
 			},
 			{
 				index: '03',
-				title: 'Analytics',
-				headline: { lead: 'Applied', emphasis: 'Rigour.' },
-				body: 'We find where you are losing money and time, build the models that explain it, and ship the pipelines that keep the answer current.',
-				detail: 'MEASUREMENT · STATISTICS · MODELLING · PIPELINES',
+				title: 'Analytics & ML',
+				headline: { lead: 'Find the', emphasis: 'Leaks.' },
+				body: 'We find where you are losing money and time, model why it is happening, and build the pipelines that keep it fixed.',
+				detail: 'STATISTICS · MACHINE LEARNING · FORECASTING · PIPELINES',
 				features: [
-					{ title: 'Find where it leaks', body: 'We find where you are bleeding money and time, then patch the holes.' },
-					{ title: 'Real modelling, not guesswork', body: 'We bring a background in statistics and mathematical modelling to the problems that need more than a chart.' },
-					{ title: 'The whole pipeline', body: 'Data collection and validation, models built on your data or data that already exists, and the validation and deployment that put them to work.' }
+					{ title: 'Find Where It Leaks', body: 'We find where you are bleeding money and time, then patch the holes.' },
+					{ title: 'Real Statistical Modelling', body: 'A genuine background in statistics and mathematical modelling, put to work on the problems that need more than a chart.' },
+					{ title: 'The Whole Pipeline', body: 'Data collection and validation, models built on your data or data that already exists, then validated and deployed so they keep running.' }
 				],
 				alternativeLabel: 'Alternatives',
 				alternatives: ['Google Analytics', 'Tableau', 'Power BI']
@@ -118,9 +118,9 @@ export const consultingSite = {
 		]
 	},
 	workPreview: {
-		eyebrow: 'SELECTED WORK',
-		title: 'Built for the real world.',
-		body: 'Four working systems across commerce, cognitive training, and financial infrastructure. Open the work to see what each one required beyond the screen.',
+		eyebrow: 'CASE STUDIES',
+		title: 'Deployed Systems',
+		body: 'Live deployed systems across commerce, cognitive training, and financial infrastructure. Open our case studies to see what each one required beyond the home screen.',
 		cta: 'Explore the case studies',
 		projects: [
 			{
