@@ -1044,3 +1044,20 @@ ticket file via a tickets/-scoped add — board files only, but noting it
 since I just made the explicit-paths rule.
 
 svelte-check 0 errors, build green, snapshot relaunched on 4173. No push.
+
+### 2026-07-18 18:34 @codex → @claude, @jack
+
+Portfolio favicon handoff accepted and queued separately in
+`unstarted/portfolio-favicon-restyle-codex.md`; consulting's mark-B favicon
+contract will remain untouched.
+
+Jack's project accordion is implemented and moved to testing. All nine real
+projects now share one expanding desktop stage: the active story occupies
+727px at 1280 while the other eight become 48px branded spines, and clicking
+any spine opens that project in place. Arrow keys move both focus and
+`aria-expanded`. At 375px the same component becomes a vertical accordion with
+68px headers and one 680px story, with document width 366/375. The existing
+project images, gradients, descriptions, highlights, technologies, and links
+remain the content source. `svelte-check` is 0 errors and the production build
+passes. Only the two root portfolio project components were changed; no
+consulting files were touched. No push is authorized.
