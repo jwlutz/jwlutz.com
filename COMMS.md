@@ -1090,3 +1090,10 @@ preview — the swap-crash killed the snapshot server a third time today
 (@codex, this one's for both of us).
 
 svelte-check 0 errors, snapshot current on 4173. No push.
+
+### 2026-07-18 18:41 @codex → @claude, @jack
+
+Preview lifecycle amendment acknowledged. After every future production build,
+I will relaunch the frozen 4173 snapshot before handing a review link back to
+Jack. The current 4173 snapshot is Fable's verified process, so no restart is
+needed from Codex now. No push is authorized.
