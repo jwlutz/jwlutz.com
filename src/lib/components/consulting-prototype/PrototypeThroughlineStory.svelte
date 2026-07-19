@@ -52,15 +52,26 @@
 		{ label: heroScene.chapters[4], start: 18.05, end: duration, icon: '<circle cx="6" cy="6" r="4.5"/><path d="M4 6.2l1.4 1.4 2.6-3"/>' }
 	];
 
-	let activeChapter = $derived(Math.max(0, chapters.findIndex((chapter) => story >= chapter.start && story < chapter.end)));
-	let sceneTitle = $derived(
-		story < 1.65 ? heroScene.captions.start :
-		story < 7.55 ? heroScene.captions.pileUp :
-		story < 12.15 ? heroScene.captions.secondJob :
-		story < 13.55 ? heroScene.captions.breaks :
-		story < 18.05 ? heroScene.captions.handoff :
-		heroScene.captions.resolved
-	);
+	let activeChapter = $derived(story >= duration ? chapters.length - 1 : Math.max(0, chapters.findIndex((chapter) => story >= chapter.start && story < chapter.end)));
+	// Caption cues nest inside chapter boundaries (the 'breaks' cue moved 13.55->13.45
+	// so the words never contradict the active phase). Enter/exit derive from story so
+	// the swap reproduces under seek() and freezes cleanly for reduced motion.
+	const captionCues = [
+		{ t: 0, text: heroScene.captions.start },
+		{ t: 1.65, text: heroScene.captions.pileUp },
+		{ t: 7.55, text: heroScene.captions.secondJob },
+		{ t: 12.15, text: heroScene.captions.breaks },
+		{ t: 13.45, text: heroScene.captions.handoff },
+		{ t: 18.05, text: heroScene.captions.resolved }
+	];
+	let captionIndex = $derived(captionCues.reduce((a, c, i) => (story >= c.t ? i : a), 0));
+	let sceneTitle = $derived(captionCues[captionIndex].text);
+	let capStart = $derived(captionCues[captionIndex].t);
+	let capEnd = $derived(captionIndex < captionCues.length - 1 ? captionCues[captionIndex + 1].t : duration);
+	let capEnter = $derived(captionIndex === 0 ? 1 : easeOut(ramp(story, capStart, capStart + 0.3)));
+	let capExit = $derived(ramp(capEnd - story, 0, 0.18));
+	let capOpacity = $derived(reducedMotion ? 1 : Math.min(capEnter, capExit));
+	let capShift = $derived(reducedMotion ? 0 : (1 - capEnter) * 6 - (1 - capExit) * 6);
 	let notionSplit = $derived(
 		ramp(story, 7.65, 8.5) * Math.max(
 			1 - ramp(story, 13.15, 13.55),
@@ -76,6 +87,34 @@
 	let helpVisible = $derived(ramp(story, 13.45, 13.8) * (1 - ramp(story, 21.45, 21.8)));
 	let queryCharacters = $derived(Math.floor(heroScene.browser.typedUrl.length * ramp(story, 14.05, 15.05)));
 
+	// Contact feedback — one source per click so the cursor and its target agree.
+	// grabPress holds a grip through the Notion drag; the taps are seekable envelopes.
+	let grabPress = $derived.by(() => {
+		if (story >= 7.45 && story < 7.55) return ramp(story, 7.45, 7.55);
+		if (story >= 7.55 && story < 7.75) return mix(1, 0.5, ramp(story, 7.55, 7.75));
+		if (story >= 7.75 && story < 8.34) return 0.5;
+		if (story >= 8.34 && story < 8.48) return mix(0.5, 0, ramp(story, 8.34, 8.48));
+		return 0;
+	});
+	let buttonPress = $derived(pressAmt(16.35));
+	let refreshPress = $derived(pressAmt(22.48));
+	let refreshSpin = $derived(easeOut(ramp(story, 22.48, 23.0)));
+	// The three contacts never overlap, so one ring serves all. [t, x, y, maxScale, dur]
+	let ring = $derived.by(() => {
+		const hits: [number, number, number, number, number][] = [
+			[7.55, 89.3, 8.3, 1.9, 0.34],
+			[16.35, 42.3, 69.3, 2.7, 0.42],
+			[22.48, 7.5, 13.3, 2.5, 0.4]
+		];
+		for (const [t, x, y, mx, dur] of hits) {
+			if (story >= t && story < t + dur) {
+				const p = (story - t) / dur;
+				return { x, y, s: 0.35 + (mx - 0.35) * easeOut(p), o: (1 - p) * (1 - p) * 0.85 };
+			}
+		}
+		return { x: 50, y: 50, s: 0.35, o: 0 };
+	});
+
 	function clamp(value: number) {
 		return Math.max(0, Math.min(1, value));
 	}
@@ -86,6 +125,23 @@
 
 	function mix(from: number, to: number, amount: number) {
 		return from + (to - from) * clamp(amount);
+	}
+
+	// One easing system for the whole hero. easeOut = arrival/settle/expand;
+	// easeInOut = travel between rest and a target (kills the robotic constant-velocity
+	// start); pressAmt = a tap envelope peaking exactly AT the contact time c.
+	function easeOut(t: number) {
+		const u = 1 - clamp(t);
+		return 1 - u * u * u;
+	}
+	function easeInOut(t: number) {
+		t = clamp(t);
+		return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+	}
+	function pressAmt(c: number) {
+		const down = ramp(story, c - 0.09, c);
+		const up = easeOut(ramp(story, c + 0.06, c + 0.19));
+		return down * (1 - up);
 	}
 
 	function tabAmount(index: number) {
@@ -107,28 +163,38 @@
 		let x = 88;
 		let y = 8;
 		let opacity = 0;
+		let press = 0;
 
-		if (story >= 7.05 && story < 8.55) {
-			const drag = ramp(story, 7.35, 8.35);
-			x = mix(89, 76, drag);
-			y = mix(8, 43, drag);
-			opacity = ramp(story, 7.05, 7.25);
+		if (story >= 7.05 && story < 8.7) {
+			// approach the Notion tab, grab, drag the split open, release, lift
+			opacity = ramp(story, 7.05, 7.3) * (1 - ramp(story, 8.55, 8.7));
+			const approach = easeOut(ramp(story, 7.05, 7.45));
+			const drag = easeInOut(ramp(story, 7.62, 8.4));
+			x = mix(95, 89, approach);
+			y = mix(5, 8, approach);
+			x = mix(x, 76, drag);
+			y = mix(y, 43, drag);
+			press = grabPress;
 		} else if (story >= 13.25 && story < 16.9) {
-			opacity = 1;
-			const address = ramp(story, 13.45, 14.05);
-			const button = ramp(story, 15.35, 16.35);
-			x = mix(95, 53, address);
-			y = mix(8, 13, address);
-			x = mix(x, 42, button);
-			y = mix(y, 69, button);
+			// glide to the address bar (focus tap), dwell while the URL types, travel to the button, click
+			opacity = ramp(story, 13.25, 13.45) * (1 - ramp(story, 16.7, 16.9));
+			const toAddress = easeInOut(ramp(story, 13.3, 14.0));
+			const toButton = easeInOut(ramp(story, 15.35, 16.1));
+			x = mix(98, 53, toAddress);
+			y = mix(5, 13, toAddress);
+			x = mix(x, 42, toButton);
+			y = mix(y, 69, toButton);
+			press = pressAmt(14.1) + buttonPress;
 		} else if (story >= 21.25 && story < 23.05) {
-			opacity = 1 - ramp(story, 22.8, 23.05);
-			const refresh = ramp(story, 21.75, 22.42);
-			x = mix(83, 7.2, refresh);
-			y = mix(8, 13, refresh);
+			// sweep to the refresh control, dwell, click
+			opacity = ramp(story, 21.25, 21.48) * (1 - ramp(story, 22.8, 23.05));
+			const toRefresh = easeInOut(ramp(story, 21.45, 22.25));
+			x = mix(85, 7.2, toRefresh);
+			y = mix(6, 13, toRefresh);
+			press = refreshPress;
 		}
 
-		return `--cx:${x};--cy:${y};opacity:${opacity}`;
+		return `--cx:${x};--cy:${y};--press:${press};opacity:${opacity}`;
 	}
 
 	let hasStarted = false;
@@ -246,7 +312,7 @@
 								</div>
 							{/each}
 
-							<div class="browser-tab notion-tab" style={`--tab-opacity:${notionVisible};--tab-width:${notionVisible};--tab-y:${(1 - notionVisible) * 9}px;--brand-color:#f5f5f5`}>
+							<div class="browser-tab notion-tab" style={`--tab-opacity:${notionVisible};--tab-width:${notionVisible};--tab-y:${(1 - notionVisible) * 9}px;--brand-color:#f5f5f5;--grab:${grabPress};--grab-y:${grabPress}px`}>
 								<i class="brand-icon">{@html siNotion.svg}</i><span>Notion</span><b>×</b>
 							</div>
 
@@ -257,7 +323,7 @@
 						</div>
 
 						<div class="address-row">
-							<span>‹</span><span>›</span><span class="refresh" class:pulse={story >= 22.2 && story < 22.75}>↻</span>
+							<span>‹</span><span>›</span><span class="refresh" style={`--rp:${refreshPress};--rspin:${refreshSpin}`}>↻</span>
 							<div>{isSearch ? heroScene.browser.searchPlaceholder : isConsulting ? heroScene.browser.typedUrl : heroScene.browser.businessDomain}</div>
 							<b>⋯</b>
 						</div>
@@ -285,7 +351,7 @@
 
 								<div class="consulting-page" class:visible={isConsulting}>
 									<nav><span><ConsultingMark size={18} title="" /> {consultingSite.brand}</span><small>{heroScene.consultingCard.navNote}</small></nav>
-									<div><small>{consultingSite.hero.eyebrow}</small><h3>{consultingSite.hero.title.lead} <em>{consultingSite.hero.title.emphasis}</em></h3><button class:clicked={story >= 16.35}>{consultingSite.hero.primaryCta}</button></div>
+									<div><small>{consultingSite.hero.eyebrow}</small><h3>{consultingSite.hero.title.lead} <em>{consultingSite.hero.title.emphasis}</em></h3><button style={`--bp:${buttonPress}`}>{consultingSite.hero.primaryCta}</button></div>
 								</div>
 							</div>
 
@@ -308,6 +374,7 @@
 						</div>
 					</div>
 
+					<div class="click-ring" aria-hidden="true" style={`--rx:${ring.x};--ry:${ring.y};--rs:${ring.s};--ro:${ring.o}`}></div>
 					<div class="cursor" style={cursorStyle()} aria-hidden="true"><svg viewBox="0 0 18 24"><path d="M2 1.6 L2 19.2 L6.4 15.4 L9.3 21.9 L12.6 20.4 L9.7 14 L15.5 14 Z"/></svg></div>
 
 				</div>
@@ -316,13 +383,13 @@
 		</div>
 
 		<div class="story-caption" aria-live="polite">
-			<p>{sceneTitle}</p>
+			<p style={`opacity:${capOpacity};transform:translateY(${capShift}px)`}>{sceneTitle}</p>
 			<button type="button" onclick={replay} aria-label="Replay the website ownership story"><i></i> {heroScene.replayLabel}</button>
 			<div class="phase-bar" role="group" aria-label="Story phases">
 				{#each chapters as chapter, index}
-					{@const amount = ramp(story, chapter.start, chapter.end)}
-					<button type="button" class="phase-tab" class:active={index === activeChapter} onclick={() => seek(index)} aria-label={`Jump to phase: ${chapter.label}`}>
-						<i class="tab-fill" aria-hidden="true" style={`transform:scaleX(${index === activeChapter ? amount : 0})`}></i>
+					{@const amount = reducedMotion ? 1 : ramp(story, chapter.start, chapter.end)}
+					<button type="button" class="phase-tab" class:active={index === activeChapter} class:done={story >= chapter.end} onclick={() => seek(index)} aria-label={`Jump to phase: ${chapter.label}`}>
+						<i class="tab-fill" aria-hidden="true" style={`transform:scaleX(${amount})`}></i>
 						<svg class="tab-icon" viewBox="0 0 12 12" aria-hidden="true">{@html chapter.icon}</svg>
 						<span>{chapter.label}</span>
 					</button>
@@ -338,12 +405,16 @@
 	.story-heading{position:relative;z-index:2;width:min(1380px,100%);margin:0 auto 46px;display:grid;grid-template-columns:1fr .55fr;gap:60px;align-items:end}.story-intro{max-width:430px;justify-self:end}.story-intro>span{display:block;color:var(--proto-muted);font-size:14px;line-height:1.65;text-wrap:pretty}
 	.monitor{position:relative;z-index:2;width:min(1380px,100%);height:min(70vw,760px);min-height:610px;margin:0 auto;overflow:hidden;border:1px solid var(--proto-line-strong);background:#0d100e;box-shadow:0 50px 160px rgba(0,0,0,.5)}
 	.browser{position:absolute;left:3%;right:3%;top:65px;bottom:110px;overflow:hidden;border:1px solid rgba(240,239,233,.18);border-radius:7px;background:#121613;box-shadow:0 25px 80px rgba(0,0,0,.45)}.tab-strip{height:39px;padding:7px 8px 0;display:flex;align-items:end;gap:3px;overflow:hidden;background:#0f1310;contain:layout paint}.browser-tab{height:31px;min-width:0;padding:0 8px;display:flex;align-items:center;gap:6px;overflow:hidden;border-radius:6px 6px 0 0;color:#777e78;background:#171c18;font:7px var(--proto-mono);white-space:nowrap}.browser-tab.active{color:#d8dbd5;background:#272d28}.browser-tab>span{overflow:hidden;text-overflow:ellipsis}.browser-tab>b{margin-left:auto;font-weight:400}.business-tab{flex:0 1 150px;min-width:72px}.tool-tab,.notion-tab,.help-tab{flex:var(--tab-width) 1 96px;max-width:105px;opacity:var(--tab-opacity);transform:translateY(var(--tab-y));transition:none}.help-tab{max-width:145px}.site-favicon,.help-favicon{flex:0 0 auto;width:15px;height:15px;display:grid;place-items:center;border-radius:3px;color:#e8e9e4;background:#07543f;font:700 7px Arial,sans-serif}.help-favicon{background:#b49a67;color:#111}.brand-icon{flex:0 0 auto;width:14px;height:14px;display:grid;place-items:center;color:#dedfda}.brand-icon :global(svg){width:100%;height:100%;fill:currentColor}.brand-icon img{display:block;width:100%;height:100%;border-radius:2px}.new-tab{padding:0 7px 8px;color:#777e78}
-	.address-row{height:41px;padding:0 13px;display:flex;align-items:center;gap:12px;color:#707771;background:#272d28;border-bottom:1px solid #323933;font:12px var(--proto-sans)}.address-row>div{height:25px;flex:1;padding:0 11px;display:flex;align-items:center;border-radius:13px;color:#999f99;background:#141915;font:7px var(--proto-mono)}.address-row b{font-size:14px}.refresh.pulse{color:#f1f2ed;animation:refresh-pulse .55s ease}
+	.address-row{height:41px;padding:0 13px;display:flex;align-items:center;gap:12px;color:#707771;background:#272d28;border-bottom:1px solid #323933;font:12px var(--proto-sans)}.address-row>div{height:25px;flex:1;padding:0 11px;display:flex;align-items:center;border-radius:13px;color:#999f99;background:#141915;font:7px var(--proto-mono)}.address-row b{font-size:14px}.refresh{display:inline-block;transform-origin:50% 50%;transform:rotate(calc(var(--rspin,0)*360deg)) translateY(calc(var(--rp,0)*1px)) scale(calc(1 - var(--rp,0)*0.16));opacity:calc(1 - var(--rp,0)*0.28)}
 	.browser-workspace{position:absolute;inset:80px 0 0;display:flex;overflow:hidden;background:#0d100e;contain:layout paint}.page-pane{position:relative;flex:0 0 calc(100% - var(--split) * 35%);min-width:0;overflow:hidden;transition:none;contain:layout paint}.business-page,.error-page,.search-page,.consulting-page{position:absolute;inset:0;opacity:0;pointer-events:none;transition:opacity .28s ease}.business-page{opacity:1;color:#171914;background:#dbd8cf}.business-page.hidden{opacity:0}.business-page nav{height:55px;padding:0 6%;display:flex;align-items:center;gap:22px;border-bottom:1px solid rgba(17,19,15,.13);font-size:9px}.business-page nav strong{margin-right:auto;font:8px var(--proto-mono);letter-spacing:.1em}.business-page nav button{padding:9px 11px;border:0;background:#07543f;color:#fff;font-size:8px}.business-copy{position:absolute;z-index:2;left:7%;top:24%;width:53%}.business-copy h3{margin:12px 0 15px;font:400 clamp(34px,4vw,60px)/.88 var(--proto-display);letter-spacing:-.04em}.business-copy p{max-width:345px;color:#686a64;font-size:10px;line-height:1.55}.site-visual{position:absolute;right:6%;bottom:11%;width:34%;height:45%;border:1px solid rgba(7,84,63,.25);background:linear-gradient(145deg,rgba(7,84,63,.24),rgba(180,154,103,.08))}.site-visual i{position:absolute;background:rgba(7,84,63,.2)}.site-visual i:first-child{left:10%;right:10%;top:14%;height:1px}.site-visual i:nth-child(2){left:10%;top:28%;bottom:12%;width:37%}.site-visual i:nth-child(3){right:10%;top:28%;bottom:12%;width:33%}.site-visual b{position:absolute;left:10%;right:10%;bottom:9%;height:1px;background:rgba(180,154,103,.5)}.business-page footer{position:absolute;left:0;right:0;bottom:0;height:31px;padding:0 6%;display:flex;align-items:center;justify-content:space-between;opacity:0;color:#c4cbc4;background:#0d2d24;font:6px var(--proto-mono);letter-spacing:.09em;transition:opacity .55s ease}.business-page footer.visible{opacity:1}.business-page footer b{color:#f0efe9;font-weight:500}
-	.error-page.visible,.search-page.visible,.consulting-page.visible{opacity:1}.error-page{display:flex;flex-direction:column;align-items:center;justify-content:center;color:#b8bcb6;background:#0d100e}.error-page strong{font:400 clamp(75px,10vw,145px)/.8 var(--proto-display);color:#eceee9}.error-page span{margin-top:18px;color:#b77559;font:8px var(--proto-mono);letter-spacing:.13em}.search-page{display:flex;flex-direction:column;align-items:center;justify-content:center;color:#242823;background:#f0f1ed}.search-symbol{position:relative;width:38px;height:38px;margin-bottom:13px;border:2px solid #263029;border-radius:50%}.search-symbol::after{content:'';position:absolute;right:-11px;bottom:0;width:16px;height:2px;background:#263029;transform:rotate(45deg)}.search-input{width:min(75%,540px);height:40px;margin-top:22px;padding:0 16px;display:flex;align-items:center;border:1px solid #cdd1cc;border-radius:22px;background:#fff;box-shadow:0 2px 9px rgba(0,0,0,.07);font:11px Arial,sans-serif}.search-input i{width:1px;height:16px;margin-left:2px;background:#222;animation:blink .8s infinite}.consulting-page{padding:0 7% 7%;color:var(--proto-text);background:radial-gradient(circle at 81% 25%,rgba(7,84,63,.65),transparent 40%),#080b09}.consulting-page nav{height:55px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--proto-line)}.consulting-page nav span{display:flex;align-items:center;gap:7px;font-size:8px}.consulting-page nav small{color:var(--proto-muted);font:6px var(--proto-mono);letter-spacing:.09em}.consulting-page>div:last-child{width:73%;padding-top:8%}.consulting-page>div>small{color:var(--proto-green-light);font:6px var(--proto-mono);letter-spacing:.1em}.consulting-page h3{margin:13px 0 20px;font:400 clamp(34px,4.2vw,62px)/.88 var(--proto-display);letter-spacing:-.04em}.consulting-page h3 em{font-weight:400;color:#dad6cc}.consulting-page button{position:relative;padding:11px 14px;border:0;background:var(--proto-paper);color:#11130f;font-weight:600;font-size:8px}.consulting-page button.clicked::after{content:'';position:absolute;inset:-7px;border:1px solid var(--proto-green-light);animation:click-pulse .8s ease}
+	.error-page.visible,.search-page.visible,.consulting-page.visible{opacity:1}.error-page{display:flex;flex-direction:column;align-items:center;justify-content:center;color:#b8bcb6;background:#0d100e}.error-page strong{font:400 clamp(75px,10vw,145px)/.8 var(--proto-display);color:#eceee9}.error-page span{margin-top:18px;color:#b77559;font:8px var(--proto-mono);letter-spacing:.13em}.search-page{display:flex;flex-direction:column;align-items:center;justify-content:center;color:#242823;background:#f0f1ed}.search-symbol{position:relative;width:38px;height:38px;margin-bottom:13px;border:2px solid #263029;border-radius:50%}.search-symbol::after{content:'';position:absolute;right:-11px;bottom:0;width:16px;height:2px;background:#263029;transform:rotate(45deg)}.search-input{width:min(75%,540px);height:40px;margin-top:22px;padding:0 16px;display:flex;align-items:center;border:1px solid #cdd1cc;border-radius:22px;background:#fff;box-shadow:0 2px 9px rgba(0,0,0,.07);font:11px Arial,sans-serif}.search-input i{width:1px;height:16px;margin-left:2px;background:#222;animation:blink .8s infinite}.consulting-page{padding:0 7% 7%;color:var(--proto-text);background:radial-gradient(circle at 81% 25%,rgba(7,84,63,.65),transparent 40%),#080b09}.consulting-page nav{height:55px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--proto-line)}.consulting-page nav span{display:flex;align-items:center;gap:7px;font-size:8px}.consulting-page nav small{color:var(--proto-muted);font:6px var(--proto-mono);letter-spacing:.09em}.consulting-page>div:last-child{width:73%;padding-top:8%}.consulting-page>div>small{color:var(--proto-green-light);font:6px var(--proto-mono);letter-spacing:.1em}.consulting-page h3{margin:13px 0 20px;font:400 clamp(34px,4.2vw,62px)/.88 var(--proto-display);letter-spacing:-.04em}.consulting-page h3 em{font-weight:400;color:#dad6cc}.consulting-page button{position:relative;padding:11px 14px;border:0;background:var(--proto-paper);color:#11130f;font-weight:600;font-size:8px;transform:translateY(calc(var(--bp,0)*1px))}.consulting-page button::after{content:'';position:absolute;inset:0;background:#0a0d0b;opacity:calc(var(--bp,0)*0.16);pointer-events:none}
 	.notion-pane{position:relative;flex:0 0 calc(var(--split) * 35%);min-width:0;overflow:hidden;border-left:calc(var(--split) * 1px) solid #303631;color:#d9dcd7;background:#191d1a;contain:layout paint}.notion-head{height:43px;padding:0 12px;display:flex;align-items:center;gap:10px;border-bottom:1px solid #2d332e;font:7px var(--proto-mono);white-space:nowrap}.notion-head span{display:flex;align-items:center;gap:6px;color:#919891}.notion-head span i{width:14px;height:14px}.notion-head span i :global(svg),.notion-icon :global(svg){width:100%;height:100%;fill:currentColor}.notion-head b{margin:auto;font-weight:500}.notion-head small{color:#6c736d}.notion-page{padding:8% 9%;min-width:260px}.notion-icon{display:grid;place-items:center;width:29px;height:29px;margin-bottom:14px}.notion-page h3{margin:0;font:500 20px var(--proto-sans)}.task-list{border-top:1px solid #2d332e}.task{min-height:37px;display:grid;grid-template-columns:12px 1fr;gap:9px;align-items:center;border-bottom:1px solid rgba(240,239,233,.06);opacity:var(--task-opacity);transform:translateY(var(--task-y));white-space:nowrap}.task>i{position:relative;width:11px;height:11px;border:1px solid #666d67;border-radius:2px}.task>i::after{content:'';position:absolute;left:3px;top:1px;width:3px;height:6px;border-right:1px solid #0d2d24;border-bottom:1px solid #0d2d24;opacity:0;transform:rotate(45deg) scale(.5)}.task span{overflow:hidden;text-overflow:ellipsis;color:#b6bbb5;font-size:8px}.task.complete>i{border-color:#b49a67;background:#b49a67}.task.complete>i::after{opacity:1;transform:rotate(45deg) scale(1)}.task.complete span{color:#6f7770;text-decoration:line-through}
-	.cursor{position:absolute;z-index:30;left:0;top:0;width:18px;height:24px;pointer-events:none;transform:translate(calc(var(--cx,50)*1cqw),calc(var(--cy,50)*1cqh)) scale(var(--cursor-scale,1));will-change:transform,opacity}.cursor svg{display:block;width:100%;height:100%}.cursor path{fill:#171914;stroke:var(--proto-green-light);stroke-width:1.4;stroke-linejoin:round}
-	@keyframes blink{50%{opacity:0}}@keyframes click-pulse{0%{opacity:0;transform:scale(.85)}45%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(1.08)}}@keyframes refresh-pulse{50%{transform:rotate(180deg);color:#b49a67}}
+	.cursor{position:absolute;z-index:30;left:0;top:0;width:18px;height:24px;pointer-events:none;--press:0;transform:translate(calc(var(--cx,50)*1cqw),calc(var(--cy,50)*1cqh)) scale(calc(var(--cursor-scale,1)*(1 - var(--press,0)*0.18)));will-change:transform,opacity}.cursor svg{display:block;width:100%;height:100%}.cursor path{fill:#171914;stroke:var(--proto-green-light);stroke-width:1.4;stroke-linejoin:round}
+	@keyframes blink{50%{opacity:0}}
+	/* click feedback: story-derived press, ring, and target depress (seekable, no keyframes) */
+	.notion-tab{position:relative;transform:translateY(calc(var(--tab-y) + var(--grab-y,0px)))}
+	.notion-tab::after{content:'';position:absolute;inset:0;background:#080b09;opacity:calc(var(--grab,0)*0.22);pointer-events:none;border-radius:inherit}
+	.click-ring{position:absolute;z-index:29;left:0;top:0;width:2.8cqw;height:2.8cqw;border:1px solid #b49a67;border-radius:1px;pointer-events:none;transform-origin:center;transform:translate(calc(var(--rx,50)*1cqw - 50%),calc(var(--ry,50)*1cqh - 50%)) scale(var(--rs,1));opacity:var(--ro,0);will-change:transform,opacity}
 	@media(max-width:900px){.story{padding-left:16px;padding-right:16px}.story-heading{grid-template-columns:1fr;gap:22px}.story-intro{justify-self:start}.monitor{height:720px}.browser{left:14px;right:14px;top:60px;bottom:126px}.business-copy{width:65%}.site-visual{opacity:.55}}
 	@media(max-width:620px){.story{padding-top:95px}.story-intro>span{font-size:12px}.monitor{min-height:0;height:650px}.browser{bottom:118px}.tab-strip{height:36px}.browser-tab{height:28px}.business-tab{flex-basis:105px}.tool-tab,.notion-tab,.help-tab{max-width:43px;padding:0 6px}.tool-tab span,.tool-tab b,.notion-tab span,.notion-tab b,.help-tab span,.help-tab b{display:none}.address-row{height:38px}.browser-workspace{inset:74px 0 0}.business-page nav span,.business-page nav button{display:none}.business-copy{left:8%;top:18%;width:80%}.business-copy h3{font-size:34px}.business-copy p{font-size:9px}.site-visual{right:7%;bottom:12%;width:38%;height:29%;opacity:.42}.business-page footer{padding:0 5%;font-size:5px}.notion-pane{position:absolute;right:0;top:0;bottom:0;flex:none;width:calc(var(--split) * 78%);border-left:1px solid #303631;box-shadow:-20px 0 60px rgba(0,0,0,.42)}.page-pane{flex-basis:100%}.notion-page{min-width:235px}.consulting-page>div:last-child{width:95%;padding-top:13%}.consulting-page h3{font-size:35px}.consulting-page nav small{display:none}.error-page strong{font-size:82px}.error-page span{font-size:6px}.search-input{width:84%}}
 	/* Railway-inspired hero composition: the animated product is the first object on the page. */
@@ -411,20 +482,28 @@
 		width:min(780px,72%);
 		margin:20px auto 0;
 		display:grid;
-		grid-template-columns:minmax(220px,1fr) auto;
-		gap:10px 22px;
+		grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);
+		grid-template-rows:auto auto;
+		row-gap:14px;
+		column-gap:16px;
 		align-items:center;
 		color:var(--proto-muted);
 	}
-		.story-caption p{display:block;margin:0;text-align:center;color:var(--proto-paper);font:400 clamp(18px,1.65vw,24px)/1 var(--proto-display);letter-spacing:-.018em}
-	.story-caption>button{display:inline-flex;align-items:center;justify-self:end;white-space:nowrap}
-	.phase-bar{grid-column:1/-1;grid-row:2;display:flex;overflow:hidden;border:1px solid var(--proto-line-strong);border-radius:2px;background:rgba(10,13,11,.72)}
-	.phase-tab{position:relative;flex:1;display:flex;align-items:center;justify-content:center;gap:7px;padding:12px 4px;border:0;border-left:1px solid var(--proto-line);background:none;color:var(--proto-muted);font:500 9px var(--proto-mono);letter-spacing:.08em;text-transform:uppercase;cursor:pointer;transition:color .25s ease}
+		.story-caption p{grid-column:2;grid-row:2;justify-self:center;display:block;margin:0;max-width:100%;text-align:center;color:var(--proto-paper);font:400 clamp(18px,1.65vw,24px)/1 var(--proto-display);letter-spacing:-.018em;text-wrap:balance;will-change:transform,opacity;contain:paint}
+	.story-caption>button{grid-column:3;grid-row:2;display:inline-flex;align-items:center;justify-self:end;white-space:nowrap}
+	.phase-bar{grid-column:1/-1;grid-row:1;display:flex;overflow:hidden;border:1px solid var(--proto-line-strong);border-radius:2px;background:rgba(10,13,11,.72)}
+	.phase-tab{position:relative;flex:1;display:flex;align-items:center;justify-content:center;gap:7px;padding:12px 4px;border:0;border-left:1px solid var(--proto-line);background:none;color:#6f766f;font:500 9px var(--proto-mono);letter-spacing:.08em;text-transform:uppercase;cursor:pointer;transition:color .25s ease}
 	.phase-tab:first-child{border-left:0}
-	.phase-tab:hover{color:var(--proto-paper)}
-	.phase-tab.active{color:var(--proto-paper)}
-	.tab-fill{position:absolute;inset:0;background:rgba(180,154,103,.26);transform-origin:left;pointer-events:none}
-	.tab-icon{position:relative;width:12px;height:12px;flex:0 0 auto;fill:none;stroke:currentColor;stroke-width:1.2;stroke-linecap:round;stroke-linejoin:round}
+	.phase-tab:hover{color:#f0efe9}
+	.phase-tab.done{color:#b9beb9}
+	.phase-tab.active{color:#f0efe9}
+	.tab-fill{position:absolute;inset:0;transform-origin:left;pointer-events:none;background:rgba(180,154,103,.16)}
+	.tab-fill::before{content:'';position:absolute;left:0;right:0;top:0;height:2px;background:#b49a67;opacity:.42;transition:opacity .25s ease}
+	.phase-tab.active .tab-fill{background:rgba(180,154,103,.24)}
+	.phase-tab.active .tab-fill::before{opacity:1}
+	.tab-icon{position:relative;width:12px;height:12px;flex:0 0 auto;fill:none;stroke:currentColor;stroke-width:1.2;stroke-linecap:round;stroke-linejoin:round;transition:transform .25s ease}
+	.phase-tab.done .tab-icon,.phase-tab.active .tab-icon{stroke:#b49a67}
+	.phase-tab.active .tab-icon{transform:scale(1.14)}
 	.phase-tab span{position:relative;white-space:nowrap}
 	.cursor{--cursor-scale:1.32;transform-origin:top left;filter:drop-shadow(0 2px 3px rgba(0,0,0,.45))}
 	.business-copy{top:22%}
@@ -437,8 +516,8 @@
 		.story-player{width:108%;margin-left:-4%}
 		.monitor{width:100%}
 		.screen-frame{aspect-ratio:16/10;border-radius:2px}
-		.story-caption{width:92%;margin-top:13px;grid-template-columns:1fr auto;gap:8px 10px}
-		.story-caption p{font-size:15px}.story-caption>button{font-size:0}.story-caption>button i{margin-right:0}
+		.story-caption{width:92%;margin-top:13px;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);row-gap:11px;column-gap:8px}
+		.story-caption p{font-size:15px;line-height:1.15}.story-caption>button{justify-self:end;min-width:26px;min-height:26px;justify-content:center;font-size:0}.story-caption>button i{margin-right:0}
 		.phase-tab{padding:10px 2px;gap:0}
 		.phase-tab span{display:none}
 		.cursor{--cursor-scale:.82}
