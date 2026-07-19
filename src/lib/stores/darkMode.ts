@@ -9,17 +9,16 @@ function getSystemPreference(): boolean {
 	return false;
 }
 
-// Get initial mode - use saved preference or fall back to system
+// Get initial mode - use a saved preference or the portfolio's dark-first system.
 function getInitialMode(): boolean {
 	if (browser) {
 		const saved = localStorage.getItem('darkMode');
 		if (saved !== null) {
 			return saved === 'true';
 		}
-		// Default to system preference
-		return getSystemPreference();
+		return true;
 	}
-	return false;
+	return true;
 }
 
 // Store for dark mode state

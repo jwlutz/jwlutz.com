@@ -48,12 +48,15 @@
 	<div class="workspace">
 		<section class="main">
 			<div class="panel-bar"><span>VISITORS · LAST 30 DAYS</span><small class="pulse-wrap"><i class="pulse"></i>14 on site now</small></div>
+			<div class="chart-legend" aria-hidden="true"><span><i class="lg-now"></i>THIS PERIOD</span><span><i class="lg-prev"></i>LAST PERIOD</span></div>
 			<div class="chart">
 				<svg viewBox="0 0 100 40" preserveAspectRatio="none" aria-hidden="true">
-					<path class="area" d="M0,33 C8,31 14,27 22,28 C30,29 36,22 44,23 C52,24 58,16 66,17 C74,18 80,11 88,12 C93,12.5 97,9 100,9 L100,40 L0,40 Z" />
-					<path class="line" d="M0,33 C8,31 14,27 22,28 C30,29 36,22 44,23 C52,24 58,16 66,17 C74,18 80,11 88,12 C93,12.5 97,9 100,9" />
+					<path class="prev" d="M0,36 C8,35 14,33 22,33.5 C30,34 36,30 44,30.5 C52,31 58,27 66,27.5 C74,28 80,24 88,24.5 C93,24.7 97,23 100,23" />
+					<path class="area" d="M0,31 C8,29 14,24 22,25 C30,26 36,18 44,19 C52,20 58,12 66,13 C74,14 80,7 88,8 C93,8.5 97,5 100,5 L100,40 L0,40 Z" />
+					<path class="line" d="M0,31 C8,29 14,24 22,25 C30,26 36,18 44,19 C52,20 58,12 66,13 C74,14 80,7 88,8 C93,8.5 97,5 100,5" />
 				</svg>
-				<div class="gridlines" aria-hidden="true"><i></i><i></i><i></i></div>
+				<div class="gridlines" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+				<div class="axis" aria-hidden="true"><span>30 DAYS AGO</span><span>TODAY</span></div>
 			</div>
 			<div class="panel-bar sources-bar"><span>WHERE THEY COME FROM</span></div>
 			<div class="sources">
@@ -109,6 +112,8 @@
 					<samp class:show={past('c4d')}><i class="ok">✓</i>reorder points set · holding + stockout cost minimized</samp>
 				</div>
 			</div>
+
+			<div class="nb-foot" class:show={past('c4d')}><small>ARTIFACTS</small><span>forecast.png · reorder_plan.csv</span><em>→ shared to your dashboard</em></div>
 		</aside>
 	</div>
 
@@ -130,11 +135,14 @@
 	.pulse{width:6px;height:6px;border-radius:50%;background:#b49a67}
 	.playing .pulse{animation:pulse 2.2s ease infinite}
 
-	.chart{position:relative;flex:1;min-height:0;margin:16px 14px 12px;contain:layout paint}
+	.chart-legend{display:flex;gap:16px;padding:12px 14px 0;font:500 6px var(--proto-mono);letter-spacing:.1em;color:#666d66}.chart-legend span{display:flex;align-items:center;gap:6px}.chart-legend i{width:12px;height:0}.lg-now{border-top:1.6px solid #b49a67}.lg-prev{border-top:1.6px dashed rgba(240,239,233,.3)}
+	.chart{position:relative;flex:1;min-height:0;margin:8px 14px 12px;contain:layout paint}
 	.chart svg{position:absolute;inset:0;width:100%;height:100%;clip-path:inset(0 100% 0 0)}
 	.playing .chart svg{animation:chart-reveal 9s ease infinite}
 	.chart .area{fill:rgba(45,128,100,.14)}
 	.chart .line{fill:none;stroke:#b49a67;stroke-width:1.6;vector-effect:non-scaling-stroke}
+	.chart .prev{fill:none;stroke:rgba(240,239,233,.24);stroke-width:1.2;stroke-dasharray:3 3;vector-effect:non-scaling-stroke}
+	.axis{position:absolute;left:0;right:0;bottom:3px;display:flex;justify-content:space-between;font:500 6px var(--proto-mono);letter-spacing:.1em;color:#666d66}
 	.gridlines{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:space-between;pointer-events:none}
 	.gridlines i{height:1px;background:rgba(240,239,233,.05)}
 	.sources{padding:14px;display:grid;gap:11px}
@@ -160,6 +168,11 @@
 	.cell samp{display:flex;align-items:center;gap:8px;margin-top:7px;color:#8b9089;font:7.5px var(--proto-mono);opacity:0;transition:opacity .4s ease}
 	.cell samp.show{opacity:1}
 	.cell samp .ok{color:#b49a67;font-style:normal}
+	.nb-foot{margin-top:auto;padding:12px 14px;display:flex;align-items:baseline;gap:10px;border-top:1px solid rgba(240,239,233,.06);opacity:0;transition:opacity .5s ease}
+	.nb-foot.show{opacity:1}
+	.nb-foot small{color:#666d66;font:500 6px var(--proto-mono);letter-spacing:.12em}
+	.nb-foot span{color:#a89670;font:7px var(--proto-mono)}
+	.nb-foot em{color:#6f7669;font:6.5px var(--proto-mono);font-style:normal}
 	.loss{display:flex;gap:2px;align-items:flex-end;height:15px}
 	.loss i{width:4px;height:var(--h);background:rgba(180,154,103,.55)}
 	.loss i:last-child{background:#b49a67}

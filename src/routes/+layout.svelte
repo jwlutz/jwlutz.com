@@ -59,11 +59,10 @@
 	<Nav {activeSection} {profile} />
 {/if}
 
-<main>
+<main class:portfolio-main={!isConsulting}>
 	{@render children()}
 </main>
 
 {#if !isConsulting}
 	<Footer />
 {/if}
-

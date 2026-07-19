@@ -6,8 +6,10 @@
 	onMount(() => initSessionTiming('home'));
 </script>
 
-<Hero {profile} />
-<TechStack {skills} />
-<Experience experiences={experience} />
-<Projects {projects} />
-<Contact {profile} />
+<div class="portfolio-page">
+	<Hero {profile} />
+	<TechStack {skills} />
+	<Experience experiences={experience} />
+	<Projects {projects} />
+	<Contact {profile} />
+</div>
