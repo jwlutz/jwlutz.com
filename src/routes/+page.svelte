@@ -9,7 +9,7 @@
 <div class="portfolio-page">
 	<Hero {profile} />
 	<TechStack {skills} />
-	<Projects {projects} />
 	<Experience experiences={experience} />
+	<Projects {projects} />
 	<Contact {profile} />
 </div>

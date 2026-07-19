@@ -11,7 +11,7 @@
  *   splitScene ............. text INSIDE the drag demo (service 01)
  *   aiDemoCopy ............. text INSIDE the lead-engine demo (service 02)
  *   analyticsDemoCopy ...... text INSIDE the analytics demo (service 03)
- *   montageCopy ............ labels on the Selected Work collage
+ *   montageCopy ............ labels on the Projects collage
  *   contactFormCopy ........ the Project Starter form
  *   footerCopy ............. the site footer
  *   workPageCopy ........... /consulting/work extras
@@ -166,7 +166,7 @@ export const consultingSite = {
 		title: { lead: 'Different businesses.', emphasis: 'One standard of care.' },
 		body: 'The useful details are never generic. Explore three systems through the problem, the hard part, the work itself, and what continued after launch.',
 		cta: 'Explore the cases',
-		sectionEyebrow: 'SELECTED WORK',
+		sectionEyebrow: 'PROJECTS',
 		sectionTitle: 'Open the system.',
 		sectionBody: 'Each case has its own visual language and its own evidence. The thread between them is accountable work beyond the screen.'
 	},
@@ -280,13 +280,13 @@ export const siteMeta = {
 		ogImageAlt: 'Lutz Consulting Group: Don’t let your website become your second job.'
 	},
 	work: {
-		title: 'Selected Work | Lutz Consulting Group',
+		title: 'Projects | Lutz Consulting Group',
 		description:
 			'Case studies of websites, products, AI workflows, and analytics systems designed and operated by Lutz Consulting Group.',
 		ogDescription: 'Three different businesses. One standard of care.',
 		url: 'https://jwlutz.com/consulting/work',
 		ogImage: 'https://jwlutz.com/consulting/og-work.png',
-		ogImageAlt: 'Lutz Consulting Group selected work: different businesses, one standard of care.'
+		ogImageAlt: 'Lutz Consulting Group projects: different businesses, one standard of care.'
 	}
 };
 
@@ -297,7 +297,7 @@ export const siteMeta = {
 export const navCopy = {
 	landingLinks: [
 		{ label: 'Services', href: '#services' },
-		{ label: 'Work', href: '/consulting/work' },
+		{ label: 'Projects', href: '/consulting/work' },
 		{ label: 'Contact', href: '#contact' }
 	],
 	workLinks: [
@@ -489,7 +489,7 @@ export const analyticsDemoCopy = {
 };
 
 /* ════════════════════════════════════════════════════════════════════
-   WORK MONTAGE — labels on the Selected Work collage.
+   WORK MONTAGE — labels on the Projects collage.
    Card copy (names, descriptions, links) lives in
    consultingSite.workPreview.projects above.
    ════════════════════════════════════════════════════════════════════ */
@@ -535,7 +535,7 @@ export const footerCopy = {
 	exploreLabel: 'Explore',
 	explore: [
 		{ label: 'Services', href: '/consulting#services' },
-		{ label: 'Selected work', href: '/consulting#work' },
+		{ label: 'Projects', href: '/consulting#work' },
 		{ label: 'Case studies', href: '/consulting/work' },
 		{ label: 'Personal portfolio', href: '/' }
 	],

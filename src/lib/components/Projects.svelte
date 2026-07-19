@@ -57,7 +57,7 @@
 <section id="projects" class="projects-section">
 	<div class="section-shell">
 		<div class="section-header-sticky">
-			<p class="section-label">Selected work</p>
+			<p class="section-label">Projects</p>
 			<div class="projects-heading">
 				<h2 class="section-heading">From question to working system.</h2>
 				<p>Six projects across product, machine learning, and infrastructure. Choose one to see the system and the evidence behind it.</p>
@@ -66,7 +66,7 @@
 
 		{#if activeProject}
 			<div class="desktop-stage">
-				<div bind:this={indexRef} class="project-index" role="tablist" aria-label="Selected projects" aria-orientation="vertical">
+				<div bind:this={indexRef} class="project-index" role="tablist" aria-label="Projects" aria-orientation="vertical">
 					{#each projects as project, index (project.id)}
 						<button
 							type="button"
@@ -143,7 +143,7 @@
 				</div>
 			</div>
 
-			<div class="mobile-projects" aria-label="Selected portfolio projects">
+			<div class="mobile-projects" aria-label="Portfolio projects">
 				{#each projects as project (project.id)}
 					<article class="mobile-card">
 						<div class={`mobile-media project-media-${project.id}`}>

@@ -8,7 +8,7 @@
 	<div class="contact-shell">
 		<div class="contact-label"><span>Contact</span><i></i><span>Las Vegas / Los Angeles</span></div>
 		<div class="contact-grid">
-			<div><p>Have a difficult problem or an ambitious build?</p><h2>Let’s make it <em>work.</em></h2></div>
+			<div><p>Have a difficult problem or an ambitious build?</p><h2>Let’s Make <em>Something.</em></h2></div>
 			<div class="contact-actions">
 				<p>I’m always interested in software, applied ML, data, and thoughtful product work.</p>
 				<a class="email-link" href="mailto:{profile.email}" onclick={() => track('email_click', { source: 'portfolio' })}>Start a conversation</a>

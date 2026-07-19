@@ -1,8 +1,10 @@
 <script lang="ts">
 	import { page } from '$app/stores';
 	import { goto } from '$app/navigation';
+	import Icon from '@iconify/svelte';
 	import ThemeToggle from './ThemeToggle.svelte';
-	import { track } from '$lib/analytics';
+	import { profile } from '$lib/content';
+	import { track, trackOutbound } from '$lib/analytics';
 
 	let { activeSection = 'home' }: { activeSection?: string } = $props();
 	let mobileMenuOpen = $state(false);
@@ -15,10 +17,15 @@
 
 	const navItems = [
 		{ id: 'home', label: 'Home' },
-		{ id: 'projects', label: 'Work' },
-		{ id: 'experience', label: 'Experience' },
 		{ id: 'skills', label: 'Stack' },
+		{ id: 'experience', label: 'Experience' },
+		{ id: 'projects', label: 'Projects' },
 		{ id: 'contact', label: 'Contact' }
+	];
+	const socialLinks = [
+		{ label: 'GitHub', href: profile.social.github, icon: 'mdi:github', external: true },
+		{ label: 'LinkedIn', href: profile.social.linkedin, icon: 'mdi:linkedin', external: true },
+		{ label: 'Email', href: `mailto:${profile.email}`, icon: 'mdi:email-outline', external: false }
 	];
 
 	function navigateToSection(id: string) {
@@ -29,6 +36,11 @@
 
 	function trackResume(source: 'nav_desktop' | 'nav_mobile') {
 		track('resume_download', { source });
+	}
+
+	function trackSocial(link: (typeof socialLinks)[number], source: 'nav_desktop' | 'nav_mobile') {
+		if (link.external) trackOutbound(link.href, source);
+		else track('email_click', { source });
 	}
 </script>
 
@@ -48,6 +60,19 @@
 		</div>
 
 		<div class="nav-actions">
+			<div class="social-actions" aria-label="Connect with Jack Lutz">
+				{#each socialLinks as link}
+					<a
+						class="social-link"
+						href={link.href}
+						target={link.external ? '_blank' : undefined}
+						rel={link.external ? 'noopener noreferrer' : undefined}
+						aria-label={link.label}
+						title={link.label}
+						onclick={() => trackSocial(link, 'nav_desktop')}
+					><Icon icon={link.icon} /></a>
+				{/each}
+			</div>
 			<a href="/Jack_Lutz_Resume.pdf" target="_blank" rel="noopener noreferrer" onclick={() => trackResume('nav_desktop')}>Resume</a>
 			<a class="consulting-link" href="/consulting">Consulting</a>
 			<ThemeToggle />
@@ -73,6 +98,18 @@
 					<small>PDF</small><span>Resume</span>
 				</a>
 				<a href="/consulting"><small>LCG</small><span>Consulting practice</span></a>
+				<div class="mobile-socials" aria-label="Connect with Jack Lutz">
+					{#each socialLinks as link}
+						<a
+							href={link.href}
+							target={link.external ? '_blank' : undefined}
+							rel={link.external ? 'noopener noreferrer' : undefined}
+							aria-label={link.label}
+							title={link.label}
+							onclick={() => trackSocial(link, 'nav_mobile')}
+						><Icon icon={link.icon} /><span>{link.label}</span></a>
+					{/each}
+				</div>
 			</div>
 		{/if}
 	</nav>
@@ -104,6 +141,11 @@
 	.desktop-links button.active::after { transform: scaleX(1); }
 
 	.nav-actions { justify-self: end; display: flex; align-items: center; gap: 8px; }
+	.social-actions { display: flex; align-items: center; gap: 4px; }
+	.social-link { width: 32px; height: 32px; display: grid; place-items: center; border: 1px solid transparent; color: var(--color-text-muted); text-decoration: none; transition: color 180ms ease, border-color 180ms ease; }
+	.social-link :global(svg) { width: 16px; height: 16px; }
+	.social-link:hover { border-color: var(--color-border-strong); color: var(--color-text-primary); }
+	.social-link:focus-visible { outline: 2px solid var(--color-brass); outline-offset: 2px; }
 	.nav-actions > a { min-height: 34px; padding: 0 11px; display: inline-flex; align-items: center; border: 1px solid transparent; color: var(--color-text-secondary); font-size: 10px; text-decoration: none; }
 	.nav-actions > a:hover { color: var(--color-text-primary); }
 	.nav-actions > .consulting-link { border-color: var(--color-border-strong); }
@@ -119,10 +161,14 @@
 	.mobile-menu button.active, .mobile-menu button:hover, .mobile-menu a:hover { color: var(--color-text-primary); }
 	.mobile-menu small { color: var(--color-brass); font: 500 8px var(--font-family-mono); }
 	.mobile-menu span { font-size: 13px; }
+	.mobile-socials { min-height: 62px; display: flex; align-items: flex-end; gap: 10px; }
+	.mobile-socials a { width: auto; min-width: 44px; min-height: 40px; padding: 0 12px; display: inline-flex; grid-template-columns: none; gap: 8px; border: 1px solid var(--color-border-strong); color: var(--color-text-secondary); }
+	.mobile-socials a :global(svg) { width: 17px; height: 17px; }
+	.mobile-socials a span { font-size: 10px; }
 
 	@media (max-width: 1020px) {
 		nav { grid-template-columns: 1fr auto; padding: 0 16px; }
-		.desktop-links, .nav-actions > a { display: none; }
+		.desktop-links, .nav-actions > a, .social-actions { display: none; }
 		.menu-toggle { display: block; }
 	}
 

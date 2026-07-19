@@ -407,8 +407,8 @@
 <section id="skills" class="skills-sphere-section" bind:this={sectionElement}>
 	<div class="sphere-intro">
 		<div>
-			<p class="section-label">Technical range</p>
-			<h2>From first model to production.</h2>
+			<p class="section-label">Stack</p>
+			<h2>Technical Skills and Technologies.</h2>
 		</div>
 		<p>I choose the stack around the problem, then stay with it through deployment, iteration, and maintenance.</p>
 	</div>

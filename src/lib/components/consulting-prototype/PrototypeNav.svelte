@@ -29,6 +29,7 @@
 		{#each links as link}<a href={link.href}>{link.label}</a>{/each}
 	</nav>
 	<div class="nav-actions">
+		<a class="lane-switch" href="/" onclick={() => track('site_lane_switch', { from: 'consulting', to: 'portfolio', location: 'nav' })}>Portfolio</a>
 		<a class="nav-cta" href="#contact" onclick={() => track('cta_click', { source: 'consulting_prototype', location: 'nav' })}>{consultingSite.hero.primaryCta}</a>
 		<button
 			class="nav-toggle"
@@ -45,6 +46,7 @@
 	<div class="mobile-menu" id="proto-mobile-menu">
 		<nav aria-label={`${ariaLabel} (mobile)`}>
 			{#each links as link, index}<a href={link.href} style={`--i:${index}`} onclick={close}>{link.label}</a>{/each}
+			<a href="/" style={`--i:${links.length}`} onclick={() => { close(); track('site_lane_switch', { from: 'consulting', to: 'portfolio', location: 'mobile_menu' }); }}>Personal portfolio</a>
 		</nav>
 		<a class="menu-cta" href="#contact" onclick={() => { close(); track('cta_click', { source: 'consulting_prototype', location: 'mobile_menu' }); }}>{consultingSite.hero.primaryCta}<small>{navCopy.mobileCtaHint}</small></a>
 	</div>
@@ -57,6 +59,8 @@
 	.proto-nav nav a { color:var(--proto-muted); text-decoration:none; font-size:12px; transition:color .2s ease; }
 	.proto-nav nav a:hover { color:var(--proto-paper); }
 	.nav-actions { display:flex; align-items:center; gap:18px; }
+	.lane-switch { min-height:36px; padding:0 12px; display:inline-flex; align-items:center; border:1px solid var(--proto-line-strong); color:var(--proto-muted); text-decoration:none; font-size:11px; transition:color .2s ease,border-color .2s ease; }
+	.lane-switch:hover { border-color:var(--proto-brass); color:var(--proto-paper); }
 	.nav-cta { padding:11px 15px; background:var(--proto-paper); color:var(--proto-bg); text-decoration:none; font-size:12px; font-weight:600; }
 	.nav-cta:hover { background:var(--proto-brass); }
 
@@ -78,6 +82,7 @@
 		.proto-nav { padding:0 16px; }
 		.proto-nav nav { display:none; }
 		.brand b { font-size:11px; }
+		.lane-switch { display:none; }
 		.nav-cta { padding:9px 12px; font-size:11px; }
 		.nav-toggle { display:block; }
 		.mobile-menu { display:flex; }

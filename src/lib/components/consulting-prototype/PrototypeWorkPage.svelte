@@ -34,7 +34,7 @@
 
 <div class="work-prototype" id="top">
 	<a class="skip-link" href="#cases">{workPageCopy.skipLink}</a>
-	<PrototypeNav links={[...navCopy.workLinks]} brandHref="/consulting" ariaLabel="Selected work navigation" />
+	<PrototypeNav links={[...navCopy.workLinks]} brandHref="/consulting" ariaLabel="Projects navigation" />
 
 	<main>
 		<section class="work-hero shell">

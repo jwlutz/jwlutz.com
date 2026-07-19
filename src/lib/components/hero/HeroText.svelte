@@ -83,7 +83,7 @@
 		<p class="tagline">{profile.tagline}</p>
 
 		<div class="hero-actions">
-			<a href="#projects">Selected work</a>
+			<a href="#projects">Projects</a>
 			<a href="/consulting" class="quiet">Consulting practice</a>
 		</div>
 
