@@ -69,7 +69,7 @@
 >
 	<div class="card-content">
 		<div class="hero-index">
-			<span>Portfolio / 2026</span>
+			<span>Portfolio</span>
 		</div>
 
 		<p class="titles">
@@ -104,11 +104,6 @@
 				height="600"
 			/>
 		</div>
-		<div class="photo-wash" aria-hidden="true"></div>
-		<figcaption>
-			<span>Jack Lutz</span>
-			<span>Las Vegas / Los Angeles</span>
-		</figcaption>
 	</figure>
 </article>
 
@@ -150,8 +145,7 @@
 	}
 
 	.hero-index,
-	.meta,
-	figcaption {
+	.meta {
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
@@ -256,24 +250,6 @@
 		filter: saturate(.99) contrast(1.02) brightness(.96);
 	}
 
-	.photo-wash {
-		position: absolute;
-		inset: 0;
-		background: linear-gradient(180deg, rgba(10, 9, 8, 0) 62%, rgba(10, 9, 8, .5) 100%);
-		pointer-events: none;
-	}
-
-	figcaption {
-		position: absolute;
-		z-index: 2;
-		left: 24px;
-		right: 24px;
-		bottom: 24px;
-		padding-top: 15px;
-		border-top: 1px solid rgba(240, 239, 233, .36);
-		color: rgba(240, 239, 233, .86);
-	}
-
 	@media (max-width: 980px) {
 		.hero-card { grid-template-columns: 1fr 280px; width: min(100% - 40px, 980px); }
 		.card-content { padding: 28px 32px 34px; }
@@ -297,7 +273,6 @@
 		.tagline { margin-top: 22px; font-size: 16px; }
 		.meta { align-items: flex-start; flex-direction: column; gap: 9px; }
 		.meta span:last-child { text-align: left; }
-		figcaption { display: none; }
 	}
 
 	@media (prefers-reduced-motion: reduce) {

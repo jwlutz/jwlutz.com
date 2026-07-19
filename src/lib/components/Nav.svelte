@@ -48,7 +48,7 @@
 	<nav aria-label="Primary navigation">
 		<button class="brand" onclick={() => navigateToSection('home')} aria-label="Back to portfolio home">
 			<span class="mark">JL</span>
-			<span class="brand-copy"><b>Jack Lutz</b><small>Personal portfolio</small></span>
+			<span class="brand-copy"><b>Jack Lutz</b></span>
 		</button>
 
 		<div class="desktop-links">
@@ -130,9 +130,8 @@
 
 	.brand { justify-self: start; padding: 0; display: flex; align-items: center; gap: 12px; border: 0; background: transparent; color: var(--color-text-primary); cursor: pointer; text-align: left; }
 	.mark { width: 34px; height: 34px; display: grid; place-items: center; border: 1px solid var(--color-brass); color: var(--color-brass); font: 500 10px var(--font-family-mono); letter-spacing: .04em; }
-	.brand-copy { display: flex; flex-direction: column; gap: 3px; }
+	.brand-copy { display: flex; align-items: center; }
 	.brand-copy b { font-size: 12px; font-weight: 650; }
-	.brand-copy small { color: var(--color-text-muted); font: 500 8px var(--font-family-mono); letter-spacing: .08em; text-transform: uppercase; }
 
 	.desktop-links { display: flex; align-items: stretch; height: 100%; }
 	.desktop-links button { position: relative; padding: 0 16px; border: 0; background: transparent; color: var(--color-text-secondary); font-size: 11px; cursor: pointer; }
@@ -172,5 +171,4 @@
 		.menu-toggle { display: block; }
 	}
 
-	@media (max-width: 520px) { .brand-copy small { display: none; } }
 </style>

@@ -422,7 +422,6 @@
 	>
 		<div class="field-instruction" aria-hidden="true">
 			<span class="desktop-instruction">Move or hold an edge to explore</span>
-			<span class="mobile-instruction">Scroll to explore</span>
 			<span>{logoItems.length} technologies · select a mark to hold it</span>
 		</div>
 		<div class="sphere-cloud">
@@ -556,8 +555,6 @@
 	}
 
 	.field-instruction span:first-child { color: var(--field-instruction-accent); }
-	.mobile-instruction { display: none; }
-
 	.sphere-cloud {
 		position: absolute;
 		z-index: 2;
@@ -665,10 +662,7 @@
 		.sphere-intro h2 { font-size: 52px; }
 		.sphere-intro > p { font-size: 12px; }
 		.sphere-field { height: 460px; }
-		.field-instruction { top: 17px; left: 16px; right: 16px; }
-		.desktop-instruction { display: none; }
-		.mobile-instruction { display: inline; }
-		.field-instruction span:last-child { display: none; }
+		.field-instruction { display: none; }
 		.sphere-cloud { mask-image: radial-gradient(ellipse 100% 90% at 50% 51%, black 48%, rgba(0, 0, 0, .94) 72%, rgba(0, 0, 0, .68) 100%); }
 		.sphere-tile { width: clamp(44px, 12vw, 52px); height: clamp(42px, 11vw, 48px); border-radius: 12px; }
 		.tile-face { border-radius: 12px; }
