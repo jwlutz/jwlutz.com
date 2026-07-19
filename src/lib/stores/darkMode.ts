@@ -1,15 +1,9 @@
 import { writable } from 'svelte/store';
 import { browser } from '$app/environment';
 
-// Get initial mode - use a saved preference or the portfolio's dark-first system.
+// Dark-only site: the light/dark toggle was removed 2026-07-19 per Jack, so the
+// site always renders dark regardless of any previously saved preference.
 function getInitialMode(): boolean {
-	if (browser) {
-		const saved = localStorage.getItem('darkMode');
-		if (saved !== null) {
-			return saved === 'true';
-		}
-		return true;
-	}
 	return true;
 }
 

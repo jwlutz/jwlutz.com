@@ -2,7 +2,6 @@
 	import { page } from '$app/stores';
 	import { goto } from '$app/navigation';
 	import Icon from '@iconify/svelte';
-	import ThemeToggle from './ThemeToggle.svelte';
 	import { profile } from '$lib/content';
 	import { track, trackOutbound } from '$lib/analytics';
 
@@ -75,7 +74,6 @@
 			</div>
 			<a href="/Jack_Lutz_Resume.pdf" target="_blank" rel="noopener noreferrer" onclick={() => trackResume('nav_desktop')}>Resume</a>
 			<a class="consulting-link" href="/consulting">Consulting</a>
-			<ThemeToggle />
 			<button
 				class="menu-toggle"
 				class:open={mobileMenuOpen}
