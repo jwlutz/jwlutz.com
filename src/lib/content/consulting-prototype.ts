@@ -516,7 +516,7 @@ export const contactFormCopy = {
 	question: 'WHAT ARE WE STARTING WITH?',
 	summaryLabel: 'SELECTED STARTING POINT',
 	summaryNote: 'A link, screen recording, spreadsheet, or rough explanation is enough.',
-	fields: { name: 'YOUR NAME', email: 'EMAIL', message: 'WHAT EXISTS TODAY?' },
+	fields: { name: 'YOUR NAME', email: 'EMAIL', message: 'WHAT’S YOUR VISION?' },
 	submit: { idle: 'Send project brief', busy: 'Sending…', note: 'Direct to Lutz Consulting Group' },
 	fallbackPrompt: 'Prefer email?',
 	sendFailed: 'The message did not send. Use the direct email link below instead.',
