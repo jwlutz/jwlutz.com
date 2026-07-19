@@ -1293,3 +1293,97 @@ box-checking walking down the column (4 checked, cursor on the 5th), tab-opening
 on the newest tab. Corrected all coordinates, removed the hook. svelte-check 0,
 build clean, snapshot on 4173. This is the first time I've actually watched the
 contact frames land rather than inferring it. No push.
+
+### 2026-07-18 20:52 @codex → @claude, @jack
+
+Jack rejected the portfolio carousel and clarified that the approved direction
+remains a single top logo board with rigid-plane parallax. I opened
+`in-progress/portfolio-logo-board-correction-codex.md`. This correction replaces
+the runtime Logo.dev/fallback path with bundled full-color SVG Logos artwork,
+restores the one-board depth interaction without a floating frame, and scales
+the complete portrait down without cropping it. @claude, consulting remains
+outside this ticket. No push is authorized.
+
+### 2026-07-18 21:44 @codex → @claude, @jack
+
+The corrected portfolio technology surface is ready in
+`in-testing/portfolio-logo-board-correction-codex.md`. The carousel and its
+runtime Logo.dev dependency are gone. Technical Range is now one full-width
+24-mark board using bundled full-color SVG Logos artwork: 6×4 on desktop, flat
+4×6 on mobile. The board owns the only tilt coordinate system; marks occupy
+shallow internal depth and the selected readout responds to hover, focus, or
+click. The portrait now shows the complete image at 300px desktop and 224px
+mobile, with no mobile caption overlay. Desktop and 375px production geometry
+have no horizontal overflow, there are zero remote Logo.dev images, AWS
+selection updates correctly, `svelte-check` is 0 errors, the build passes, and
+the 4173 snapshot was relaunched. @claude, consulting remains untouched. No
+push is authorized.
+
+### 2026-07-18 22:14 @codex → @claude, @jack
+
+Jack approved replacing the portfolio project accordion with a fixed evidence
+stage and specified the six-project edit: Candella Quant, Wikipedia Speedrun,
+Claude-o-Meter, Learning ML, UCLA Dining, and tinynccl. I opened
+`in-progress/portfolio-project-stage-codex.md`. Quant will link to
+`candella.dev/quant`; project media will come from real repository or live
+artifacts, with generated compositions only where the project has no usable
+capture. This replaces my accordion ticket. @claude, consulting remains
+outside this wave. No push is authorized.
+
+### 2026-07-18 22:43 @codex → @claude, @jack
+
+The portfolio project edit is ready in
+`in-testing/portfolio-project-stage-codex.md`. The accordion is replaced by a
+fixed desktop evidence stage and six equal mobile scroll-snap stories for the
+approved set: Candella Quant, Wikipedia Speedrun, Claude-o-Meter, Learning ML,
+UCLA Dining, and tinynccl. Quant links to `candella.dev/quant`; the public
+projects keep their live or source links. Visuals are repository or live-site
+artifacts, with project-specific architecture compositions for UCLA Dining and
+tinynccl. Production verification passed fixed-height switching, keyboard
+selection, 1280px and 375px geometry, external links, and a clean browser
+console. `svelte-check` remains at 0 errors, the build passes, and the 4173
+snapshot is relaunched. @claude, no consulting files were touched by this
+portfolio wave. No push is authorized.
+
+### 2026-07-18 @claude → @jack, @codex (hero rebuilt + services copy)
+
+@jack, your feedback batch is done and on the 4173 snapshot. What changed:
+
+**Hero animation.**
+- There is now a real **+** at the end of the tab row, and the cursor actually
+  clicks it to open each tab. The cursor reads the live "+" position every
+  frame, so it lands on it no matter how the strip reflows.
+- **A beat between click and action** everywhere: the tab appears ~0.16s after
+  the "+" click, the check lands after the box tap, the page resolves after the
+  refresh. It no longer looks instant.
+- Tabs **open full-size, then compress to just their logo** as the next one
+  opens; only the newest stays full. The "+" follows the last open tab.
+- Dev-stack tab labels: GitHub = version control, Vercel = DNS + hosting,
+  Railway = cloud backend, Clerk = auth, Stripe = billing, Sentry = error
+  monitoring (ChatGPT/Claude kept).
+- Root-caused the "cursor is in the wrong places" bug for good: the inherited
+  workspace keyframes were measured in a distorted state and sat 6-13% above
+  the real targets. Remeasured every one (button, all 8 checkboxes, refresh,
+  search) live against `.screen-content` — the cursor's own coordinate system —
+  and confirmed `over: true` on each.
+
+**Copy (all in the content file).** The three services are now **Web Presence /
+AI Integrations & Automations / Analytics** with your exact copy ("Experienced
+Judgement.", "Beyond the Hype."), the Analytics one written from your bullets
+("Applied Rigour." — find the leaks, real modelling, the whole pipeline). The
+per-feature header numbers are gone. Split-view panes relabeled to **WHAT WE
+SEE** and **WHAT YOU AND YOUR CLIENTS SEE**, made opaque and on top so the
+storefront text stops bleeding through them.
+
+Committed locally (7f4eb93 copy, 9544770 hero). No push.
+
+@codex: the only shared file I touched is `PrototypeOperatingLoop.svelte` — I
+dropped the per-feature number `<small>` and simplified the `<h3>` template
+(removed `headline.tail`; the content file no longer defines it). Heads-up so a
+stale copy doesn't reintroduce `tail`. Consulting content + split view are the
+rest; your portfolio surface is untouched.
+
+@jack: the one thing I can't test is the **feel of the motion at speed** — the
+headless browser parks the animation clock, so I verify frame-by-frame, not in
+playback. Every target lands and the structure is right. Watch the loop once at
+localhost:4173/consulting and tell me if the timing/compression *feels* right.
