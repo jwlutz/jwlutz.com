@@ -54,6 +54,13 @@
 	let notionTabEl: HTMLElement;
 	let plusTarget = $state({ x: 12, y: 3.7 });
 	let notionTarget = $state({ x: 50, y: 3.7 });
+	// Workspace targets are measured live too: their % positions drift with the
+	// viewport (clamp(...vw...) fonts scale to the window, not the screen), so no
+	// fixed keyframe lands on every screen. Measured each frame → correct anywhere.
+	let searchTarget = $state({ x: 50, y: 63 });
+	let buttonTarget = $state({ x: 11, y: 63 });
+	let refreshTarget = $state({ x: 4, y: 10 });
+	let boxTargets = $state([] as { x: number; y: number }[]);
 	const tabs = [
 		{ name: 'ChatGPT', job: 'Idea', icon: null, favicon: '/consulting/prototypes/brands/chatgpt.png', color: '#10a37f' },
 		{ name: 'Claude', job: 'Build', icon: siClaude, color: '#d97757' },
@@ -137,15 +144,15 @@
 			const p = (story - 7.4) / 0.34;
 			return { x: notionTarget.x, y: notionTarget.y, s: 0.35 + 1.55 * easeOut(p), o: (1 - p) * (1 - p) * 0.8 };
 		}
-		const hits: [number, number, number, number, number][] = [
-			[14.0, 50, 63.6, 2.4, 0.4],
-			[16.35, 11.3, 66.6, 2.7, 0.42],
-			[22.48, 4.9, 10.7, 2.5, 0.4]
+		const hits: [number, { x: number; y: number }, number, number][] = [
+			[14.0, searchTarget, 2.4, 0.4],
+			[16.35, buttonTarget, 2.7, 0.42],
+			[22.48, refreshTarget, 2.5, 0.4]
 		];
-		for (const [t, x, y, mx, dur] of hits) {
+		for (const [t, pt, mx, dur] of hits) {
 			if (story >= t && story < t + dur) {
 				const p = (story - t) / dur;
-				return { x, y, s: 0.35 + (mx - 0.35) * easeOut(p), o: (1 - p) * (1 - p) * 0.85 };
+				return { x: pt.x, y: pt.y, s: 0.35 + (mx - 0.35) * easeOut(p), o: (1 - p) * (1 - p) * 0.85 };
 			}
 		}
 		return { x: 50, y: 50, s: 0.35, o: 0 };
@@ -188,21 +195,36 @@
 		return opened * (1 - closed);
 	}
 
-	// A tool tab is full-size only while it is the newest open tab; once anything
-	// after it opens (the next tool, Notion, or the fresh tab), it collapses to
-	// just its logo. The "+" then sits right after whichever tab is still full.
-	function toolSucc(index: number) {
-		const next = index + 1 < tabs.length ? tabAmount(index + 1) : 0;
-		return clamp(Math.max(next, notionVisible, helpVisible));
+	// Tabs open FULL and stay full while the row has room; only when it would
+	// overflow do the OLDEST tabs collapse to logos, just enough to fit, so the
+	// newest stays readable (Jack 07-19: don't compress unless the line fills).
+	const STRIP_CAP = 90; // cqw the strip spans for tabs
+	const BUSINESS_W = 12; // the pinned business tab (cqw)
+	const PLUS_W = 3; // the "+" button (cqw)
+	function openStripCount() {
+		let n = 0;
+		for (let i = 0; i < tabs.length; i++) if (tabAmount(i) > 0.5) n++;
+		if (notionVisible > 0.5) n++;
+		if (helpVisible > 0.5) n++;
+		return n;
 	}
-	function toolWidth(index: number) {
-		return tabAmount(index) * (TAB_ICON + (TAB_FULL - TAB_ICON) * (1 - toolSucc(index)));
+	function numCompressed() {
+		const count = openStripCount();
+		const overflow = count * TAB_FULL - (STRIP_CAP - BUSINESS_W - PLUS_W);
+		if (overflow <= 0) return 0;
+		return Math.min(count - 1, Math.ceil(overflow / (TAB_FULL - TAB_ICON)));
 	}
 	function toolCompact(index: number) {
-		return toolSucc(index) > 0.5;
+		return index < numCompressed(); // the oldest tabs collapse first
+	}
+	function toolWidth(index: number) {
+		return tabAmount(index) * (toolCompact(index) ? TAB_ICON : TAB_FULL);
+	}
+	function notionCompact() {
+		return tabs.length < numCompressed(); // Notion is the last strip slot before the fresh tab
 	}
 	function notionWidth() {
-		return notionVisible * (TAB_ICON + (NOTION_FULL - TAB_ICON) * (1 - clamp(helpVisible)));
+		return notionVisible * (notionCompact() ? TAB_ICON : NOTION_FULL);
 	}
 	function helpWidth() {
 		return helpVisible * HELP_FULL;
@@ -219,30 +241,10 @@
 
 	// The cursor is the AGENT. It rides the live "+" to open each tab, grabs the
 	// Notion tab to pull the pane open, reads the list, opens a fresh tab, types
-	// the new address, clicks Start a project, checks the to-dos off, then hits
-	// refresh. Tab-strip targets are measured live (plusTarget / notionTarget) so
-	// the pointer always lands on them; the workspace keyframes below are % of
-	// .screen-content, verified against the real DOM. [story, x, y]
-	const cursorPath: [number, number, number][] = [
-		[14.0, 50, 63.6], // the search box — click at 14.0
-		[15.2, 50, 63.6], // hold while the URL types
-		[16.2, 11.3, 66.6], // Start a project — click at 16.35
-		[16.65, 11.3, 66.6], // hold, then leave as the take-over begins
-		[17.3, 68.8, 45.9], // check off each to-do, top to bottom...
-		[17.61, 68.8, 52.5],
-		[17.92, 68.8, 59.1],
-		[18.23, 68.8, 65.7],
-		[18.54, 68.8, 72.4],
-		[18.85, 68.8, 79.0],
-		[19.16, 68.8, 85.6],
-		[19.47, 68.8, 92.3], // ...through the last
-		[20.6, 50, 48], // drift away as the tabs close
-		[21.4, 50, 48],
-		[22.4, 4.9, 10.7], // refresh — click at 22.48
-		[23.4, 4.9, 10.7], // hold after refresh
-		[24.8, 45, 45], // rest on the resolved site
-		[duration, 45, 45]
-	];
+	// the address, clicks Start a project, checks the to-dos off, then hits refresh.
+	// EVERY target is measured from the live DOM (plusTarget / notionTarget /
+	// searchTarget / buttonTarget / boxTargets / refreshTarget) so the pointer
+	// lands on any viewport — clamp(...vw...) fonts shift positions per window size.
 	function taps(times: number[]) {
 		let s = 0;
 		for (const t of times) s += pressAmt(t);
@@ -251,29 +253,30 @@
 	function mixPt(a: { x: number; y: number }, b: { x: number; y: number }, e: number) {
 		return { x: mix(a.x, b.x, e), y: mix(a.y, b.y, e) };
 	}
+	function box(i: number) {
+		if (!boxTargets.length) return { x: 68, y: 50 };
+		return boxTargets[Math.max(0, Math.min(boxTargets.length - 1, i))];
+	}
+	const lastBox = boxTapTimes.length - 1;
 	function cursorPos() {
-		const pane = { x: 74, y: 40 };
-		const paneRead = { x: 71, y: 55 };
-		const searchBox = { x: 50, y: 63.6 };
-		if (story < 7.0) return plusTarget; // ride the "+" as it opens each tab
-		if (story < 7.45) return mixPt(plusTarget, notionTarget, easeInOut(ramp(story, 7.0, 7.45))); // onto the Notion tab
-		if (story < 9.0) return mixPt(notionTarget, pane, easeInOut(ramp(story, 7.45, 9.0))); // drag the pane open
-		if (story < 12.6) return mixPt(pane, paneRead, easeInOut(ramp(story, 9.0, 12.6))); // read down the list
-		if (story < 13.28) return mixPt(paneRead, plusTarget, easeInOut(ramp(story, 12.6, 13.28))); // back to the "+"
+		const rest = { x: 45, y: 45 };
+		if (story < 7.0) return plusTarget; // ride the "+" opening each tab
+		if (story < 7.45) return mixPt(plusTarget, notionTarget, easeInOut(ramp(story, 7.0, 7.45))); // grab the Notion tab
+		if (story < 9.0) return mixPt(notionTarget, box(0), easeInOut(ramp(story, 7.45, 9.0))); // pull the pane open onto the list
+		if (story < 12.6) return mixPt(box(0), box(3), easeInOut(ramp(story, 9.0, 12.6))); // read down the list
+		if (story < 13.28) return mixPt(box(3), plusTarget, easeInOut(ramp(story, 12.6, 13.28))); // back to the "+"
 		if (story < 13.7) return plusTarget; // open a fresh tab
-		if (story < 14.0) return mixPt(plusTarget, searchBox, easeInOut(ramp(story, 13.7, 14.0))); // onto the search box
-		const kf = cursorPath;
-		if (story <= kf[0][0]) return { x: kf[0][1], y: kf[0][2] };
-		for (let i = 0; i < kf.length - 1; i++) {
-			const [t0, x0, y0] = kf[i];
-			const [t1, x1, y1] = kf[i + 1];
-			if (story >= t0 && story < t1) {
-				const e = easeInOut((story - t0) / (t1 - t0));
-				return { x: mix(x0, x1, e), y: mix(y0, y1, e) };
-			}
+		if (story < 14.0) return mixPt(plusTarget, searchTarget, easeInOut(ramp(story, 13.7, 14.0))); // onto the search box
+		if (story < 15.2) return searchTarget; // hold while the URL types
+		if (story < 16.2) return mixPt(searchTarget, buttonTarget, easeInOut(ramp(story, 15.2, 16.2))); // to Start a project
+		if (story < 16.65) return buttonTarget; // click at 16.35
+		if (story < boxTapTimes[0]) return mixPt(buttonTarget, box(0), easeInOut(ramp(story, 16.65, boxTapTimes[0]))); // to the first to-do
+		for (let j = 0; j < lastBox; j++) {
+			if (story < boxTapTimes[j + 1]) return mixPt(box(j), box(j + 1), easeInOut(ramp(story, boxTapTimes[j], boxTapTimes[j + 1]))); // check each off
 		}
-		const last = kf[kf.length - 1];
-		return { x: last[1], y: last[2] };
+		if (story < 22.4) return mixPt(box(lastBox), refreshTarget, easeInOut(ramp(story, boxTapTimes[lastBox], 22.4))); // drift to refresh
+		if (story < 23.4) return refreshTarget; // click at 22.48
+		return mixPt(refreshTarget, rest, easeInOut(ramp(story, 23.4, 24.8))); // rest on the resolved site
 	}
 	function cursorStyle() {
 		const p = cursorPos();
@@ -348,25 +351,25 @@
 				elapsed += Math.min((now - lastFrame) / 1000, 0.1);
 				if (elapsed >= duration + HOLD) elapsed = 0;
 			}
-			// The tab strip reflows as tabs open and compress, so the cursor reads
-			// the live "+" and Notion tab positions rather than guessing them.
-			const s = Math.max(0, elapsed - HOLD);
-			if (visible && !reducedMotion && s < 14 && screenContentEl && plusEl) {
+			// Every cursor target is measured from the live DOM so the pointer lands
+			// on it on any viewport: the strip reflows as tabs open, and clamp(...vw...)
+			// fonts shift the workspace targets a few percent per window width.
+			if (visible && !reducedMotion && screenContentEl) {
 				const sc = screenContentEl.getBoundingClientRect();
 				if (sc.width && sc.height) {
-					const pr = plusEl.getBoundingClientRect();
-					plusTarget = {
-						x: ((pr.left + pr.width / 2 - sc.left) / sc.width) * 100,
-						y: ((pr.top + pr.height / 2 - sc.top) / sc.height) * 100
+					const pct = (el: Element | null) => {
+						if (!el) return null;
+						const r = el.getBoundingClientRect();
+						if (!r.width || !r.height) return null;
+						return { x: ((r.left + r.width / 2 - sc.left) / sc.width) * 100, y: ((r.top + r.height / 2 - sc.top) / sc.height) * 100 };
 					};
-					if (notionTabEl) {
-						const nr = notionTabEl.getBoundingClientRect();
-						if (nr.width > 0)
-							notionTarget = {
-								x: ((nr.left + nr.width / 2 - sc.left) / sc.width) * 100,
-								y: ((nr.top + nr.height / 2 - sc.top) / sc.height) * 100
-							};
-					}
+					const p = pct(plusEl); if (p) plusTarget = p;
+					const n = pct(notionTabEl); if (n) notionTarget = n;
+					const se = pct(screenContentEl.querySelector('.search-input')); if (se) searchTarget = se;
+					const bt = pct(screenContentEl.querySelector('.consulting-page button')); if (bt) buttonTarget = bt;
+					const rf = pct(screenContentEl.querySelector('.refresh')); if (rf) refreshTarget = rf;
+					const bx = [...screenContentEl.querySelectorAll('.notion-pane .task > i')].map(pct).filter(Boolean) as { x: number; y: number }[];
+					if (bx.length === boxTapTimes.length) boxTargets = bx;
 				}
 			}
 			lastFrame = now;
@@ -422,7 +425,7 @@
 								</div>
 							{/each}
 
-							<div class="browser-tab notion-tab" class:compact={helpVisible > 0.5} bind:this={notionTabEl} style={`--w:${notionWidth()};--tab-opacity:${clamp(notionVisible * 3)};--tab-y:${(1 - notionVisible) * 6}px;--brand-color:#f5f5f5;--grab:${grabPress};--grab-y:${grabPress}px`}>
+							<div class="browser-tab notion-tab" class:compact={notionCompact()} bind:this={notionTabEl} style={`--w:${notionWidth()};--tab-opacity:${clamp(notionVisible * 3)};--tab-y:${(1 - notionVisible) * 6}px;--brand-color:#f5f5f5;--grab:${grabPress};--grab-y:${grabPress}px`}>
 								<i class="brand-icon">{@html siNotion.svg}</i><span>Notion</span><b>×</b>
 							</div>
 
@@ -514,7 +517,7 @@
 	.story{position:relative;min-height:100svh;padding:clamp(105px,10vw,150px) max(24px,4vw) 70px;overflow:hidden;border-top:1px solid var(--proto-line);border-bottom:1px solid var(--proto-line);background:#080b09}.story-grid{position:absolute;inset:-20%;opacity:.24;background-image:linear-gradient(var(--proto-line) 1px,transparent 1px),linear-gradient(90deg,var(--proto-line) 1px,transparent 1px);background-size:74px 74px;mask-image:radial-gradient(ellipse at 50% 45%,#000 5%,transparent 70%)}
 	.story-heading{position:relative;z-index:2;width:min(1380px,100%);margin:0 auto 46px;display:grid;grid-template-columns:1fr .55fr;gap:60px;align-items:end}.story-intro{max-width:430px;justify-self:end}.story-intro>span{display:block;color:var(--proto-muted);font-size:14px;line-height:1.65;text-wrap:pretty}
 	.monitor{position:relative;z-index:2;width:min(1380px,100%);height:min(70vw,760px);min-height:610px;margin:0 auto;overflow:hidden;border:1px solid var(--proto-line-strong);background:#0d100e;box-shadow:0 50px 160px rgba(0,0,0,.5)}
-	.browser{position:absolute;left:3%;right:3%;top:65px;bottom:110px;overflow:hidden;border:1px solid rgba(240,239,233,.18);border-radius:7px;background:#121613;box-shadow:0 25px 80px rgba(0,0,0,.45)}.tab-strip{height:39px;padding:7px 8px 0;display:flex;align-items:end;gap:3px;overflow:hidden;background:#0f1310;contain:layout paint}.browser-tab{height:31px;min-width:0;padding:0 8px;display:flex;align-items:center;gap:6px;overflow:hidden;border-radius:6px 6px 0 0;color:#777e78;background:#171c18;font:7px var(--proto-mono);white-space:nowrap}.browser-tab.active{color:#d8dbd5;background:#272d28}.browser-tab>span{overflow:hidden;text-overflow:ellipsis}.browser-tab>b{margin-left:auto;font-weight:400}.business-tab{flex:0 1 150px;min-width:72px}.tool-tab,.notion-tab,.help-tab{flex:0 0 calc(max(var(--w,0),0)*1cqw);min-width:0;opacity:var(--tab-opacity);transform:translateY(var(--tab-y));transition:none}.tool-tab.compact,.notion-tab.compact{padding:0;gap:0;justify-content:center}.tool-tab.compact>span,.tool-tab.compact>b,.notion-tab.compact>span,.notion-tab.compact>b{display:none}.site-favicon,.help-favicon{flex:0 0 auto;width:15px;height:15px;display:grid;place-items:center;border-radius:3px;color:#e8e9e4;background:#07543f;font:700 7px Arial,sans-serif}.help-favicon{background:#b49a67;color:#111}.brand-icon{flex:0 0 auto;width:14px;height:14px;display:grid;place-items:center;color:#dedfda}.brand-icon :global(svg){width:100%;height:100%;fill:currentColor}.brand-icon img{display:block;width:100%;height:100%;border-radius:2px}.new-tab{flex:0 0 auto;width:23px;height:24px;margin:0 1px 3px;align-self:flex-end;display:grid;place-items:center;border-radius:5px;color:#9aa09a;background:rgba(240,239,233,calc(0.05 + var(--plus-press,0)*0.16));font-size:15px;line-height:1;transform:scale(calc(1 - var(--plus-press,0)*0.12));transition:none}
+	.browser{position:absolute;left:3%;right:3%;top:65px;bottom:110px;overflow:hidden;border:1px solid rgba(240,239,233,.18);border-radius:7px;background:#121613;box-shadow:0 25px 80px rgba(0,0,0,.45)}.tab-strip{height:39px;padding:7px 8px 0;display:flex;align-items:end;gap:3px;overflow:hidden;background:#0f1310;contain:layout paint}.browser-tab{height:31px;min-width:0;padding:0 8px;display:flex;align-items:center;gap:6px;overflow:hidden;border-radius:6px 6px 0 0;color:#777e78;background:#171c18;font:7px var(--proto-mono);white-space:nowrap}.browser-tab.active{color:#d8dbd5;background:#272d28}.browser-tab>span{overflow:hidden;text-overflow:ellipsis}.browser-tab>b{margin-left:auto;font-weight:400}.business-tab{flex:0 0 calc(12*1cqw);min-width:0}.tool-tab,.notion-tab,.help-tab{flex:0 0 calc(max(var(--w,0),0)*1cqw);min-width:0;opacity:var(--tab-opacity);transform:translateY(var(--tab-y));transition:none}.tool-tab.compact,.notion-tab.compact{padding:0;gap:0;justify-content:center}.tool-tab.compact>span,.tool-tab.compact>b,.notion-tab.compact>span,.notion-tab.compact>b{display:none}.site-favicon,.help-favicon{flex:0 0 auto;width:15px;height:15px;display:grid;place-items:center;border-radius:3px;color:#e8e9e4;background:#07543f;font:700 7px Arial,sans-serif}.help-favicon{background:#b49a67;color:#111}.brand-icon{flex:0 0 auto;width:14px;height:14px;display:grid;place-items:center;color:#dedfda}.brand-icon :global(svg){width:100%;height:100%;fill:currentColor}.brand-icon img{display:block;width:100%;height:100%;border-radius:2px}.new-tab{flex:0 0 auto;width:23px;height:24px;margin:0 1px 3px;align-self:flex-end;display:grid;place-items:center;border-radius:5px;color:#9aa09a;background:rgba(240,239,233,calc(0.05 + var(--plus-press,0)*0.16));font-size:15px;line-height:1;transform:scale(calc(1 - var(--plus-press,0)*0.12));transition:none}
 	.address-row{height:41px;padding:0 13px;display:flex;align-items:center;gap:12px;color:#707771;background:#272d28;border-bottom:1px solid #323933;font:12px var(--proto-sans)}.address-row>div{height:25px;flex:1;padding:0 11px;display:flex;align-items:center;border-radius:13px;color:#999f99;background:#141915;font:7px var(--proto-mono)}.address-row b{font-size:14px}.refresh{display:inline-block;transform-origin:50% 50%;transform:rotate(calc(var(--rspin,0)*360deg)) translateY(calc(var(--rp,0)*1px)) scale(calc(1 - var(--rp,0)*0.16));opacity:calc(1 - var(--rp,0)*0.28)}
 	.browser-workspace{position:absolute;inset:80px 0 0;display:flex;overflow:hidden;background:#0d100e;contain:layout paint}.page-pane{position:relative;flex:0 0 calc(100% - var(--split) * 35%);min-width:0;overflow:hidden;transition:none;contain:layout paint}.business-page,.error-page,.search-page,.consulting-page{position:absolute;inset:0;opacity:0;pointer-events:none;transition:opacity .28s ease}.business-page{opacity:1;color:#171914;background:#dbd8cf}.business-page.hidden{opacity:0}.business-page nav{height:55px;padding:0 6%;display:flex;align-items:center;gap:22px;border-bottom:1px solid rgba(17,19,15,.13);font-size:9px}.business-page nav strong{margin-right:auto;font:8px var(--proto-mono);letter-spacing:.1em}.business-page nav button{padding:9px 11px;border:0;background:#07543f;color:#fff;font-size:8px}.business-copy{position:absolute;z-index:2;left:7%;top:24%;width:53%}.business-copy h3{margin:12px 0 15px;font:400 clamp(34px,4vw,60px)/.88 var(--proto-display);letter-spacing:-.04em}.business-copy p{max-width:345px;color:#686a64;font-size:10px;line-height:1.55}.site-visual{position:absolute;right:6%;bottom:11%;width:34%;height:45%;border:1px solid rgba(7,84,63,.25);background:linear-gradient(145deg,rgba(7,84,63,.24),rgba(180,154,103,.08))}.site-visual i{position:absolute;background:rgba(7,84,63,.2)}.site-visual i:first-child{left:10%;right:10%;top:14%;height:1px}.site-visual i:nth-child(2){left:10%;top:28%;bottom:12%;width:37%}.site-visual i:nth-child(3){right:10%;top:28%;bottom:12%;width:33%}.site-visual b{position:absolute;left:10%;right:10%;bottom:9%;height:1px;background:rgba(180,154,103,.5)}.business-page footer{position:absolute;left:0;right:0;bottom:0;height:31px;padding:0 6%;display:flex;align-items:center;justify-content:space-between;opacity:0;color:#c4cbc4;background:#0d2d24;font:6px var(--proto-mono);letter-spacing:.09em;transition:opacity .55s ease}.business-page footer.visible{opacity:1}.business-page footer b{color:#f0efe9;font-weight:500}
 	.error-page.visible,.search-page.visible,.consulting-page.visible{opacity:1}.error-page{display:flex;flex-direction:column;align-items:center;justify-content:center;color:#b8bcb6;background:#0d100e}.error-page strong{font:400 clamp(75px,10vw,145px)/.8 var(--proto-display);color:#eceee9}.error-page span{margin-top:18px;color:#b77559;font:8px var(--proto-mono);letter-spacing:.13em}.search-page{display:flex;flex-direction:column;align-items:center;justify-content:center;color:#242823;background:#f0f1ed}.search-symbol{position:relative;width:38px;height:38px;margin-bottom:13px;border:2px solid #263029;border-radius:50%}.search-symbol::after{content:'';position:absolute;right:-11px;bottom:0;width:16px;height:2px;background:#263029;transform:rotate(45deg)}.search-input{width:min(75%,540px);height:40px;margin-top:22px;padding:0 16px;display:flex;align-items:center;border:1px solid #cdd1cc;border-radius:22px;background:#fff;box-shadow:0 2px 9px rgba(0,0,0,.07);font:11px Arial,sans-serif}.search-input i{width:1px;height:16px;margin-left:2px;background:#222;animation:blink .8s infinite}.consulting-page{padding:0 7% 7%;color:var(--proto-text);background:radial-gradient(circle at 81% 25%,rgba(7,84,63,.65),transparent 40%),#080b09}.consulting-page nav{height:55px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--proto-line)}.consulting-page nav span{display:flex;align-items:center;gap:7px;font-size:8px}.consulting-page nav small{color:var(--proto-muted);font:6px var(--proto-mono);letter-spacing:.09em}.consulting-page>div:last-child{width:73%;padding-top:8%}.consulting-page>div>small{color:var(--proto-green-light);font:6px var(--proto-mono);letter-spacing:.1em}.consulting-page h3{margin:13px 0 20px;font:400 clamp(34px,4.2vw,62px)/.88 var(--proto-display);letter-spacing:-.04em}.consulting-page h3 em{font-weight:400;color:#dad6cc}.consulting-page button{position:relative;padding:11px 14px;border:0;background:var(--proto-paper);color:#11130f;font-weight:600;font-size:8px;transform:translateY(calc(var(--bp,0)*1px))}.consulting-page button::after{content:'';position:absolute;inset:0;background:#0a0d0b;opacity:calc(var(--bp,0)*0.16);pointer-events:none}
