@@ -36,3 +36,8 @@ transform or overflow. Hover, focus, and click update the persistent tool
 readout; a production-browser AWS click test passed. `svelte-check` reports 0
 errors (15 pre-existing visualizer warnings), the production build passes, and
 the 4173 snapshot was relaunched. No push is authorized.
+
+**2026-07-18 20:34 (Codex):** Superseded and removed after Jack's review. The
+Atropos component, framed logo board, and dependency no longer exist in the
+rendered portfolio. The approved replacement is tracked in
+`portfolio-logo-band-footer-codex.md`.

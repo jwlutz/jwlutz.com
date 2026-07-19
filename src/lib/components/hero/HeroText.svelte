@@ -121,9 +121,9 @@
 		--scroll-depth: 0px;
 		position: relative;
 		display: grid;
-		grid-template-columns: minmax(0, 1.12fr) minmax(360px, 0.88fr);
+		grid-template-columns: minmax(0, 1fr) minmax(300px, 390px);
 		width: min(1320px, calc(100vw - 80px));
-		min-height: 650px;
+		min-height: 610px;
 		overflow: hidden;
 		border: 1px solid var(--color-border-strong);
 		border-radius: 2px;
@@ -227,9 +227,10 @@
 	.photo-panel {
 		position: relative;
 		min-width: 0;
-		min-height: 650px;
-		margin: 0;
+		min-height: 510px;
+		margin: 50px 42px 50px 0;
 		overflow: hidden;
+		border: 1px solid var(--color-border-strong);
 		background: #171512;
 		transform: translateZ(8px);
 	}
@@ -272,8 +273,9 @@
 	}
 
 	@media (max-width: 980px) {
-		.hero-card { grid-template-columns: 1fr 320px; width: min(100% - 40px, 980px); }
+		.hero-card { grid-template-columns: 1fr 290px; width: min(100% - 40px, 980px); }
 		.card-content { padding: 28px 32px 34px; }
+		.photo-panel { min-height: 470px; margin: 34px 28px 34px 0; }
 		h1 { font-size: 82px; }
 	}
 
@@ -286,7 +288,7 @@
 			transform: none;
 		}
 		.card-content { min-height: 480px; padding: 20px 20px 26px; transform: none; }
-		.photo-panel { min-height: 330px; transform: none; }
+		.photo-panel { width: calc(100% - 28px); min-height: 250px; margin: 14px auto 0; transform: none; }
 		.photo-depth { inset: -4%; transform: scale(1.08); }
 		.titles { margin-top: 74px; }
 		h1 { font-size: 72px; }

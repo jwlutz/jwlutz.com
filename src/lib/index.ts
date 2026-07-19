@@ -4,7 +4,7 @@ export { default as Hero } from './components/Hero.svelte';
 export { default as Projects } from './components/Projects.svelte';
 export { default as ProjectCard } from './components/ProjectCard.svelte';
 export { default as Experience } from './components/Experience.svelte';
-export { default as TechStack } from './components/TechStack.svelte';
+export { default as TechStack } from './components/TechBand.svelte';
 export { default as Contact } from './components/Contact.svelte';
 export { default as Footer } from './components/Footer.svelte';
 export { default as Backdrop } from './components/Backdrop.svelte';
