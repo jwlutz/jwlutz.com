@@ -10,10 +10,9 @@
 		detail: string;
 	};
 
-	type SpherePoint = {
-		x: number;
-		y: number;
-		z: number;
+	type GridDimensions = {
+		columns: number;
+		rows: number;
 	};
 
 	let { skills }: { skills: SkillsType } = $props();
@@ -25,12 +24,12 @@
 	let motionAllowed = false;
 	let inView = true;
 	let frame = 0;
-	let currentYaw = 0;
-	let currentPitch = 0;
-	let targetYaw = 0;
-	let targetPitch = 0;
-	let anchorYaw = 0;
-	let anchorPitch = 0;
+	let currentColumnOffset = 0;
+	let currentRowOffset = 0;
+	let targetColumnOffset = 0;
+	let targetRowOffset = 0;
+	let anchorColumnOffset = 0;
+	let anchorRowOffset = 0;
 
 	const toolkit: ToolkitItem[] = [
 		{ tech: 'Python', label: 'Python', group: 'Language', detail: 'Models, data pipelines, APIs, and automation.' },
@@ -39,79 +38,122 @@
 		{ tech: 'R', label: 'R', group: 'Language', detail: 'Statistical analysis, modeling, and research workflows.' },
 		{ tech: 'Go', label: 'Go', group: 'Language', detail: 'Fast data collection and production services.' },
 		{ tech: 'C++', label: 'C++', group: 'Language', detail: 'Performance-sensitive systems and quantitative engines.' },
-		{ tech: 'Svelte', label: 'Svelte', group: 'Interface', detail: 'Fast, focused interfaces with a small runtime footprint.' },
-		{ tech: 'React', label: 'React', group: 'Interface', detail: 'Component systems for complex product surfaces.' },
+		{ tech: 'C', label: 'C', group: 'Language', detail: 'Low-level systems programming and memory-aware code.' },
+		{ tech: 'C#', label: 'C#', group: 'Language', detail: '.NET applications, services, and tooling.' },
+		{ tech: 'Rust', label: 'Rust', group: 'Language', detail: 'Memory-safe systems software and native applications.' },
+		{ tech: 'SQL', label: 'SQL', group: 'Language', detail: 'Relational queries, transformations, and analytical models.' },
+		{ tech: 'Bash', label: 'Bash', group: 'Language', detail: 'Shell automation and repeatable development workflows.' },
+		{ tech: 'Solidity', label: 'Solidity', group: 'Language', detail: 'Smart contracts and on-chain application logic.' },
+		{ tech: 'Swift', label: 'Swift', group: 'Language', detail: 'Native Apple platform applications and utilities.' },
+
+		{ tech: 'Svelte', label: 'Svelte', group: 'Web', detail: 'Fast, focused interfaces with a small runtime footprint.' },
+		{ tech: 'Vite', label: 'Vite', group: 'Web', detail: 'Fast frontend development and production build tooling.' },
+		{ tech: 'React', label: 'React', group: 'Web', detail: 'Component systems for complex product surfaces.' },
+		{ tech: 'Node.js', label: 'Node.js', group: 'Web', detail: 'JavaScript services, tooling, and backend runtimes.' },
+		{ tech: 'Next.js', label: 'Next.js', group: 'Web', detail: 'Full-stack React products and server-rendered applications.' },
+		{ tech: 'HTML', label: 'HTML', group: 'Web', detail: 'Semantic foundations for accessible web products.' },
+		{ tech: 'CSS', label: 'CSS', group: 'Web', detail: 'Responsive layout, visual systems, and interface motion.' },
+		{ tech: 'Expo', label: 'Expo', group: 'Web', detail: 'Cross-platform React Native product development.' },
+		{ tech: 'Astro', label: 'Astro', group: 'Web', detail: 'Content-driven sites with minimal client JavaScript.' },
+		{ tech: 'WebSockets', label: 'WebSockets', group: 'Web', detail: 'Persistent realtime communication between clients and services.' },
+		{ tech: 'Three.js', label: 'Three.js', group: 'Web', detail: 'Interactive 3D scenes and WebGL experiences.' },
+
 		{ tech: 'PyTorch', label: 'PyTorch', group: 'Machine learning', detail: 'Neural networks, experimentation, and model training.' },
-		{ tech: 'NumPy', label: 'NumPy', group: 'Data', detail: 'Numerical computing underneath analysis and modeling.' },
-		{ tech: 'pandas', label: 'pandas', group: 'Data', detail: 'Data cleaning, transformation, and analysis pipelines.' },
-		{ tech: 'FastAPI', label: 'FastAPI', group: 'Backend', detail: 'Typed Python services and production APIs.' },
-		{ tech: 'PostgreSQL', label: 'PostgreSQL', group: 'Data', detail: 'Reliable relational storage for production systems.' },
-		{ tech: 'SQLite', label: 'SQLite', group: 'Data', detail: 'Portable storage for local-first tools and prototypes.' },
-		{ tech: 'Redis', label: 'Redis', group: 'Infrastructure', detail: 'Caching, queues, and low-latency application state.' },
-		{ tech: 'Supabase', label: 'Supabase', group: 'Infrastructure', detail: 'Product backends with database, auth, and realtime data.' },
-		{ tech: 'Docker', label: 'Docker', group: 'Infrastructure', detail: 'Repeatable development and deployment environments.' },
-		{ tech: 'AWS', label: 'AWS', group: 'Infrastructure', detail: 'Cloud systems spanning compute, storage, and delivery.' },
-		{ tech: 'Linux', label: 'Linux', group: 'Systems', detail: 'The operating layer behind deployed applications.' },
+		{ tech: 'TensorFlow', label: 'TensorFlow', group: 'Machine learning', detail: 'Model development and production inference pipelines.' },
+		{ tech: 'CUDA', label: 'CUDA', group: 'Machine learning', detail: 'GPU-accelerated experimentation and model workloads.' },
+		{ tech: 'scikit-learn', label: 'scikit-learn', group: 'Machine learning', detail: 'Classical models, preprocessing, and evaluation.' },
+		{ tech: 'matplotlib', label: 'matplotlib', group: 'Machine learning', detail: 'Scientific plots and model diagnostics.' },
+		{ tech: 'Hugging Face', label: 'Hugging Face', group: 'Machine learning', detail: 'Models, datasets, evaluation, and interactive demos.' },
+		{ tech: 'LangChain', label: 'LangChain', group: 'Machine learning', detail: 'Composable LLM applications and retrieval workflows.' },
+		{ tech: 'OpenCV', label: 'OpenCV', group: 'Machine learning', detail: 'Computer vision pipelines and image processing.' },
+		{ tech: 'JAX', label: 'JAX', group: 'Machine learning', detail: 'Accelerated numerical computing and automatic differentiation.' },
+		{ tech: 'Keras', label: 'Keras', group: 'Machine learning', detail: 'High-level neural network prototyping and training.' },
+		{ tech: 'Apache Spark', label: 'Apache Spark', group: 'Machine learning', detail: 'Distributed data processing and large-scale analysis.' },
+		{ tech: 'Airflow', label: 'Airflow', group: 'Machine learning', detail: 'Scheduled data and machine learning workflows.' },
+
+		{ tech: 'NumPy', label: 'NumPy', group: 'Data & deployment', detail: 'Numerical computing underneath analysis and modeling.' },
+		{ tech: 'pandas', label: 'pandas', group: 'Data & deployment', detail: 'Data cleaning, transformation, and analysis pipelines.' },
+		{ tech: 'PostgreSQL', label: 'PostgreSQL', group: 'Data & deployment', detail: 'Reliable relational storage for production systems.' },
+		{ tech: 'SQLite', label: 'SQLite', group: 'Data & deployment', detail: 'Portable storage for local-first tools and prototypes.' },
+		{ tech: 'Redis', label: 'Redis', group: 'Data & deployment', detail: 'Caching, queues, and low-latency application state.' },
+		{ tech: 'MongoDB', label: 'MongoDB', group: 'Data & deployment', detail: 'Document storage for flexible application data.' },
+		{ tech: 'Vercel', label: 'Vercel', group: 'Data & deployment', detail: 'Web application deployment, delivery, and observability.' },
+		{ tech: 'Railway', label: 'Railway', group: 'Data & deployment', detail: 'Application services, databases, and managed deployment.' },
+
+		{ tech: 'FastAPI', label: 'FastAPI', group: 'Backend & infrastructure', detail: 'Typed Python services and production APIs.' },
+		{ tech: 'GraphQL', label: 'GraphQL', group: 'Backend & infrastructure', detail: 'Typed application data APIs and client queries.' },
+		{ tech: 'Supabase', label: 'Supabase', group: 'Backend & infrastructure', detail: 'Product backends with database, auth, and realtime data.' },
+		{ tech: 'Docker', label: 'Docker', group: 'Backend & infrastructure', detail: 'Repeatable development and deployment environments.' },
+		{ tech: 'AWS', label: 'AWS', group: 'Backend & infrastructure', detail: 'Cloud systems spanning compute, storage, and delivery.' },
+		{ tech: 'Linux', label: 'Linux', group: 'Backend & infrastructure', detail: 'The operating layer behind deployed applications.' },
+		{ tech: 'Kafka', label: 'Kafka', group: 'Backend & infrastructure', detail: 'Durable event streams and distributed data movement.' },
+		{ tech: 'Drizzle', label: 'Drizzle', group: 'Backend & infrastructure', detail: 'Typed SQL schemas, queries, and migrations.' },
+
 		{ tech: 'Git', label: 'Git', group: 'Workflow', detail: 'Versioned, reviewable delivery from first commit onward.' },
 		{ tech: 'GitHub', label: 'GitHub', group: 'Workflow', detail: 'Code review, collaboration, and automated delivery.' },
-		{ tech: 'Streamlit', label: 'Streamlit', group: 'Product', detail: 'Fast analytical tools that put models in front of users.' },
-		{ tech: 'CUDA', label: 'CUDA', group: 'Machine learning', detail: 'GPU-accelerated experimentation and model workloads.' },
-		{ tech: 'Google OR-Tools', label: 'OR-Tools', group: 'Optimization', detail: 'Constraint solvers for scheduling and recommendation systems.' }
+
+		{ tech: 'Claude Code', label: 'Claude Code', group: 'Tools', detail: 'Agentic development, codebase reasoning, and implementation.' },
+		{ tech: 'Codex', label: 'Codex', group: 'Tools', detail: 'Collaborative software development and repository work.' },
+		{ tech: 'VS Code', label: 'VS Code', group: 'Tools', detail: 'Daily editor for software, data, and systems work.' },
+		{ tech: 'GitHub Actions', label: 'GitHub Actions', group: 'Tools', detail: 'Automated testing, releases, and delivery workflows.' },
+		{ tech: 'Sentry', label: 'Sentry', group: 'Tools', detail: 'Production error monitoring and application diagnostics.' },
+		{ tech: 'Figma', label: 'Figma', group: 'Tools', detail: 'Collaborative interface and product design.' },
+		{ tech: 'Clerk', label: 'Clerk', group: 'Tools', detail: 'Authentication, user management, and organizations.' },
+		{ tech: 'Stripe', label: 'Stripe', group: 'Tools', detail: 'Payments, subscriptions, and billing infrastructure.' },
+		{ tech: 'Obsidian', label: 'Obsidian', group: 'Tools', detail: 'Linked technical notes and long-lived project context.' },
+		{ tech: 'Notion', label: 'Notion', group: 'Tools', detail: 'Collaborative planning, documentation, and operations.' },
+		{ tech: 'n8n', label: 'n8n', group: 'Tools', detail: 'Visual workflow automation across business systems.' }
 	];
 
-	const available = $derived(new Set([...skills.languages, ...skills.technologies, 'GitHub']));
-	const logoItems = $derived(toolkit.filter((item) => available.has(item.tech)));
-	const points = $derived(createSpherePoints(logoItems.length));
+	const logoItems = toolkit;
 	const methodItems = $derived(skills.coursework.slice(0, 6));
 	const active = $derived(logoItems[activeIndex] ?? toolkit[0]);
 
-	function createSpherePoints(count: number): SpherePoint[] {
-		const goldenAngle = Math.PI * (3 - Math.sqrt(5));
-		return Array.from({ length: count }, (_, index) => {
-			const y = 1 - ((index + 0.5) / count) * 2;
-			const radius = Math.sqrt(Math.max(0, 1 - y * y));
-			const angle = index * goldenAngle;
-			return {
-				x: Math.cos(angle) * radius,
-				y,
-				z: Math.sin(angle) * radius
-			};
-		}).sort((a, b) => b.z - a.z);
+	function gridDimensions(): GridDimensions {
+		const columns = fieldElement?.clientWidth < 700 ? 5 : 13;
+		return { columns, rows: Math.ceil(logoItems.length / columns) };
 	}
 
-	function angleDifference(from: number, to: number) {
-		return Math.atan2(Math.sin(to - from), Math.cos(to - from));
+	function wrappedDistance(value: number, period: number) {
+		return ((value + period / 2) % period + period) % period - period / 2;
+	}
+
+	function closestEquivalent(desired: number, current: number, period: number) {
+		while (desired - current > period / 2) desired -= period;
+		while (desired - current < -period / 2) desired += period;
+		return desired;
 	}
 
 	function renderSphere() {
 		if (!fieldElement) return;
 		const width = fieldElement.clientWidth;
 		const height = fieldElement.clientHeight;
-		const radiusX = width * (width < 700 ? 0.54 : 0.5);
-		const radiusY = height * (width < 700 ? 0.43 : 0.48);
-		const cosYaw = Math.cos(currentYaw);
-		const sinYaw = Math.sin(currentYaw);
-		const cosPitch = Math.cos(currentPitch);
-		const sinPitch = Math.sin(currentPitch);
+		const { columns, rows } = gridDimensions();
+		const centerColumn = (columns - 1) / 2;
+		const centerRow = (rows - 1) / 2;
+		const radiusX = width * (width < 700 ? 0.5 : 0.43);
+		const radiusY = height * (width < 700 ? 0.43 : 0.31);
 
-		points.forEach((point, index) => {
+		logoItems.forEach((_, index) => {
 			const tile = tileElements[index];
 			if (!tile) return;
 
-			const xAfterYaw = point.x * cosYaw + point.z * sinYaw;
-			const zAfterYaw = -point.x * sinYaw + point.z * cosYaw;
-			const yAfterPitch = point.y * cosPitch - zAfterYaw * sinPitch;
-			const zAfterPitch = point.y * sinPitch + zAfterYaw * cosPitch;
-			const depth = Math.max(0, Math.min(1, (zAfterPitch + 1) / 2));
-			const scale = 0.36 + Math.pow(depth, 1.55) * 0.94;
-			const opacity = 0.06 + Math.pow(depth, 1.8) * 0.94;
-			const x = xAfterYaw * radiusX;
-			const y = -yAfterPitch * radiusY;
+			const column = index % columns;
+			const row = Math.floor(index / columns);
+			const columnDistance = wrappedDistance(column + currentColumnOffset - centerColumn, columns);
+			const rowDistance = wrappedDistance(row + currentRowOffset - centerRow, rows);
+			const xAngle = (columnDistance / Math.max(1, centerColumn)) * 1.32;
+			const yAngle = (rowDistance / Math.max(1, centerRow)) * 1.08;
+			const depth = Math.max(0.05, Math.cos(xAngle) * Math.cos(yAngle));
+			const scale = 0.46 + depth * 0.62;
+			const opacity = 0.12 + Math.pow(depth, 1.5) * 0.88;
+			const x = Math.sin(xAngle) * radiusX;
+			const y = Math.sin(yAngle) * radiusY;
 
 			tile.style.transform = `translate(-50%, -50%) translate3d(${x.toFixed(2)}px, ${y.toFixed(2)}px, 0) scale(${scale.toFixed(3)})`;
 			tile.style.opacity = opacity.toFixed(3);
 			tile.style.zIndex = `${Math.round(depth * 100)}`;
-			tile.style.pointerEvents = zAfterPitch < -0.38 ? 'none' : 'auto';
+			tile.style.pointerEvents = depth < 0.16 ? 'none' : 'auto';
 		});
 	}
 
@@ -119,14 +161,14 @@
 		frame = 0;
 		if (!inView) return;
 
-		const yawDelta = angleDifference(currentYaw, targetYaw);
-		const pitchDelta = targetPitch - currentPitch;
-		const ease = motionAllowed ? 0.115 : 1;
-		currentYaw += yawDelta * ease;
-		currentPitch += pitchDelta * ease;
+		const columnDelta = targetColumnOffset - currentColumnOffset;
+		const rowDelta = targetRowOffset - currentRowOffset;
+		const ease = motionAllowed ? 0.13 : 1;
+		currentColumnOffset += columnDelta * ease;
+		currentRowOffset += rowDelta * ease;
 		renderSphere();
 
-		if (Math.abs(yawDelta) > 0.0005 || Math.abs(pitchDelta) > 0.0005) {
+		if (Math.abs(columnDelta) > 0.0005 || Math.abs(rowDelta) > 0.0005) {
 			frame = requestAnimationFrame(animateSphere);
 		}
 	}
@@ -136,17 +178,20 @@
 	}
 
 	function centerItem(index: number, instant = false) {
-		const point = points[index];
-		if (!point) return;
+		const { columns, rows } = gridDimensions();
+		const column = index % columns;
+		const row = Math.floor(index / columns);
+		const centerColumn = (columns - 1) / 2;
+		const centerRow = (rows - 1) / 2;
 		activeIndex = index;
-		anchorYaw = -Math.atan2(point.x, point.z);
-		anchorPitch = Math.atan2(point.y, Math.hypot(point.x, point.z));
-		targetYaw = anchorYaw;
-		targetPitch = anchorPitch;
+		anchorColumnOffset = closestEquivalent(centerColumn - column, currentColumnOffset, columns);
+		anchorRowOffset = closestEquivalent(centerRow - row, currentRowOffset, rows);
+		targetColumnOffset = anchorColumnOffset;
+		targetRowOffset = anchorRowOffset;
 
 		if (instant || !motionAllowed) {
-			currentYaw = targetYaw;
-			currentPitch = targetPitch;
+			currentColumnOffset = targetColumnOffset;
+			currentRowOffset = targetRowOffset;
 			renderSphere();
 			return;
 		}
@@ -159,14 +204,14 @@
 		const rect = fieldElement.getBoundingClientRect();
 		const x = Math.max(-1, Math.min(1, ((event.clientX - rect.left) / rect.width - 0.5) * 2));
 		const y = Math.max(-1, Math.min(1, ((event.clientY - rect.top) / rect.height - 0.5) * 2));
-		targetYaw = anchorYaw + x * 0.2;
-		targetPitch = anchorPitch - y * 0.13;
+		targetColumnOffset = anchorColumnOffset - x * 0.34;
+		targetRowOffset = anchorRowOffset - y * 0.2;
 		requestRender();
 	}
 
 	function resetPointer() {
-		targetYaw = anchorYaw;
-		targetPitch = anchorPitch;
+		targetColumnOffset = anchorColumnOffset;
+		targetRowOffset = anchorRowOffset;
 		requestRender();
 	}
 
@@ -192,7 +237,7 @@
 			if (!motionAllowed) centerItem(activeIndex, true);
 		};
 
-		const resizeObserver = new ResizeObserver(() => renderSphere());
+		const resizeObserver = new ResizeObserver(() => centerItem(activeIndex, true));
 		const intersectionObserver = new IntersectionObserver(([entry]) => {
 			inView = entry.isIntersecting;
 			if (inView) requestRender();
@@ -237,7 +282,7 @@
 	>
 		<div class="field-instruction" aria-hidden="true">
 			<span>Move to explore</span>
-			<span>Select a mark to hold it</span>
+			<span>65 technologies · select a mark to hold it</span>
 		</div>
 		<div class="sphere-cloud">
 			{#each logoItems as item, index}
@@ -317,65 +362,52 @@
 
 	.sphere-field {
 		position: relative;
-		height: clamp(520px, 49vw, 680px);
+		height: clamp(500px, 43vw, 600px);
 		overflow: hidden;
-		border-top: 1px solid var(--sphere-line);
-		border-bottom: 1px solid var(--sphere-line);
+		border-top: 1px solid rgba(15, 18, 16, .12);
+		border-bottom: 1px solid rgba(15, 18, 16, .12);
 		background:
-			radial-gradient(ellipse 42% 48% at 50% 50%, rgba(60, 77, 66, .32), transparent 75%),
-			linear-gradient(180deg, #0a100d, #07100b 55%, #090e0b);
+			radial-gradient(ellipse 54% 68% at 50% 51%, rgba(255, 255, 255, .98), rgba(242, 240, 235, .88) 61%, rgba(229, 227, 221, .78) 100%),
+			#e8e6e1;
 		isolation: isolate;
 		touch-action: manipulation;
-	}
-
-	.sphere-field::before {
-		content: '';
-		position: absolute;
-		z-index: 0;
-		inset: 0;
-		background:
-			linear-gradient(rgba(240, 239, 233, .022) 1px, transparent 1px),
-			linear-gradient(90deg, rgba(240, 239, 233, .018) 1px, transparent 1px);
-		background-size: 76px 76px;
-		mask-image: radial-gradient(ellipse 72% 78% at 50% 50%, black, transparent 82%);
-		pointer-events: none;
 	}
 
 	.field-instruction {
 		position: absolute;
 		z-index: 120;
-		top: 24px;
+		top: 22px;
 		left: 40px;
 		right: 40px;
 		display: flex;
 		justify-content: space-between;
-		color: #6f7972;
-		font: 500 8px var(--font-family-mono);
+		color: #777872;
+		font: 600 8px var(--font-family-mono);
 		letter-spacing: .1em;
 		text-transform: uppercase;
 		pointer-events: none;
 	}
 
-	.field-instruction span:first-child { color: var(--color-brass); }
+	.field-instruction span:first-child { color: #775f3c; }
 
 	.sphere-cloud {
 		position: absolute;
 		z-index: 2;
 		inset: 0;
-		mask-image: radial-gradient(ellipse 72% 68% at 50% 50%, black 42%, rgba(0, 0, 0, .94) 58%, rgba(0, 0, 0, .18) 84%, transparent 100%);
+		mask-image: radial-gradient(ellipse 79% 78% at 50% 51%, black 48%, rgba(0, 0, 0, .96) 65%, rgba(0, 0, 0, .28) 88%, transparent 100%);
 	}
 
 	.sphere-tile {
 		position: absolute;
 		left: 50%;
 		top: 50%;
-		width: 112px;
-		height: 96px;
+		width: 98px;
+		height: 82px;
 		padding: 0;
 		border: 0;
-		border-radius: 2px;
+		border-radius: 16px;
 		background: transparent;
-		color: inherit;
+		color: #151815;
 		cursor: pointer;
 		opacity: 0;
 		will-change: transform, opacity;
@@ -386,29 +418,37 @@
 		height: 100%;
 		display: grid;
 		place-items: center;
-		border: 1px solid rgba(240, 239, 233, .14);
-		border-radius: 2px;
-		background: rgba(18, 26, 21, .94);
-		box-shadow: 0 18px 42px rgba(0, 0, 0, .24);
-		transition: transform 180ms ease, border-color 180ms ease, background 180ms ease;
+		border: 1px solid rgba(24, 28, 25, .08);
+		border-radius: 16px;
+		background: rgba(252, 251, 248, .96);
+		box-shadow: 0 8px 24px rgba(29, 32, 29, .055);
+		transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease, background 180ms ease;
 	}
 
-	.sphere-tile :global(.tech-mark) { width: 54px; height: 54px; }
+	.sphere-tile :global(.tech-mark) {
+		--tech-brand: #151815 !important;
+		width: 48px;
+		height: 48px;
+	}
 
 	.sphere-tile:hover .tile-face,
-	.sphere-tile:focus-visible .tile-face { transform: scale(1.1); border-color: rgba(240, 239, 233, .42); }
+	.sphere-tile:focus-visible .tile-face {
+		transform: scale(1.055);
+		border-color: rgba(84, 70, 49, .34);
+		box-shadow: 0 12px 30px rgba(29, 32, 29, .1);
+	}
 	.sphere-tile:focus-visible { outline: none; }
 	.sphere-tile.active .tile-face {
-		border-color: var(--color-brass);
-		background: rgba(31, 42, 35, .98);
-		box-shadow: 0 24px 60px rgba(0, 0, 0, .34), inset 0 -2px var(--color-brass);
+		border-color: #9a7c50;
+		background: #fffefb;
+		box-shadow: 0 15px 34px rgba(29, 32, 29, .13), inset 0 -3px #a5895e;
 	}
 
 	.sphere-readout {
 		min-height: 116px;
 		padding: 25px 0 27px;
 		display: grid;
-		grid-template-columns: minmax(220px, .7fr) minmax(300px, 1fr);
+		grid-template-columns: minmax(260px, .7fr) minmax(300px, 1fr);
 		align-items: center;
 		gap: 70px;
 	}
@@ -444,12 +484,13 @@
 		.sphere-intro { min-height: 0; padding: 42px 0 34px; grid-template-columns: 1fr; gap: 24px; }
 		.sphere-intro h2 { font-size: 52px; }
 		.sphere-intro > p { font-size: 12px; }
-		.sphere-field { height: 450px; }
-		.field-instruction { top: 18px; left: 16px; right: 16px; }
+		.sphere-field { height: 480px; }
+		.field-instruction { top: 17px; left: 16px; right: 16px; }
 		.field-instruction span:last-child { display: none; }
-		.sphere-cloud { mask-image: radial-gradient(ellipse 88% 70% at 50% 50%, black 40%, rgba(0, 0, 0, .9) 62%, rgba(0, 0, 0, .16) 88%, transparent 100%); }
-		.sphere-tile { width: 78px; height: 68px; }
-		.sphere-tile :global(.tech-mark) { width: 39px; height: 39px; }
+		.sphere-cloud { mask-image: radial-gradient(ellipse 93% 82% at 50% 51%, black 46%, rgba(0, 0, 0, .92) 67%, rgba(0, 0, 0, .2) 90%, transparent 100%); }
+		.sphere-tile { width: 68px; height: 58px; border-radius: 12px; }
+		.tile-face { border-radius: 12px; }
+		.sphere-tile :global(.tech-mark) { width: 34px; height: 34px; }
 		.sphere-readout { min-height: 148px; padding: 22px 0 25px; grid-template-columns: 1fr; gap: 12px; }
 		.sphere-readout > div { gap: 14px; }
 		.sphere-readout strong { font-size: 30px; }

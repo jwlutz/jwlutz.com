@@ -15,12 +15,13 @@
 
 	const brandIcon = $derived(getBrandIcon(tech));
 	const fallbackIcon = $derived(getTechIcon(tech));
+	const wordmark = $derived(({ SQL: 'SQL', JAX: 'JAX' } as Record<string, string>)[tech] ?? null);
 	const darkBrand = $derived(fallbackIcon
 		? ['#000000', '#1D1D1F', '#222222'].includes(fallbackIcon.color.toUpperCase())
 		: false);
 </script>
 
-{#if brandIcon || fallbackIcon}
+{#if brandIcon || fallbackIcon || wordmark}
 	<span
 		class="tech-mark"
 		class:framed
@@ -35,6 +36,8 @@
 			<svg class="fallback-svg" viewBox="0 0 24 24" focusable="false">
 				{@html fallbackIcon.icon}
 			</svg>
+		{:else}
+			<strong class="wordmark">{wordmark}</strong>
 		{/if}
 	</span>
 {/if}
@@ -71,4 +74,5 @@
 
 	.tech-mark:not(.framed) .fallback-svg { width: 78%; height: 78%; }
 	.tech-mark :global(.brand-svg) { display: block; width: 78%; height: 78%; }
+	.wordmark { font: 750 10px/1 var(--font-family-sans); letter-spacing: -.04em; }
 </style>
