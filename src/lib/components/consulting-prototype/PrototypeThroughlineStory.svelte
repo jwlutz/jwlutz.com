@@ -102,9 +102,9 @@
 	// The three contacts never overlap, so one ring serves all. [t, x, y, maxScale, dur]
 	let ring = $derived.by(() => {
 		const hits: [number, number, number, number, number][] = [
-			[7.55, 89.3, 8.3, 1.9, 0.34],
-			[16.35, 42.3, 69.3, 2.7, 0.42],
-			[22.48, 7.5, 13.3, 2.5, 0.4]
+			[7.55, 86, 4.4, 1.9, 0.34],
+			[16.35, 11, 66.6, 2.7, 0.42],
+			[22.48, 4.7, 10.6, 2.5, 0.4]
 		];
 		for (const [t, x, y, mx, dur] of hits) {
 			if (story >= t && story < t + dur) {
@@ -159,42 +159,50 @@
 		return ramp(story, 17.25 + index * 0.31, 17.48 + index * 0.31);
 	}
 
-	function cursorStyle() {
-		let x = 88;
-		let y = 8;
-		let opacity = 0;
-		let press = 0;
-
-		if (story >= 7.05 && story < 8.7) {
-			// approach the Notion tab, grab, drag the split open, release, lift
-			opacity = ramp(story, 7.05, 7.3) * (1 - ramp(story, 8.55, 8.7));
-			const approach = easeOut(ramp(story, 7.05, 7.45));
-			const drag = easeInOut(ramp(story, 7.62, 8.4));
-			x = mix(95, 89, approach);
-			y = mix(5, 8, approach);
-			x = mix(x, 76, drag);
-			y = mix(y, 43, drag);
-			press = grabPress;
-		} else if (story >= 13.25 && story < 16.9) {
-			// glide to the address bar (focus tap), dwell while the URL types, travel to the button, click
-			opacity = ramp(story, 13.25, 13.45) * (1 - ramp(story, 16.7, 16.9));
-			const toAddress = easeInOut(ramp(story, 13.3, 14.0));
-			const toButton = easeInOut(ramp(story, 15.35, 16.1));
-			x = mix(98, 53, toAddress);
-			y = mix(5, 13, toAddress);
-			x = mix(x, 42, toButton);
-			y = mix(y, 69, toButton);
-			press = pressAmt(14.1) + buttonPress;
-		} else if (story >= 21.25 && story < 23.05) {
-			// sweep to the refresh control, dwell, click
-			opacity = ramp(story, 21.25, 21.48) * (1 - ramp(story, 22.8, 23.05));
-			const toRefresh = easeInOut(ramp(story, 21.45, 22.25));
-			x = mix(85, 7.2, toRefresh);
-			y = mix(6, 13, toRefresh);
-			press = refreshPress;
+	// The cursor is a persistent character: it fades in once (~1.4s) and then
+	// stays on screen, travelling between targets and resting between actions.
+	// Coordinates are % of .screen-content, MEASURED from the live DOM so the
+	// pointer actually lands on each element. [story, x, y]
+	const cursorPath: [number, number, number][] = [
+		[1.4, 58, 44],
+		[3.6, 52, 39],
+		[6.9, 59, 47],
+		[7.5, 86, 4.4], // Notion tab — grab at 7.55
+		[8.4, 80, 24], // drag the panel open
+		[9.0, 80, 31], // settle onto the to-do list
+		[12.2, 80, 39], // drift down the list as tasks fill
+		[13.4, 80, 39], // hold as the site breaks
+		[14.0, 22, 10.6], // address bar — focus at 14.1
+		[15.3, 22, 10.6], // hold while the URL types
+		[16.2, 11, 66.6], // Start a project button — click at 16.35
+		[17.4, 11, 66.6], // hold after the click
+		[19.8, 42, 41], // drift to center as the tabs close
+		[21.4, 42, 41],
+		[22.35, 4.7, 10.6], // refresh control — click at 22.48
+		[23.4, 4.7, 10.6], // hold after refresh
+		[24.8, 46, 50], // rest on the resolved site
+		[duration, 46, 50]
+	];
+	function cursorPos() {
+		const kf = cursorPath;
+		if (story <= kf[0][0]) return { x: kf[0][1], y: kf[0][2] };
+		for (let i = 0; i < kf.length - 1; i++) {
+			const [t0, x0, y0] = kf[i];
+			const [t1, x1, y1] = kf[i + 1];
+			if (story >= t0 && story < t1) {
+				const e = easeInOut((story - t0) / (t1 - t0));
+				return { x: mix(x0, x1, e), y: mix(y0, y1, e) };
+			}
 		}
-
-		return `--cx:${x};--cy:${y};--press:${press};opacity:${opacity}`;
+		const last = kf[kf.length - 1];
+		return { x: last[1], y: last[2] };
+	}
+	function cursorStyle() {
+		const p = cursorPos();
+		const opacity = ramp(story, 1.2, 1.8); // fade in once, then persist
+		// The four contact envelopes never overlap, so summing is safe.
+		const press = Math.min(1, grabPress + pressAmt(14.1) + buttonPress + refreshPress);
+		return `--cx:${p.x};--cy:${p.y};--press:${press};opacity:${opacity}`;
 	}
 
 	let hasStarted = false;

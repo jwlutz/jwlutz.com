@@ -52,3 +52,13 @@ accumulate), live DOM at the grab contact (cursor matrix 1.0824, ring o=0.85,
 tab depress 0.22), end-frame + mobile captures, svelte-check 0, build green.
 Two aesthetic knobs left for Jack's eye on the live loop: press depth (18%) and
 ring intensity.
+
+**2026-07-18 (Fable, cursor fix):** Two follow-up bugs from Jack: cursor
+vanished between actions, and it didn't land on targets. Root cause of the
+latter: the target coords were carried over from old code, not measured — the
+"Start a project" button was at x11 but the cursor was sent to x42 (clicking
+empty space). Re-measured every target from the live DOM and rebuilt the cursor
+as a persistent keyframe path (fades in ~1.4s, then always visible, easing
+between measured targets and resting between them). Ring emit points updated to
+match. Verified live: grab lands at cx85.996 (tab=86), cursor opacity 1 at
+chapter 4 (was 0 before), all contacts route to measured centers. svelte-check 0.
