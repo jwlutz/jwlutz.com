@@ -15,6 +15,11 @@
 		rows: number;
 	};
 
+	type GridPosition = {
+		column: number;
+		row: number;
+	};
+
 	let { skills }: { skills: SkillsType } = $props();
 	let sectionElement: HTMLElement;
 	let fieldElement: HTMLDivElement;
@@ -115,13 +120,56 @@
 		{ tech: 'n8n', label: 'n8n', group: 'Tools', detail: 'Visual workflow automation across business systems.' }
 	];
 
-	const logoItems = toolkit;
+	const relevanceOrder = [
+		'Python', 'TypeScript', 'Svelte', 'React', 'PyTorch', 'FastAPI',
+		'PostgreSQL', 'Vercel', 'AWS', 'Supabase', 'Docker', 'GitHub',
+		'Claude Code', 'Codex', 'VS Code', 'Next.js', 'Node.js', 'pandas', 'NumPy',
+		'scikit-learn', 'TensorFlow', 'Railway', 'Git', 'GitHub Actions',
+		'SQL', 'Redis', 'MongoDB', 'JavaScript', 'Drizzle', 'Sentry',
+		'Figma', 'Clerk', 'Stripe', 'n8n', 'Hugging Face', 'LangChain',
+		'CUDA', 'OpenCV', 'JAX', 'Keras', 'Apache Spark', 'Airflow',
+		'GraphQL', 'WebSockets', 'Three.js', 'Vite', 'HTML', 'CSS',
+		'Expo', 'Astro', 'Go', 'C++', 'C', 'C#', 'Rust', 'Bash',
+		'Solidity', 'Swift', 'R', 'matplotlib', 'SQLite', 'Linux',
+		'Kafka', 'Obsidian', 'Notion'
+	];
+	const relevanceRank = new Map(relevanceOrder.map((tech, index) => [tech, index]));
+	const logoItems = [...toolkit].sort((a, b) =>
+		(relevanceRank.get(a.tech) ?? Number.MAX_SAFE_INTEGER)
+		- (relevanceRank.get(b.tech) ?? Number.MAX_SAFE_INTEGER)
+	);
+	const positionCache = new Map<string, GridPosition[]>();
 	const methodItems = $derived(skills.coursework.slice(0, 6));
 	const active = $derived(logoItems[activeIndex] ?? toolkit[0]);
 
 	function gridDimensions(): GridDimensions {
 		const columns = fieldElement?.clientWidth < 700 ? 5 : 13;
 		return { columns, rows: Math.ceil(logoItems.length / columns) };
+	}
+
+	function gridPositions(columns: number, rows: number): GridPosition[] {
+		const key = `${columns}x${rows}`;
+		const cached = positionCache.get(key);
+		if (cached) return cached;
+
+		const centerColumn = (columns - 1) / 2;
+		const centerRow = (rows - 1) / 2;
+		const positions = Array.from({ length: columns * rows }, (_, index) => ({
+			column: index % columns,
+			row: Math.floor(index / columns)
+		})).sort((a, b) => {
+			const distanceA = Math.hypot(a.column - centerColumn, a.row - centerRow);
+			const distanceB = Math.hypot(b.column - centerColumn, b.row - centerRow);
+			if (Math.abs(distanceA - distanceB) > 0.0001) return distanceA - distanceB;
+			const verticalA = Math.abs(a.row - centerRow);
+			const verticalB = Math.abs(b.row - centerRow);
+			if (verticalA !== verticalB) return verticalA - verticalB;
+			if (a.row !== b.row) return a.row - b.row;
+			return a.column - b.column;
+		});
+
+		positionCache.set(key, positions);
+		return positions;
 	}
 
 	function wrappedDistance(value: number, period: number) {
@@ -143,13 +191,13 @@
 		const centerRow = (rows - 1) / 2;
 		const radiusX = width * (width < 700 ? 0.5 : 0.43);
 		const radiusY = height * (width < 700 ? 0.43 : 0.31);
+		const positions = gridPositions(columns, rows);
 
 		logoItems.forEach((_, index) => {
 			const tile = tileElements[index];
 			if (!tile) return;
 
-			const column = index % columns;
-			const row = Math.floor(index / columns);
+			const { column, row } = positions[index];
 			const columnDistance = wrappedDistance(column + currentColumnOffset - centerColumn, columns);
 			const rowDistance = wrappedDistance(row + currentRowOffset - centerRow, rows);
 			const xAngle = (columnDistance / Math.max(1, centerColumn)) * 1.32;
@@ -212,8 +260,7 @@
 
 	function centerItem(index: number, instant = false) {
 		const { columns, rows } = gridDimensions();
-		const column = index % columns;
-		const row = Math.floor(index / columns);
+		const { column, row } = gridPositions(columns, rows)[index];
 		const centerColumn = (columns - 1) / 2;
 		const centerRow = (rows - 1) / 2;
 		activeIndex = index;
