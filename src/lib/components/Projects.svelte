@@ -1,12 +1,30 @@
 <script lang="ts">
+	import { onMount } from 'svelte';
 	import TechMark from './TechMark.svelte';
 	import type { Project } from '$lib/types';
 	import { track } from '$lib/analytics';
 
 	let { projects }: { projects: Project[] } = $props();
 	let indexRef = $state<HTMLDivElement>();
+	let mobileProjectsRef = $state<HTMLDivElement>();
 	let currentIndex = $state(0);
 	let activeProject = $derived(projects[currentIndex] ?? projects[0]);
+
+	onMount(() => {
+		if (!window.matchMedia('(max-width: 820px)').matches || projects.length < 2) return;
+
+		const frame = requestAnimationFrame(() => {
+			const rail = mobileProjectsRef;
+			const secondCard = rail?.querySelectorAll<HTMLElement>('.mobile-card')[1];
+			if (!rail || !secondCard) return;
+
+			const railRect = rail.getBoundingClientRect();
+			const cardRect = secondCard.getBoundingClientRect();
+			rail.scrollLeft += cardRect.left - railRect.left - (rail.clientWidth - cardRect.width) / 2;
+		});
+
+		return () => cancelAnimationFrame(frame);
+	});
 
 	function selectProject(index: number, source: 'index' | 'keyboard' = 'index') {
 		if (!projects.length) return;
@@ -129,8 +147,8 @@
 										{#each activeProject.tech.slice(0, 5) as tech}<span><TechMark {tech} size="tiny" framed={false} />{tech}</span>{/each}
 									</div>
 									<div class="project-actions">
-										{#if activeProject.live}<a href={activeProject.live} target="_blank" rel="noopener noreferrer" onclick={() => trackProject(activeProject, 'live')}>{activeProject.liveText || 'Open project'}</a>{/if}
-										{#if activeProject.github}<a href={activeProject.github} target="_blank" rel="noopener noreferrer" onclick={() => trackProject(activeProject, 'source')}>View source</a>{/if}
+										{#if activeProject.live}<a href={activeProject.live} target="_blank" rel="noopener noreferrer" onclick={() => trackProject(activeProject, 'live')}>{#if activeProject.id === 'wiki-speedrun'}<TechMark tech="Hugging Face" size="tiny" framed={false} />{/if}{activeProject.liveText || 'Open project'}</a>{/if}
+										{#if activeProject.github}<a href={activeProject.github} target="_blank" rel="noopener noreferrer" onclick={() => trackProject(activeProject, 'source')}><TechMark tech="GitHub" size="tiny" framed={false} />View source</a>{/if}
 										{#if !activeProject.live && !activeProject.github}<span>{activeProject.codeStatus || 'Private work'}</span>{/if}
 									</div>
 								</div>
@@ -140,9 +158,9 @@
 				</div>
 			</div>
 
-			<div class="mobile-projects" aria-label="Portfolio projects">
+			<div bind:this={mobileProjectsRef} class="mobile-projects" aria-label="Portfolio projects">
 				{#each projects as project (project.id)}
-					<article class="mobile-card">
+					<article class="mobile-card" data-project-id={project.id}>
 						<div class={`mobile-media project-media-${project.id}`}>
 							{#if project.id === 'tinynccl'}
 								<div class="mobile-nccl"><span>PyTorch DDP</span><i></i><span>tinynccl</span><i></i><span>libibverbs</span></div>
@@ -159,8 +177,8 @@
 							<ul>{#each project.highlights?.slice(0, 2) ?? [] as highlight}<li>{highlight}</li>{/each}</ul>
 							<div class="tech-row">{#each project.tech.slice(0, 4) as tech}<span><TechMark {tech} size="tiny" framed={false} />{tech}</span>{/each}</div>
 							<div class="project-actions">
-								{#if project.live}<a href={project.live} target="_blank" rel="noopener noreferrer" onclick={() => trackProject(project, 'live')}>{project.liveText || 'Open project'}</a>{/if}
-								{#if project.github}<a href={project.github} target="_blank" rel="noopener noreferrer" onclick={() => trackProject(project, 'source')}>View source</a>{/if}
+								{#if project.live}<a href={project.live} target="_blank" rel="noopener noreferrer" onclick={() => trackProject(project, 'live')}>{#if project.id === 'wiki-speedrun'}<TechMark tech="Hugging Face" size="tiny" framed={false} />{/if}{project.liveText || 'Open project'}</a>{/if}
+								{#if project.github}<a href={project.github} target="_blank" rel="noopener noreferrer" onclick={() => trackProject(project, 'source')}><TechMark tech="GitHub" size="tiny" framed={false} />View source</a>{/if}
 								{#if !project.live && !project.github}<span>{project.codeStatus || 'Private work'}</span>{/if}
 							</div>
 						</div>
@@ -289,7 +307,8 @@
 	.tech-row { display: flex; flex-wrap: wrap; gap: 7px 12px; }
 	.tech-row > span { display: inline-flex; align-items: center; gap: 6px; color: var(--project-muted); font: 500 8px var(--font-family-mono); }
 	.project-actions { display: flex; align-items: center; gap: 10px; }
-	.project-actions a, .project-actions > span { min-height: 36px; padding: 0 12px; display: inline-flex; align-items: center; border: 1px solid var(--project-line); color: var(--project-text); font-size: 10px; text-decoration: none; transition: border-color 180ms ease, color 180ms ease, background 180ms ease; }
+	.project-actions a, .project-actions > span { min-height: 36px; padding: 0 12px; display: inline-flex; align-items: center; gap: 7px; border: 1px solid var(--project-line); color: var(--project-text); font-size: 10px; text-decoration: none; transition: border-color 180ms ease, color 180ms ease, background 180ms ease; }
+	.project-actions a :global(.tech-mark) { --tech-brand: currentColor !important; }
 	.project-actions a:hover { border-color: var(--color-brass); color: var(--color-brass); }
 	.project-actions > span { color: var(--project-muted); }
 

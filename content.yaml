@@ -118,7 +118,7 @@ projects:
     live: https://candella.dev/quant
     image: /project-candella-quant.webp
     featuredTag: Research platform
-    liveText: View Quant
+    liveText: View Live Site
 
   - id: wiki-speedrun
     title: Wikipedia Speedrun Benchmark
@@ -133,7 +133,7 @@ projects:
     live: https://huggingface.co/spaces/jwlutz/wiki-speedrun
     image: /wiki-speedrun.png
     featuredTag: Agent benchmark
-    liveText: Play benchmark
+    liveText: Play Benchmark
 
   - id: learning-ml
     title: Learning ML
