@@ -92,11 +92,10 @@ skills:
 
 
 # -----------------------------------------------------------------------------
-# Projects (carousel order on landing page = order in this list)
-# Center card on load = index 2 (controlled in Projects.svelte)
+# Projects (fixed-stage order on the landing page = order in this list)
 #
 # Per-project optional fields:
-#   image       /static path (omit/null for a colored-top card)
+#   image       /static path (omit/null for a project-specific visual)
 #   imageFit    cover (default) | contain
 #   gradient    CSS gradient string for the colored-top
 #   github      repo URL (or null)
@@ -106,151 +105,95 @@ skills:
 #   codeStatus  text shown when no github/live ("Code not public", etc)
 # -----------------------------------------------------------------------------
 projects:
-  - id: ucla-dining
-    title: UCLA Dining Recommendation System
-    description: >
-      Full data pipeline and recommender system to help college students
-      hit their macro goals on their meal plan.
-    tech: [Python, FastAPI, PostgreSQL, Google OR-Tools, Go]
-    highlights:
-      - Go scraper ingesting 38,000+ menu items daily into PostgreSQL
-      - Google OR-Tools CP-SAT solver generates macro-optimized meal plans in 52ms average solve time
-      - FeedMe app built on top of this pipeline currently in beta testing for UCLA students
-    github: null
-    live: null
-    image: null
-    codeStatus: Code not public
-    gradient: linear-gradient(135deg, #2774AE 0%, #1c4a7e 45%, #FFD100 100%)
-
   - id: quant-backtester
-    title: Quantitative Research Backtester & Platform
+    title: Candella Quant
     description: >
-      Full-stack quantitative research platform: strategy IDE, real-time
-      charting, and MCP AI integration layer on top of a co-developed C++
-      backtesting engine with custom DSL and per-fold walk-forward validation.
-    tech: [Python, C++, TypeScript, Linux, Redis, AWS, MCP]
+      A full-stack research workspace that brings strategy development,
+      backtesting, live charting, and AI-assisted analysis into one product.
+    tech: [TypeScript, Python, C++, PostgreSQL, AWS, MCP]
     highlights:
-      - Seven-figure AUM allocation from institutional partner (Mazer Group); live pilot generating positive alpha vs S&P 500
-      - Data pipeline spanning equity, crypto, macro, and fundamental data across 13,000+ instruments
-      - 27 MCP-orchestrated tools with model-tiered routing; L0/L1/L2 context hierarchy + prompt caching cut per-run cost from ~$10 to ~$0.50
+      - Co-developed C++ engine with a custom strategy language and walk-forward validation
+      - Research stack spans market data, strategy execution, and 27 MCP tools
     github: null
-    live: null
-    image: null
-    codeStatus: Code not public
-    gradient: linear-gradient(135deg, #dc2626 0%, #f97316 50%, #fbbf24 100%)
-
-  - id: algorithm-visualizers
-    title: DSA from Scratch
-    description: >
-      Implemented data structures and algos from scratch for practice, and
-      turned this into a visualizer for sorting algos, and a maze generator
-      and solver. Check out the interactive demo.
-    tech: [Python, SvelteKit, TypeScript]
-    highlights:
-      - 7 sorting algorithms
-      - Maze generation & 4 solving algorithms
-      - Real-time step-by-step visualization
-    github: https://github.com/jwlutz/dsa_fundamentals
-    live: /projects/sorting-visualizer
-    image: /visual-learning.png
-    featuredTag: Interactive Demo
-
-  - id: claude-o-meter
-    title: Claude-o-Meter
-    description: >
-      Native menu-bar (macOS) and system-tray (Windows) app showing live
-      Claude Pro/Max 5-hour and weekly subscription usage. Pulls straight
-      from the same Anthropic endpoint the desktop app's Settings → Usage
-      page uses, so percentages match exactly.
-    tech: [Swift, Rust]
-    highlights:
-      - "Cross-platform: Swift menu-bar app on macOS, Tauri 2 + Rust tray app on Windows; both shipped via signed installers and CI release workflow"
-    github: https://github.com/jwlutz/claude-o-meter
-    live: null
-    image: /claude-o-meter.png
-    imageFit: contain
-    gradient: linear-gradient(135deg, #d97757 0%, #b45533 50%, #6b2820 100%)
-
-  - id: tinynccl
-    title: "tinynccl: RDMA PyTorch Backend"
-    description: >
-      From-scratch C++ GPU collective-communication library on
-      libibverbs/softRoCE, exposed as a custom PyTorch c10d::Backend. Used
-      to train a 10.7M-parameter char-level GPT on TinyShakespeare via DDP
-      through code I wrote.
-    tech: [C++, CUDA, libibverbs, PyTorch]
-    highlights:
-      - All-reduce kernel validated to 4MB buffers under 1000-iteration stress runs
-      - Custom c10d::Backend lets DistributedDataParallel route gradient sync through the library transparently
-      - Trained 10.7M-param GPT across two ranks with bit-exact cross-rank weight consistency
-    github: https://github.com/jwlutz/tinynccl
-    live: null
-    image: null
-    gradient: linear-gradient(135deg, #10b981 0%, #06b6d4 50%, #6366f1 100%)
-
-  - id: ml-from-scratch
-    title: ML from Scratch
-    description: >
-      Implemented core ML algos from scratch in Python with visuals and
-      explanations to test my understanding. Used Elements of Statistical
-      Learning for foundations.
-    tech: [Python, NumPy, Streamlit, R]
-    highlights:
-      - 16 models built from scratch using only NumPy and math
-      - Interactive demo on Streamlit
-      - Models rigorously benchmarked against scikit-learn and PyTorch
-    github: https://github.com/jwlutz/ml_fundamentals
-    live: https://jwlutz-ml.streamlit.app
-    image: /ml-from-scratch.png
-    featuredTag: Interactive Demo
-    liveText: Streamlit Page
+    live: https://candella.dev/quant
+    image: /project-candella-quant.webp
+    featuredTag: Research platform
+    liveText: View Quant
 
   - id: wiki-speedrun
     title: Wikipedia Speedrun Benchmark
     description: >
-      A benchmark comparing AI agents playing the Wikipedia Speedrun
-      game - navigating between Wikipedia articles using only page links
-      in as few clicks as possible.
+      An interactive benchmark for comparing how AI agents navigate between
+      Wikipedia articles using only the links available on each page.
     tech: [Python, Hugging Face, Docker, Embeddings]
     highlights:
-      - 15 AI agents benchmarked across 35 problems (420+ games)
-      - Embedding-based agents achieve 94% win rate at zero cost
-      - Interactive demo lets you play or watch AI agents compete
+      - 420+ games across 35 routes and 15 agent strategies
+      - Embedding agents reached a 94% win rate at zero inference cost
     github: https://github.com/jwlutz/wiki_speedrun
     live: https://huggingface.co/spaces/jwlutz/wiki-speedrun
     image: /wiki-speedrun.png
-    featuredTag: Live Demo
-    liveText: Hugging Face Space
+    featuredTag: Agent benchmark
+    liveText: Play benchmark
 
-  - id: ai-web-scraper
-    title: Web Scraper Chrome Extension
+  - id: claude-o-meter
+    title: Claude-o-Meter
     description: >
-      A Chrome extension with AI-powered data extraction and intelligent
-      cleaning, supporting multiple export formats.
-    tech: [TypeScript, JavaScript, Chrome Extension MV3]
+      A native macOS menu-bar and Windows tray app for monitoring real Claude
+      and Codex subscription usage windows without opening another dashboard.
+    tech: [Swift, Rust]
     highlights:
-      - AI-powered data extraction and cleaning
-      - "CSV, XLSX, JSON export support"
-    github: https://github.com/jwlutz/chrome-ext-web-scraper
-    live: https://chromewebstore.google.com/detail/yoinkai/afmmfhkdbnebcpidjfgjpkblmocpmbmm
-    image: /chrome_extension.png
-    featuredTag: Extension Available
-    liveText: Extension Download
-
-  - id: claude-code-framework
-    title: Claude Code Framework
-    description: >
-      Structured workflows for Claude Code. I developed this system when
-      using Claude Code in large codebases, and it is inspired by Boris
-      Cherny's Claude Code workflow.
-    tech: [Claude Code, CLI Plugin]
-    highlights:
-      - Persistent codebase context across sessions
-      - Enforced review checkpoints and decision tracking
-      - Built-in custom agent orchestration for reliable implementation, review, and testing
-    github: https://github.com/jwlutz/claude_code_framework
+      - Live 5-hour and weekly windows sourced from the providers' usage data
+      - Swift on macOS and Rust with Tauri on Windows, both released through CI
+    github: https://github.com/jwlutz/claude-o-meter
     live: null
-    image: /claude-code-framework.png
+    image: /project-claude-o-meter.png
+    imageFit: contain
+    featuredTag: Native utility
+
+  - id: learning-ml
+    title: Learning ML
+    description: >
+      A growing lab of from-scratch machine learning projects, beginning with
+      scalar autograd and neural networks built to understand every training step.
+    tech: [Python, NumPy, PyTorch, matplotlib]
+    highlights:
+      - Autograd engine and neural-network library built from scalar operations
+      - Animated training diagnostics with gradients verified against PyTorch and JAX
+    github: https://github.com/jwlutz/learning-ml
+    live: null
+    image: /project-learning-ml.gif
+    imageFit: contain
+    featuredTag: ML lab
+
+  - id: ucla-dining
+    title: UCLA Dining Recommendation System
+    description: >
+      A data pipeline and constraint-based recommender that turns UCLA dining
+      menus into meal plans built around each student's macro targets.
+    tech: [Go, PostgreSQL, Python, FastAPI, Google OR-Tools]
+    highlights:
+      - Go ingestion pipeline loads daily menu data into PostgreSQL
+      - OR-Tools solver composes meal plans around nutrition and dining constraints
+    github: null
+    live: null
+    image: /diagrams/feedme-tb-dark.svg
+    imageFit: contain
+    codeStatus: Private product
+    featuredTag: Recommendation system
+
+  - id: tinynccl
+    title: tinynccl
+    description: >
+      A from-scratch C++ collective-communication library that routes PyTorch
+      distributed training through libibverbs over softRoCE.
+    tech: [C++, CUDA, libibverbs, PyTorch]
+    highlights:
+      - Custom c10d backend sends DistributedDataParallel gradient sync through the library
+      - Trained a 10.7M-parameter character GPT across two ranks on TinyShakespeare
+    github: https://github.com/jwlutz/tinynccl
+    live: null
+    image: null
+    featuredTag: Systems infrastructure
 
 
 # -----------------------------------------------------------------------------

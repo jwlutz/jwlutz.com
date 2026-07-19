@@ -2,7 +2,7 @@
 
 **Created:** 2026-07-18
 **Assigned To:** Codex session
-**Completed:** —
+**Completed:** 2026-07-18 (superseded)
 
 ## Why
 
@@ -44,3 +44,8 @@ navigation moved focus and `aria-expanded` to the correct next project. At
 inactive headers remain 68px touch targets and document width is 366/375.
 `svelte-check` is 0 errors (15 pre-existing warnings) and the production build
 passes. No consulting files were touched and no push is authorized.
+
+**2026-07-18 22:43 (Codex):** Superseded by Jack's approved fixed evidence
+stage in `portfolio-project-stage-codex.md`. The replacement narrows the edit
+to six projects, keeps the desktop story dimensions stable, and uses mobile
+scroll-snap cards instead of a vertical accordion.
