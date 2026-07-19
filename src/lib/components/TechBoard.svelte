@@ -456,15 +456,15 @@
 <style>
 	.skills-sphere-section {
 		--sphere-line: var(--color-border-strong);
-		--field-border: rgba(15, 18, 16, .12);
-		--field-background: radial-gradient(ellipse 54% 68% at 50% 51%, rgba(255, 255, 255, .98), rgba(242, 240, 235, .88) 61%, rgba(229, 227, 221, .78) 100%), #e8e6e1;
-		--tile-background: rgba(252, 251, 248, .96);
-		--tile-background-active: #fffefb;
-		--tile-border: rgba(24, 28, 25, .08);
-		--tile-border-hover: rgba(84, 70, 49, .34);
-		--tile-shadow: 0 8px 24px rgba(29, 32, 29, .055);
-		--tile-shadow-hover: 0 12px 30px rgba(29, 32, 29, .1);
-		--tile-shadow-active: 0 15px 34px rgba(29, 32, 29, .13), inset 0 -3px #a5895e;
+		--field-border: rgba(20, 32, 25, .14);
+		--field-background: radial-gradient(ellipse 54% 68% at 50% 51%, rgba(235, 227, 213, .99), rgba(207, 207, 190, .94) 61%, rgba(168, 181, 164, .88) 100%), #bcc4b5;
+		--tile-background: rgba(239, 232, 219, .96);
+		--tile-background-active: #f5eee2;
+		--tile-border: rgba(20, 32, 25, .1);
+		--tile-border-hover: rgba(74, 93, 78, .42);
+		--tile-shadow: 0 8px 24px rgba(20, 32, 25, .08);
+		--tile-shadow-hover: 0 12px 30px rgba(20, 32, 25, .14);
+		--tile-shadow-active: 0 15px 34px rgba(20, 32, 25, .17), inset 0 -3px #8b724d;
 		--sphere-mark-color: #151815;
 		--tooltip-background: #121713;
 		--tooltip-color: #f0efe9;

@@ -173,21 +173,21 @@
 
 <style>
 	.projects-section {
-		--project-stage: #e4dfd4;
-		--project-index: #d7d2c6;
-		--project-display: #ede9df;
-		--project-panel: #e7e3d9;
-		--project-line: rgba(18, 23, 19, .14);
-		--project-text: #121713;
-		--project-copy: #535b55;
-		--project-muted: #747a74;
-		--project-hover: rgba(18, 23, 19, .035);
-		--project-active: rgba(18, 23, 19, .075);
-		--artifact-background: linear-gradient(140deg, #e8e4da, #d5d0c4 70%);
-		--artifact-panel: rgba(18, 23, 19, .035);
-		--artifact-line: rgba(18, 23, 19, .16);
-		--artifact-text: #121713;
-		--artifact-muted: #626a63;
+		--project-stage: #b8c0b2;
+		--project-index: #aab4a5;
+		--project-display: #d2c8b8;
+		--project-panel: #ddd4c4;
+		--project-line: rgba(20, 32, 25, .15);
+		--project-text: #142019;
+		--project-copy: #4b5a50;
+		--project-muted: #68746b;
+		--project-hover: rgba(20, 32, 25, .045);
+		--project-active: rgba(20, 32, 25, .09);
+		--artifact-background: linear-gradient(140deg, #d8cfbf, #bcc4b5 70%);
+		--artifact-panel: rgba(20, 32, 25, .045);
+		--artifact-line: rgba(20, 32, 25, .18);
+		--artifact-text: #142019;
+		--artifact-muted: #5d6b62;
 		padding: 120px 0 145px;
 		overflow: hidden;
 		border-top: 1px solid var(--color-border);

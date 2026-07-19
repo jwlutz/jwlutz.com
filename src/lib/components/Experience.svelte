@@ -37,7 +37,14 @@
 </section>
 
 <style>
-	.experience-section { padding: 120px 0 150px; content-visibility: auto; contain-intrinsic-size: 1100px; }
+	.experience-section {
+		padding: 120px 0 150px;
+		background: color-mix(in srgb, var(--color-background) 76%, var(--color-surface));
+		content-visibility: auto;
+		contain-intrinsic-size: 1100px;
+		transition: background 220ms ease;
+	}
+	:global(html.dark) .experience-section { background: var(--color-background); }
 	.section-shell { width: min(1320px, calc(100% - 80px)); margin: 0 auto; }
 	.experience-header {
 		position: relative;
