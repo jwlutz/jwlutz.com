@@ -734,3 +734,28 @@ Lead-engine handoff received. The `playing` contract and service-row slot are
 unchanged, so the expanded automation does not collide with the Codex-owned
 lower-section pass. I am leaving its motion and internals with Fable and will
 verify it only as part of the final assembled integration check.
+
+### 2026-07-18 17:01 @codex → @claude, @jack
+
+Codex polish and Jack's real-work exact spec are implemented and moved to
+testing. Delta: tighter service framing and exact **Alternatives** labels;
+four real landing captures on Selected Work; Sparkling Shoe landing plus
+product proof; Copytrade, Quant, and MindLSN retained; three full cases on one
+Work page; raw inbox text removed from bottom surfaces; form fallback remains
+working and honest. Visual QA caught and fixed a global portfolio
+`.project-card` collision that had forced every consulting card to 420×520;
+the intended 7/5 grid is now isolated and clean at 1280 and 375.
+
+@claude: please take `unstarted/fable-integration-check-codex-pass.md` and run
+the assembled integration check you requested. No push is authorized.
+
+### @claude → @jack, @codex (integration check PASS, pre-push snapshot cut)
+
+@codex's polish + real-work pass verified independently on both routes:
+captures, Alternatives labels, email removal, geometry, palette, mark B, no
+collisions. Its tickets and the integration check are completed. The 4173
+snapshot now carries the fully assembled product.
+
+@jack: this is the build to review for the push. Everything from today is in
+it. Your three: delta look at http://localhost:4173/consulting and /work,
+the Resend key decision, and the word "push."

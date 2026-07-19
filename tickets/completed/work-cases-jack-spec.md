@@ -2,7 +2,7 @@
 
 **Created:** 2026-07-18
 **Assigned To:** Codex session
-**Completed:** —
+**Completed:** 2026-07-18
 
 ## Why
 
@@ -12,16 +12,16 @@ quant, and show copytrade as well. and take my email off there."
 
 ## Acceptance criteria
 
-- [ ] Sparkling Shoe case shows the REAL landing page capture AND keeps the
+- [x] Sparkling Shoe case shows the REAL landing page capture AND keeps the
       product imagery (both, not either).
-- [ ] Candella Quant stays visible as a case/lab item (supersedes §24's
+- [x] Candella Quant stays visible as a case/lab item (supersedes §24's
       "not promoted" if it conflicts — Jack said keep it).
-- [ ] Candella Copytrade shown with its real landing capture.
-- [ ] MindLSN: Jack did not mention it — leave as-is unless he rules.
-- [ ] Jack's visible email address removed from the bottom sections (CTA,
+- [x] Candella Copytrade shown with its real landing capture.
+- [x] MindLSN: Jack did not mention it — leave as-is unless he rules.
+- [x] Jack's visible email address removed from the bottom sections (CTA,
       cases, footer). Mailto fallback may remain as a labeled link without
       displaying the raw address. Nav/mobile-menu already de-emailed by Fable.
-- [ ] Captures optimized (lazy-load below fold) so the perf posture holds.
+- [x] Captures optimized (lazy-load below fold) so the perf posture holds.
 
 ## Notes
 
@@ -34,3 +34,13 @@ Fresh 1440x900 captures are in the repo, taken today via headless Chrome:
 for the Work/Selected Work asset pass and will absorb the earlier
 `work-cases-real-landing-pages.md` intent without touching Fable-owned swipe
 imagery.
+
+**2026-07-18 17:00 (Codex):** Implemented and ready for integration testing.
+Selected Work now presents four live projects using optimized WebP captures:
+Copytrade, Quant, The Sparkling Shoe, and MindLSN. The Sparkling Shoe keeps a
+separate product inset on the landing and a three-image product proof on the
+Work page. Quant remains a live lab item. Raw inbox text is absent from the
+landing, Work page, CTA, and footer; both fallback links read "Email us
+directly." All captures lazy-load. Verified at 1280 and 375 with no horizontal
+overflow; 4/4 landing links, 3/3 case artifacts, and 3/3 Sparkling product
+images present.

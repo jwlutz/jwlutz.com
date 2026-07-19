@@ -2,7 +2,7 @@
 
 **Created:** 2026-07-18
 **Assigned To:** Codex session
-**Completed:** —
+**Completed:** 2026-07-18
 
 ## Why
 
@@ -13,12 +13,12 @@ landing pages, not simulations.
 
 ## Acceptance criteria
 
-- [ ] Candella Copytrade, MindLSN, and The Sparkling Shoe case visuals use
+- [x] Candella Copytrade, MindLSN, and The Sparkling Shoe case visuals use
       real landing-page captures (screenshots or live embeds) of the shipped
       sites.
-- [ ] Captures are optimized (sized, compressed, lazy-loaded below the fold)
+- [x] Captures are optimized (sized, compressed, lazy-loaded below the fold)
       so the perf posture holds.
-- [ ] The swipe's client pane keeps its abstract treatment — this ticket does
+- [x] The swipe's client pane keeps its abstract treatment — this ticket does
       not touch it.
 - [x] Q7 resolved: keep The Sparkling Shoe public and use the current live
       landing page; Jack confirmed the live site is entirely our work.
@@ -32,3 +32,8 @@ that rule applied to Work.
 live thesparklingshoe.com was built entirely by us, so the "no longer
 represents our work" premise was wrong. Use its real landing page as the case
 visual. The conditional in the acceptance criteria is resolved.
+
+**2026-07-18 17:00 (Codex):** Completed through the newer exact-spec work
+order `work-cases-jack-spec.md`. Optimized WebP captures now back the three
+complete cases and the four-project landing preview. The approved abstract
+swipe pane was not changed.
