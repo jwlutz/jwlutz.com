@@ -303,9 +303,9 @@
 	.stage-visual { position: absolute; inset: 0; }
 	.pane { position: absolute; inset: 0; }
 	.pane-ours { clip-path: inset(0 calc(100% - var(--seam) * 1%) 0 0); will-change: clip-path; }
-	.pane-label { position: absolute; top: 16px; padding: 8px 10px; font: 500 8px var(--proto-mono); letter-spacing: .12em; border-radius: 2px; }
-	.label-ours { left: 16px; color: var(--proto-paper); background: rgba(10, 12, 10, .88); border: 1px solid rgba(180, 154, 103, .5); }
-	.label-yours { right: 16px; color: #4a4335; background: rgba(255, 253, 247, .82); border: 1px solid rgba(23, 25, 20, .18); }
+	.pane-label { position: absolute; z-index: 8; top: 16px; padding: 8px 10px; font: 500 8px var(--proto-mono); letter-spacing: .12em; border-radius: 2px; white-space: nowrap; box-shadow: 0 6px 18px rgba(0,0,0,.28); }
+	.label-ours { left: 16px; color: var(--proto-paper); background: #0b0e0c; border: 1px solid rgba(180, 154, 103, .55); }
+	.label-yours { right: 16px; color: #40392c; background: #fffdf7; border: 1px solid rgba(23, 25, 20, .22); }
 
 	/* ————— Your side: a real storefront in real layout ————— */
 	.pane-yours { background: linear-gradient(160deg, #efe9dd 0%, #e6dfd2 55%, #ddd4c4 100%); color: #171914; }

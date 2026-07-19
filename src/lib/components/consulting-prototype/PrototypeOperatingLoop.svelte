@@ -50,7 +50,7 @@
 					<div class="service-copy">
 						<header data-motion-item>
 							<p class="service-label"><small>0{index + 1} / 03</small><span>{service.title}</span></p>
-							<h3>{service.headline.lead}<br />{service.headline.tail} <em>{service.headline.emphasis}</em></h3>
+							<h3>{service.headline.lead} <em>{service.headline.emphasis}</em></h3>
 						</header>
 
 						<div class="service-summary" data-motion-item>
@@ -58,10 +58,9 @@
 						</div>
 
 						<div class="feature-list">
-							{#each service.features as feature, featureIndex}
+							{#each service.features as feature}
 								<div data-motion-item>
-									<small>0{featureIndex + 1}</small>
-									<span><strong>{feature.title}</strong><p>{feature.body}</p></span>
+									<strong>{feature.title}</strong><p>{feature.body}</p>
 								</div>
 							{/each}
 						</div>
@@ -135,8 +134,7 @@
 	.service-summary { margin-top: 30px; }
 	.service-summary > p { max-width: 500px; margin: 0; color: #b2b7b2; font-size: 15px; line-height: 1.72; }
 	.feature-list { margin-top: 42px; border-top: 1px solid var(--proto-line); }
-	.feature-list > div { padding: 18px 0; display: grid; grid-template-columns: 30px 1fr; gap: 12px; border-bottom: 1px solid var(--proto-line); }
-	.feature-list small { padding-top: 3px; color: var(--chapter-accent); font: 500 9px var(--proto-mono); }
+	.feature-list > div { padding: 18px 0; border-bottom: 1px solid var(--proto-line); }
 	.feature-list strong { display: block; color: #e4e4de; font-size: 13px; font-weight: 500; }
 	.feature-list p { max-width: 430px; margin: 7px 0 0; color: #7f8781; font-size: 11px; line-height: 1.62; }
 	.service-demo { min-width: 0; position: relative; contain: layout paint; }

@@ -43,7 +43,7 @@ export const consultingSite = {
 	contactEmail: 'jwlutz65@gmail.com',
 	emailSubject: 'Project inquiry for Lutz Consulting Group',
 	hero: {
-		eyebrow: 'WEBSITES / AI INTEGRATIONS / ANALYTICS',
+		eyebrow: 'WEB PRESENCE / AI INTEGRATIONS / ANALYTICS',
 		title: { lead: 'Don’t let your website become your', emphasis: 'second job.' },
 		body: 'We design, build, and operate websites, AI workflows, and analytics for businesses that want modern systems without another system to manage.',
 		primaryCta: 'Start a project',
@@ -54,8 +54,8 @@ export const consultingSite = {
 		eyebrow: 'ONE WEBSITE / TWO SIDES',
 		title: { lead: 'We watch the side you', emphasis: 'never have to.' },
 		body: 'This is our screen: editors, logs, deploys, and dependencies. Drag the line to reveal the only thing you and your customers ever see.',
-		oursLabel: 'WHAT WE WATCH',
-		yoursLabel: 'WHAT YOU SEE',
+		oursLabel: 'WHAT WE SEE',
+		yoursLabel: 'WHAT YOU AND YOUR CLIENTS SEE',
 		dragHint: 'Drag',
 		note: 'The next change is a text away. Not a ticket, not a quote, not a project.',
 		logLines: [
@@ -71,46 +71,46 @@ export const consultingSite = {
 		eyebrow: 'WHAT WE BUILD AND RUN',
 		title: 'Built for you. Run by us.',
 		body: 'The tools change. The job does not: understand the business, make the right thing, and remain accountable after it ships.',
-		toolNote: 'We use some of these tools too. What you are buying is judgment and ownership, not a preference for one platform.',
+		toolNote: 'We use some of these tools too. What you are buying is judgement and ownership, not a preference for one platform.',
 		items: [
 			{
 				index: '01',
-				title: 'Websites and products',
-				headline: { lead: 'Fast tools.', tail: 'Human', emphasis: 'judgment.' },
-				body: 'We use modern tools to move quickly. A person still reads every line, tests every path, and owns the release.',
+				title: 'Web Presence',
+				headline: { lead: 'Experienced', emphasis: 'Judgement.' },
+				body: 'We take full advantage of modern tools, and ensure every line of code gets human eyes and human judgement.',
 				detail: 'DESIGN · DEVELOPMENT · COMMERCE · PRODUCTS',
 				features: [
-					{ title: 'Built around the business', body: 'Start with what customers need to understand and what the business needs the site to do.' },
-					{ title: 'Reviewed before release', body: 'Code, forms, payments, accessibility, and responsive behavior are tested by someone accountable for the result.' },
-					{ title: 'Owned after launch', body: 'Domains, integrations, maintenance, and the next release remain part of one connected system.' }
+					{ title: 'Build for your needs', body: 'We scope projects to exactly what your business or project needs to scale at the pace you want.' },
+					{ title: 'Rigorous review cycles', body: 'We review all of our code and integrations before release, so that everything you put in our hands just works.' },
+					{ title: 'Full ownership', body: 'You never have to worry about account management. Domains, integrations, maintenance, and whatever else your business needs stay part of one system.' }
 				],
 				alternativeLabel: 'Alternatives',
 				alternatives: ['Lovable', 'Base44', 'Replit']
 			},
 			{
 				index: '02',
-				title: 'AI integrations',
-				headline: { lead: 'Automate the handoff.', tail: 'Keep the', emphasis: 'judgment.' },
-				body: 'We connect AI to the work you already do, keeping context attached and putting a person at the decisions that matter.',
+				title: 'AI Integrations & Automations',
+				headline: { lead: 'Beyond the', emphasis: 'Hype.' },
+				body: 'We integrate AI into customer systems to automate boring tasks like lookups, outreach, and document generation, always keeping a human in the loop.',
 				detail: 'INTEGRATIONS · AUTOMATION · INTERNAL TOOLS · AGENTS',
 				features: [
-					{ title: 'Bring the context with it', body: 'Forms, email, documents, customer records, and prior conversations move through one usable workflow.' },
-					{ title: 'Put judgment at the right step', body: 'AI can gather, classify, and draft while consequential decisions keep a clear human checkpoint.' },
-					{ title: 'Finish the whole workflow', body: 'The result updates the systems people already use instead of creating another isolated AI tool.' }
+					{ title: 'Bring your context to your agents', body: 'We put in the time upfront to ensure we have the data to automate tasks in your business’s style, instead of churning out AI slop.' },
+					{ title: 'Put human judgement at the right steps', body: 'Some agent judgement is inherently involved in every step, but when human judgement is required, we make it quick and easy for you to give your input.' },
+					{ title: 'Always finish the job', body: 'We ensure that workflows actually produce work product, instead of leaving you with a thousands-long review queue.' }
 				],
 				alternativeLabel: 'Alternatives',
 				alternatives: ['Zapier', 'Make', 'Gumloop']
 			},
 			{
 				index: '03',
-				title: 'ML and analytics',
-				headline: { lead: 'Measure what changes', tail: 'the', emphasis: 'decision.' },
-				body: 'We start with a business question, find the evidence that answers it, and carry the result through to the next useful action.',
-				detail: 'MEASUREMENT · MACHINE LEARNING · EXPERIMENTS · GROWTH',
+				title: 'Analytics',
+				headline: { lead: 'Applied', emphasis: 'Rigour.' },
+				body: 'We find where you are losing money and time, build the models that explain it, and ship the pipelines that keep the answer current.',
+				detail: 'MEASUREMENT · STATISTICS · MODELLING · PIPELINES',
 				features: [
-					{ title: 'Measure a real question', body: 'Start with the decision the business needs to make, then instrument only the signals that answer it.' },
-					{ title: 'Use the right level of modeling', body: 'Clear reporting when that is enough; forecasting and machine learning when the problem earns the complexity.' },
-					{ title: 'Choose the operating rhythm', body: 'Use ongoing monitoring and action, or receive a clear report when that is all the business needs.' }
+					{ title: 'Find where it leaks', body: 'We find where you are bleeding money and time, then patch the holes.' },
+					{ title: 'Real modelling, not guesswork', body: 'We bring a background in statistics and mathematical modelling to the problems that need more than a chart.' },
+					{ title: 'The whole pipeline', body: 'Data collection and validation, models built on your data or data that already exists, and the validation and deployment that put them to work.' }
 				],
 				alternativeLabel: 'Alternatives',
 				alternatives: ['Google Analytics', 'Tableau', 'Power BI']
