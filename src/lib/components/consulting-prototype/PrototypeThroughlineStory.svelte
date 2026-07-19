@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
+	import { onMount, flushSync } from 'svelte';
 	import { createTimeline, stagger } from 'animejs';
 	import {
 		siClaude,
@@ -61,6 +61,9 @@
 	let buttonTarget = $state({ x: 11, y: 63 });
 	let refreshTarget = $state({ x: 4, y: 10 });
 	let boxTargets = $state([] as { x: number; y: number }[]);
+	// Room the collapsible tabs actually have, in cqw, measured live (see the
+	// compression note below). Fallback ~81 matches a full-width strip.
+	let stripAvailCqw = $state(81);
 	const tabs = [
 		{ name: 'ChatGPT', job: 'Idea', icon: null, favicon: '/consulting/prototypes/brands/chatgpt.png', color: '#10a37f' },
 		{ name: 'Claude', job: 'Build', icon: siClaude, color: '#d97757' },
@@ -195,36 +198,40 @@
 		return opened * (1 - closed);
 	}
 
-	// Tabs open FULL and stay full while the row has room; only when it would
-	// overflow do the OLDEST tabs collapse to logos, just enough to fit, so the
-	// newest stays readable (Jack 07-19: don't compress unless the line fills).
-	const STRIP_CAP = 90; // cqw the strip spans for tabs
-	const BUSINESS_W = 12; // the pinned business tab (cqw)
-	const PLUS_W = 3; // the "+" button (cqw)
-	function openStripCount() {
-		let n = 0;
-		for (let i = 0; i < tabs.length; i++) if (tabAmount(i) > 0.5) n++;
-		if (notionVisible > 0.5) n++;
-		if (helpVisible > 0.5) n++;
-		return n;
+	// Tabs open FULL and stay full while the row has room; only when the strip
+	// would actually overflow do the OLDEST tabs collapse toward their logo, and
+	// only just enough to fit (Jack 07-19: don't compress unless the line fills).
+	// The room for collapsible tabs is MEASURED live (stripAvailCqw): the business
+	// tab is cqw but the "+", padding and gaps are fixed px, so the real available
+	// width drifts with the screen size — a fixed cap over-compresses and leaves a
+	// gap. Compression is continuous (the boundary tab shrinks fractionally) so the
+	// tabs glide instead of snapping and the "+" riding at the end never lurches.
+	function toolsFullCqw() {
+		let full = 0;
+		for (let i = 0; i < tabs.length; i++) full += tabAmount(i) * TAB_FULL;
+		return full;
 	}
-	function numCompressed() {
-		const count = openStripCount();
-		const overflow = count * TAB_FULL - (STRIP_CAP - BUSINESS_W - PLUS_W);
-		if (overflow <= 0) return 0;
-		return Math.min(count - 1, Math.ceil(overflow / (TAB_FULL - TAB_ICON)));
+	function compressUnits() {
+		// stripAvailCqw already reserves the business tab, Notion, help and the "+"
+		// (measured live), so only the tool tabs collapse — oldest first, and only
+		// just enough to fit. Continuous: the boundary tab shrinks fractionally.
+		const over = toolsFullCqw() - stripAvailCqw;
+		return Math.max(0, over) / (TAB_FULL - TAB_ICON); // tab-equivalents to shrink
+	}
+	function toolCollapse(index: number) {
+		return clamp(compressUnits() - index); // 0 = full, 1 = logo; oldest first
 	}
 	function toolCompact(index: number) {
-		return index < numCompressed(); // the oldest tabs collapse first
+		return toolCollapse(index) > 0.55; // drop the label once mostly collapsed
 	}
 	function toolWidth(index: number) {
-		return tabAmount(index) * (toolCompact(index) ? TAB_ICON : TAB_FULL);
+		return tabAmount(index) * (TAB_FULL - toolCollapse(index) * (TAB_FULL - TAB_ICON));
 	}
 	function notionCompact() {
-		return tabs.length < numCompressed(); // Notion is the last strip slot before the fresh tab
+		return false; // Notion and help hold reserved space; they never collapse
 	}
 	function notionWidth() {
-		return notionVisible * (notionCompact() ? TAB_ICON : NOTION_FULL);
+		return notionVisible * NOTION_FULL;
 	}
 	function helpWidth() {
 		return helpVisible * HELP_FULL;
@@ -355,6 +362,11 @@
 			// on it on any viewport: the strip reflows as tabs open, and clamp(...vw...)
 			// fonts shift the workspace targets a few percent per window width.
 			if (visible && !reducedMotion && screenContentEl) {
+				// Commit this frame's story to the DOM BEFORE measuring, so the targets
+				// reflect where the "+" and tabs are THIS frame, not last frame. Without
+				// this the cursor rides a one-frame-stale "+" and visibly trails it while
+				// the strip is reflowing (the tabs slide the "+" several px per frame).
+				flushSync();
 				const sc = screenContentEl.getBoundingClientRect();
 				if (sc.width && sc.height) {
 					const pct = (el: Element | null) => {
@@ -370,8 +382,24 @@
 					const rf = pct(screenContentEl.querySelector('.refresh')); if (rf) refreshTarget = rf;
 					const bx = [...screenContentEl.querySelectorAll('.notion-pane .task > i')].map(pct).filter(Boolean) as { x: number; y: number }[];
 					if (bx.length === boxTapTimes.length) boxTargets = bx;
+						// Live room for the tool tabs: strip inner width minus every fixed
+						// item — the business tab, Notion, help and the "+" (all measured,
+						// so their real px reserve tracks the screen size) — minus padding
+						// and inter-tab gaps. Reserving Notion/help keeps the "+" from ever
+						// being clipped by the strip's overflow.
+						const strip = screenContentEl.querySelector('.tab-strip') as HTMLElement | null;
+						const bizTab = screenContentEl.querySelector('.business-tab') as HTMLElement | null;
+						const helpTab = screenContentEl.querySelector('.help-tab') as HTMLElement | null;
+						if (strip && bizTab && plusEl) {
+							const w = (el: Element | null) => (el ? el.getBoundingClientRect().width : 0);
+							const avail = strip.clientWidth - w(bizTab) - w(notionTabEl) - w(helpTab) - w(plusEl) - 55; // 16px padding + ~13 gaps * 3px
+							stripAvailCqw = Math.max(20, (avail / sc.width) * 100);
+						}
 				}
 			}
+			// Commit the just-measured cursor targets to the DOM this frame too, so
+			// the pointer paints on the current "+", not one flush behind it.
+			if (visible && !reducedMotion) flushSync();
 			lastFrame = now;
 			frame = requestAnimationFrame(tick);
 		}
@@ -517,10 +545,10 @@
 	.story{position:relative;min-height:100svh;padding:clamp(105px,10vw,150px) max(24px,4vw) 70px;overflow:hidden;border-top:1px solid var(--proto-line);border-bottom:1px solid var(--proto-line);background:#080b09}.story-grid{position:absolute;inset:-20%;opacity:.24;background-image:linear-gradient(var(--proto-line) 1px,transparent 1px),linear-gradient(90deg,var(--proto-line) 1px,transparent 1px);background-size:74px 74px;mask-image:radial-gradient(ellipse at 50% 45%,#000 5%,transparent 70%)}
 	.story-heading{position:relative;z-index:2;width:min(1380px,100%);margin:0 auto 46px;display:grid;grid-template-columns:1fr .55fr;gap:60px;align-items:end}.story-intro{max-width:430px;justify-self:end}.story-intro>span{display:block;color:var(--proto-muted);font-size:14px;line-height:1.65;text-wrap:pretty}
 	.monitor{position:relative;z-index:2;width:min(1380px,100%);height:min(70vw,760px);min-height:610px;margin:0 auto;overflow:hidden;border:1px solid var(--proto-line-strong);background:#0d100e;box-shadow:0 50px 160px rgba(0,0,0,.5)}
-	.browser{position:absolute;left:3%;right:3%;top:65px;bottom:110px;overflow:hidden;border:1px solid rgba(240,239,233,.18);border-radius:7px;background:#121613;box-shadow:0 25px 80px rgba(0,0,0,.45)}.tab-strip{height:39px;padding:7px 8px 0;display:flex;align-items:end;gap:3px;overflow:hidden;background:#0f1310;contain:layout paint}.browser-tab{height:31px;min-width:0;padding:0 8px;display:flex;align-items:center;gap:6px;overflow:hidden;border-radius:6px 6px 0 0;color:#777e78;background:#171c18;font:7px var(--proto-mono);white-space:nowrap}.browser-tab.active{color:#d8dbd5;background:#272d28}.browser-tab>span{overflow:hidden;text-overflow:ellipsis}.browser-tab>b{margin-left:auto;font-weight:400}.business-tab{flex:0 0 calc(12*1cqw);min-width:0}.tool-tab,.notion-tab,.help-tab{flex:0 0 calc(max(var(--w,0),0)*1cqw);min-width:0;opacity:var(--tab-opacity);transform:translateY(var(--tab-y));transition:none}.tool-tab.compact,.notion-tab.compact{padding:0;gap:0;justify-content:center}.tool-tab.compact>span,.tool-tab.compact>b,.notion-tab.compact>span,.notion-tab.compact>b{display:none}.site-favicon,.help-favicon{flex:0 0 auto;width:15px;height:15px;display:grid;place-items:center;border-radius:3px;color:#e8e9e4;background:#07543f;font:700 7px Arial,sans-serif}.help-favicon{background:#b49a67;color:#111}.brand-icon{flex:0 0 auto;width:14px;height:14px;display:grid;place-items:center;color:#dedfda}.brand-icon :global(svg){width:100%;height:100%;fill:currentColor}.brand-icon img{display:block;width:100%;height:100%;border-radius:2px}.new-tab{flex:0 0 auto;width:23px;height:24px;margin:0 1px 3px;align-self:flex-end;display:grid;place-items:center;border-radius:5px;color:#9aa09a;background:rgba(240,239,233,calc(0.05 + var(--plus-press,0)*0.16));font-size:15px;line-height:1;transform:scale(calc(1 - var(--plus-press,0)*0.12));transition:none}
+	.browser{position:absolute;left:3%;right:3%;top:65px;bottom:110px;overflow:hidden;border:1px solid rgba(240,239,233,.18);border-radius:7px;background:#121613;box-shadow:0 25px 80px rgba(0,0,0,.45)}.tab-strip{height:39px;padding:7px 8px 0;display:flex;align-items:end;gap:0;overflow:hidden;background:#0f1310;contain:layout paint}.browser-tab{height:31px;min-width:0;padding:0 8px;display:flex;align-items:center;gap:6px;overflow:hidden;border-radius:6px 6px 0 0;color:#777e78;background:#171c18;font:7px var(--proto-mono);white-space:nowrap}.browser-tab.active{color:#d8dbd5;background:#272d28}.browser-tab>span{overflow:hidden;text-overflow:ellipsis}.browser-tab>b{margin-left:auto;font-weight:400}.business-tab{flex:0 0 calc(12*1cqw);min-width:0}.tool-tab,.notion-tab,.help-tab{flex:0 0 calc(max(var(--w,0),0)*1cqw);min-width:0;margin-left:calc(min(max(var(--w,0),0),1)*3px);padding:0 calc(min(max(var(--w,0),0),1)*8px);opacity:var(--tab-opacity);transform:translateY(var(--tab-y));transition:none}.tool-tab.compact,.notion-tab.compact{padding:0;gap:0;justify-content:center}.tool-tab.compact>span,.tool-tab.compact>b,.notion-tab.compact>span,.notion-tab.compact>b{display:none}.site-favicon,.help-favicon{flex:0 0 auto;width:15px;height:15px;display:grid;place-items:center;border-radius:3px;color:#e8e9e4;background:#07543f;font:700 7px Arial,sans-serif}.help-favicon{background:#b49a67;color:#111}.brand-icon{flex:0 0 auto;width:14px;height:14px;display:grid;place-items:center;color:#dedfda}.brand-icon :global(svg){width:100%;height:100%;fill:currentColor}.brand-icon img{display:block;width:100%;height:100%;border-radius:2px}.new-tab{flex:0 0 auto;width:23px;height:24px;margin:0 1px 3px 3px;align-self:flex-end;display:grid;place-items:center;border-radius:5px;color:#9aa09a;background:rgba(240,239,233,calc(0.05 + var(--plus-press,0)*0.16));font-size:15px;line-height:1;transform:scale(calc(1 - var(--plus-press,0)*0.12));transition:none}
 	.address-row{height:41px;padding:0 13px;display:flex;align-items:center;gap:12px;color:#707771;background:#272d28;border-bottom:1px solid #323933;font:12px var(--proto-sans)}.address-row>div{height:25px;flex:1;padding:0 11px;display:flex;align-items:center;border-radius:13px;color:#999f99;background:#141915;font:7px var(--proto-mono)}.address-row b{font-size:14px}.refresh{display:inline-block;transform-origin:50% 50%;transform:rotate(calc(var(--rspin,0)*360deg)) translateY(calc(var(--rp,0)*1px)) scale(calc(1 - var(--rp,0)*0.16));opacity:calc(1 - var(--rp,0)*0.28)}
 	.browser-workspace{position:absolute;inset:80px 0 0;display:flex;overflow:hidden;background:#0d100e;contain:layout paint}.page-pane{position:relative;flex:0 0 calc(100% - var(--split) * 35%);min-width:0;overflow:hidden;transition:none;contain:layout paint}.business-page,.error-page,.search-page,.consulting-page{position:absolute;inset:0;opacity:0;pointer-events:none;transition:opacity .28s ease}.business-page{opacity:1;color:#171914;background:#dbd8cf}.business-page.hidden{opacity:0}.business-page nav{height:55px;padding:0 6%;display:flex;align-items:center;gap:22px;border-bottom:1px solid rgba(17,19,15,.13);font-size:9px}.business-page nav strong{margin-right:auto;font:8px var(--proto-mono);letter-spacing:.1em}.business-page nav button{padding:9px 11px;border:0;background:#07543f;color:#fff;font-size:8px}.business-copy{position:absolute;z-index:2;left:7%;top:24%;width:53%}.business-copy h3{margin:12px 0 15px;font:400 clamp(34px,4vw,60px)/.88 var(--proto-display);letter-spacing:-.04em}.business-copy p{max-width:345px;color:#686a64;font-size:10px;line-height:1.55}.site-visual{position:absolute;right:6%;bottom:11%;width:34%;height:45%;border:1px solid rgba(7,84,63,.25);background:linear-gradient(145deg,rgba(7,84,63,.24),rgba(180,154,103,.08))}.site-visual i{position:absolute;background:rgba(7,84,63,.2)}.site-visual i:first-child{left:10%;right:10%;top:14%;height:1px}.site-visual i:nth-child(2){left:10%;top:28%;bottom:12%;width:37%}.site-visual i:nth-child(3){right:10%;top:28%;bottom:12%;width:33%}.site-visual b{position:absolute;left:10%;right:10%;bottom:9%;height:1px;background:rgba(180,154,103,.5)}.business-page footer{position:absolute;left:0;right:0;bottom:0;height:31px;padding:0 6%;display:flex;align-items:center;justify-content:space-between;opacity:0;color:#c4cbc4;background:#0d2d24;font:6px var(--proto-mono);letter-spacing:.09em;transition:opacity .55s ease}.business-page footer.visible{opacity:1}.business-page footer b{color:#f0efe9;font-weight:500}
-	.error-page.visible,.search-page.visible,.consulting-page.visible{opacity:1}.error-page{display:flex;flex-direction:column;align-items:center;justify-content:center;color:#b8bcb6;background:#0d100e}.error-page strong{font:400 clamp(75px,10vw,145px)/.8 var(--proto-display);color:#eceee9}.error-page span{margin-top:18px;color:#b77559;font:8px var(--proto-mono);letter-spacing:.13em}.search-page{display:flex;flex-direction:column;align-items:center;justify-content:center;color:#242823;background:#f0f1ed}.search-symbol{position:relative;width:38px;height:38px;margin-bottom:13px;border:2px solid #263029;border-radius:50%}.search-symbol::after{content:'';position:absolute;right:-11px;bottom:0;width:16px;height:2px;background:#263029;transform:rotate(45deg)}.search-input{width:min(75%,540px);height:40px;margin-top:22px;padding:0 16px;display:flex;align-items:center;border:1px solid #cdd1cc;border-radius:22px;background:#fff;box-shadow:0 2px 9px rgba(0,0,0,.07);font:11px Arial,sans-serif}.search-input i{width:1px;height:16px;margin-left:2px;background:#222;animation:blink .8s infinite}.consulting-page{padding:0 7% 7%;color:var(--proto-text);background:radial-gradient(circle at 81% 25%,rgba(7,84,63,.65),transparent 40%),#080b09}.consulting-page nav{height:55px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--proto-line)}.consulting-page nav span{display:flex;align-items:center;gap:7px;font-size:8px}.consulting-page nav small{color:var(--proto-muted);font:6px var(--proto-mono);letter-spacing:.09em}.consulting-page>div:last-child{width:73%;padding-top:8%}.consulting-page>div>small{color:var(--proto-green-light);font:6px var(--proto-mono);letter-spacing:.1em}.consulting-page h3{margin:13px 0 20px;font:400 clamp(34px,4.2vw,62px)/.88 var(--proto-display);letter-spacing:-.04em}.consulting-page h3 em{font-weight:400;color:#dad6cc}.consulting-page button{position:relative;padding:11px 14px;border:0;background:var(--proto-paper);color:#11130f;font-weight:600;font-size:8px;transform:translateY(calc(var(--bp,0)*1px))}.consulting-page button::after{content:'';position:absolute;inset:0;background:#0a0d0b;opacity:calc(var(--bp,0)*0.16);pointer-events:none}
+	.error-page.visible,.search-page.visible,.consulting-page.visible{opacity:1}.error-page{display:flex;flex-direction:column;align-items:center;justify-content:center;color:#b8bcb6;background:#0d100e}.error-page strong{font:400 clamp(75px,10vw,145px)/.8 var(--proto-display);color:#eceee9}.error-page span{margin-top:18px;color:#b77559;font:8px var(--proto-mono);letter-spacing:.13em}.search-page{display:flex;flex-direction:column;align-items:center;justify-content:center;color:#242823;background:#f0f1ed}.search-symbol{position:relative;width:38px;height:38px;margin-bottom:13px;border:2px solid #263029;border-radius:50%}.search-symbol::after{content:'';position:absolute;right:-11px;bottom:0;width:16px;height:2px;background:#263029;transform:rotate(45deg)}.search-input{width:min(75%,540px);height:40px;margin-top:22px;padding:0 16px;display:flex;align-items:center;border:1px solid #cdd1cc;border-radius:22px;background:#fff;box-shadow:0 2px 9px rgba(0,0,0,.07);font:11px Arial,sans-serif}.search-input i{width:1px;height:16px;margin-left:2px;background:#222;animation:blink .8s infinite}.consulting-page{padding:0 7% 7%;color:var(--proto-text);background:radial-gradient(circle at 81% 25%,rgba(7,84,63,.65),transparent 40%),#080b09}.consulting-page nav{height:55px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--proto-line)}.consulting-page nav span{display:flex;align-items:center;gap:7px;font-size:8px}.consulting-page nav small{color:var(--proto-muted);font:6px var(--proto-mono);letter-spacing:.09em}.consulting-page>div:last-child{width:73%;padding-top:8%}.consulting-page>div>small{color:var(--proto-green-light);font:6px var(--proto-mono);letter-spacing:.1em}.consulting-page h3{margin:13px 0 20px;font:400 clamp(34px,4.2vw,62px)/.88 var(--proto-display);letter-spacing:-.04em}.consulting-page h3 em{font-weight:400;font-style:normal;color:#dad6cc}.consulting-page button{position:relative;padding:11px 14px;border:0;background:var(--proto-paper);color:#11130f;font-weight:600;font-size:8px;transform:translateY(calc(var(--bp,0)*1px))}.consulting-page button::after{content:'';position:absolute;inset:0;background:#0a0d0b;opacity:calc(var(--bp,0)*0.16);pointer-events:none}
 	.notion-pane{position:relative;flex:0 0 calc(var(--split) * 35%);min-width:0;overflow:hidden;border-left:calc(var(--split) * 1px) solid #303631;color:#d9dcd7;background:#191d1a;contain:layout paint}.notion-head{height:43px;padding:0 12px;display:flex;align-items:center;gap:10px;border-bottom:1px solid #2d332e;font:7px var(--proto-mono);white-space:nowrap}.notion-head span{display:flex;align-items:center;gap:6px;color:#919891}.notion-head span i{width:14px;height:14px}.notion-head span i :global(svg),.notion-icon :global(svg){width:100%;height:100%;fill:currentColor}.notion-head b{margin:auto;font-weight:500}.notion-head small{color:#6c736d}.notion-page{padding:8% 9%;min-width:260px}.notion-icon{display:grid;place-items:center;width:29px;height:29px;margin-bottom:14px}.notion-page h3{margin:0;font:500 20px var(--proto-sans)}.task-list{border-top:1px solid #2d332e}.task{min-height:37px;display:grid;grid-template-columns:12px 1fr;gap:9px;align-items:center;border-bottom:1px solid rgba(240,239,233,.06);opacity:var(--task-opacity);transform:translateY(var(--task-y));white-space:nowrap}.task>i{position:relative;width:11px;height:11px;border:1px solid #666d67;border-radius:2px}.task>i::after{content:'';position:absolute;left:3px;top:1px;width:3px;height:6px;border-right:1px solid #0d2d24;border-bottom:1px solid #0d2d24;opacity:0;transform:rotate(45deg) scale(.5)}.task span{overflow:hidden;text-overflow:ellipsis;color:#b6bbb5;font-size:8px}.task.complete>i{border-color:#b49a67;background:#b49a67}.task.complete>i::after{opacity:1;transform:rotate(45deg) scale(1)}.task.complete span{color:#6f7770;text-decoration:line-through}
 	.cursor{position:absolute;z-index:30;left:0;top:0;width:18px;height:24px;pointer-events:none;--press:0;transform:translate(calc(var(--cx,50)*1cqw),calc(var(--cy,50)*1cqh)) scale(calc(var(--cursor-scale,1)*(1 - var(--press,0)*0.18)));will-change:transform,opacity}.cursor svg{display:block;width:100%;height:100%}.cursor path{fill:#171914;stroke:var(--proto-green-light);stroke-width:1.4;stroke-linejoin:round}
 	@keyframes blink{50%{opacity:0}}
@@ -544,7 +572,7 @@
 	   the section height settled after font swap, logging the page's one CLS. */
 	.story-grid{inset:-20% -20% auto;height:1900px;opacity:.34;background-size:78px 78px;mask-image:linear-gradient(to bottom,#000 0%,rgba(0,0,0,.75) 56%,transparent 92%)}
 	.color-field{position:absolute;inset:0;pointer-events:none;overflow:hidden}.color-field i{position:absolute;border-radius:50%;opacity:.16}.color-field i:first-child{width:470px;height:470px;left:-195px;top:195px;background:radial-gradient(circle closest-side,#0e8e66,transparent)}.color-field i:nth-child(2){width:380px;height:380px;right:1%;top:330px;background:radial-gradient(circle closest-side,#774633,transparent)}.color-field i:last-child{width:310px;height:310px;right:25%;top:130px;background:radial-gradient(circle closest-side,#c8784f,transparent);opacity:.08}
-	.story-heading{width:min(1380px,100%);margin:0 auto 42px;grid-template-columns:1.18fr .52fr;gap:clamp(40px,7vw,110px);align-items:end}.story-heading h1{max-width:930px;margin:0;font:400 clamp(68px,7.8vw,126px)/.84 var(--proto-display);letter-spacing:-.05em;text-wrap:balance}.story-heading h1 em{font-weight:400;color:#dad6cc}.story-intro{max-width:460px;padding-bottom:6px}.story-intro>span{font-size:clamp(14px,1.25vw,18px);line-height:1.7}.hero-actions{margin-top:29px;display:flex;align-items:center;gap:24px}.hero-actions a{font-size:12px;text-decoration:none}.hero-actions .primary{padding:14px 17px;color:#0a0d0b;background:var(--proto-paper);font-weight:600;box-shadow:0 8px 30px rgba(0,0,0,.18);transition:background .25s ease,transform .25s ease}.hero-actions .primary:hover{background:var(--proto-brass);transform:translateY(-2px)}.hero-actions .secondary{padding-bottom:5px;color:var(--proto-muted);border-bottom:1px solid var(--proto-line-strong);transition:color .25s ease,border-color .25s ease}.hero-actions .secondary:hover{color:var(--proto-paper);border-color:var(--proto-brass)}
+	.story-heading{width:min(1380px,100%);margin:0 auto 42px;grid-template-columns:1.18fr .52fr;gap:clamp(40px,7vw,110px);align-items:end}.story-heading h1{max-width:930px;margin:0;font:400 clamp(68px,7.8vw,126px)/.84 var(--proto-display);letter-spacing:-.05em;text-wrap:balance}.story-heading h1 em{font-weight:400;font-style:normal;color:#dad6cc}.story-intro{max-width:460px;padding-bottom:6px}.story-intro>span{font-size:clamp(14px,1.25vw,18px);line-height:1.7}.hero-actions{margin-top:29px;display:flex;align-items:center;gap:24px}.hero-actions a{font-size:12px;text-decoration:none}.hero-actions .primary{padding:14px 17px;color:#0a0d0b;background:var(--proto-paper);font-weight:600;box-shadow:0 8px 30px rgba(0,0,0,.18);transition:background .25s ease,transform .25s ease}.hero-actions .primary:hover{background:var(--proto-brass);transform:translateY(-2px)}.hero-actions .secondary{padding-bottom:5px;color:var(--proto-muted);border-bottom:1px solid var(--proto-line-strong);transition:color .25s ease,border-color .25s ease}.hero-actions .secondary:hover{color:var(--proto-paper);border-color:var(--proto-brass)}
 	.story-caption{position:relative;z-index:3;width:min(1240px,92%);margin:0 auto 20px;display:grid;grid-template-columns:1fr 1.1fr auto;gap:28px;align-items:center;color:var(--proto-muted);font:500 7px var(--proto-mono);letter-spacing:.09em}.story-caption p{margin:0;font:400 11px/1.55 var(--proto-sans);letter-spacing:0}.story-caption>button{padding:0;border:0;color:#b9beb9;background:none;font:500 9px var(--proto-mono);letter-spacing:.09em;cursor:pointer}.story-caption>button i{display:inline-block;width:13px;height:13px;margin-right:7px;border:1px solid #4a524c;border-radius:50%;vertical-align:-3px;position:relative}.story-caption>button i::after{content:'';position:absolute;left:4px;top:3px;width:3px;height:5px;border-right:1px solid #b49a67;transform:rotate(-35deg)}
 	.monitor{width:min(1380px,100%);height:auto;min-height:0;margin:0 auto;overflow:visible;border:0;background:transparent;box-shadow:none;perspective:1800px}.monitor::before{content:'';position:absolute;left:8%;right:8%;top:9%;height:63%;border-radius:50%;background:radial-gradient(ellipse,rgba(35,118,87,.16),rgba(83,58,121,.07) 42%,transparent 72%);pointer-events:none}.screen-frame{position:relative;z-index:4;width:100%;aspect-ratio:16/10;padding:11px;border:1px solid #343937;border-radius:22px 22px 9px 9px;background:linear-gradient(145deg,#4a4f4d 0%,#1d211f 12%,#090b0a 50%,#303532 92%,#565b58 100%);box-shadow:0 34px 120px rgba(0,0,0,.58),0 0 0 1px rgba(255,255,255,.05) inset,0 1px 0 rgba(255,255,255,.22) inset;transform:perspective(1900px) rotateX(-1.2deg) rotateY(-.55deg);transform-origin:center bottom}.screen-frame::after{content:'';position:absolute;inset:5px;border-radius:17px 17px 7px 7px;border:1px solid rgba(255,255,255,.035);pointer-events:none}.screen-content{position:relative;width:100%;height:100%;overflow:hidden;border:1px solid #070908;border-radius:13px 13px 5px 5px;background:#0a0d0b;box-shadow:0 0 0 1px rgba(255,255,255,.025) inset;container-type:size}.screen-reflection{position:absolute;z-index:60;inset:0;pointer-events:none;background:linear-gradient(118deg,rgba(255,255,255,.055),transparent 14%,transparent 70%,rgba(87,135,117,.025))}
 	.browser{left:2.4%;right:2.4%;top:56px;bottom:101px;border-color:rgba(255,255,255,.16);background:#101411;box-shadow:0 22px 65px rgba(0,0,0,.46),0 0 0 1px rgba(255,255,255,.025) inset}.tab-strip{background:linear-gradient(180deg,#181d19,#111512)}.browser-tab{border-top:1px solid rgba(255,255,255,.035);background:#1a201b}.browser-tab.active{background:#2b332d;color:#edf0ea;box-shadow:0 -1px 0 rgba(180,154,103,.35) inset}.tool-tab{background:color-mix(in srgb,var(--brand-color) 9%,#191e1a);border-top-color:color-mix(in srgb,var(--brand-color) 35%,transparent)}.brand-icon{color:var(--brand-color,#dedfda)}.brand-icon img{filter:saturate(1.12)}.notion-tab .brand-icon{color:#f4f4f4}.address-row{background:linear-gradient(180deg,#2b322d,#242a26)}.address-row>div{border:1px solid rgba(255,255,255,.035);box-shadow:0 1px 0 rgba(255,255,255,.025)}

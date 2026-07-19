@@ -69,7 +69,7 @@ export const consultingSite = {
 	},
 	services: {
 		eyebrow: 'WHAT WE BUILD AND RUN',
-		title: 'Built for you. Run by us.',
+		title: 'Our Services',
 		body: 'The tools change. The job does not: understand the business, make the right thing, and remain accountable after it ships.',
 		toolNote: 'We use some of these tools too. What you are buying is judgement and ownership, not a preference for one platform.',
 		items: [
@@ -96,16 +96,16 @@ export const consultingSite = {
 				features: [
 					{ title: 'Bring Your Context To Your Agents', body: 'We put in the time upfront to ensure we have the data to automate tasks in your business’s style, instead of churning out AI slop.' },
 					{ title: 'Put Human Judgement At The Right Steps', body: 'Some agent judgement is inherently involved in every step, but when human judgement is required, we make it quick and easy for you to give your input.' },
-					{ title: 'Always Finish The Job', body: 'We ensure that workflows actually produce work product, instead of leaving you with a thousands-long review queue.' }
+					{ title: 'Always Close The Loop', body: 'We take the AI in your customer systems all the way to production, not a demo that stalls in a thousand-item review queue.' }
 				],
 				alternativeLabel: 'Alternatives',
-				alternatives: ['Zapier', 'Make', 'Gumloop']
+				alternatives: ['Zapier', 'n8n', 'Gumloop']
 			},
 			{
 				index: '03',
 				title: 'Analytics & ML',
-				headline: { lead: 'Find the', emphasis: 'Leaks.' },
-				body: 'We find where you are losing money and time, model why it is happening, and build the pipelines that keep it fixed.',
+				headline: { lead: 'Find the', emphasis: 'Leak.' },
+				body: 'We find where you are losing money and time, model why it is happening, and build the solutions that fix it.',
 				detail: 'STATISTICS · MACHINE LEARNING · FORECASTING · PIPELINES',
 				features: [
 					{ title: 'Find Where It Leaks', body: 'We find where you are bleeding money and time, then patch the holes.' },
@@ -113,13 +113,13 @@ export const consultingSite = {
 					{ title: 'The Whole Pipeline', body: 'Data collection and validation, models built on your data or data that already exists, then validated and deployed so they keep running.' }
 				],
 				alternativeLabel: 'Alternatives',
-				alternatives: ['Google Analytics', 'Tableau', 'Power BI']
+				alternatives: ['Databricks', 'BigML', 'Julius AI']
 			}
 		]
 	},
 	workPreview: {
 		eyebrow: 'CASE STUDIES',
-		title: 'Deployed Systems',
+		title: 'See What LCG Can Do For You',
 		body: 'Live deployed systems across commerce, cognitive training, and financial infrastructure. Open our case studies to see what each one required beyond the home screen.',
 		cta: 'Explore the case studies',
 		projects: [

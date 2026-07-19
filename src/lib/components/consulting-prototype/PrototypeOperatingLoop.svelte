@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { siGoogleanalytics, siMake, siReplit, siZapier } from 'simple-icons';
+	import { siReplit, siZapier, siN8n, siDatabricks } from 'simple-icons';
 	import { consultingSite } from '$lib/content/consulting-prototype';
 	import PrototypeSplitView from './PrototypeSplitView.svelte';
 	import PrototypeAIDemo from './PrototypeAIDemo.svelte';
@@ -14,11 +14,11 @@
 		Base44: { favicon: '/consulting/prototypes/brands/base44.svg' },
 		Replit: { icon: siReplit },
 		Zapier: { icon: siZapier },
-		Make: { icon: siMake },
+		n8n: { icon: siN8n },
 		Gumloop: { favicon: '/consulting/prototypes/brands/gumloop.png' },
-		'Google Analytics': { icon: siGoogleanalytics },
-		Tableau: { favicon: '/consulting/prototypes/brands/tableau.ico' },
-		'Power BI': { favicon: '/consulting/prototypes/brands/powerbi.ico' }
+		Databricks: { icon: siDatabricks },
+		BigML: { favicon: '/consulting/prototypes/brands/bigml.png' },
+		'Julius AI': { favicon: '/consulting/prototypes/brands/julius.png' }
 	} as const;
 
 	onMount(() => {
@@ -38,9 +38,7 @@
 
 <section class="operating-loop" id="services" bind:this={section}>
 	<header class="services-intro shell" data-motion-section>
-		<p class="eyebrow" data-motion-item>{consultingSite.services.eyebrow}</p>
 		<h2 data-motion-item>{consultingSite.services.title}</h2>
-		<p data-motion-item>{consultingSite.services.body}</p>
 	</header>
 
 	<div class="service-stack shell">
@@ -49,8 +47,7 @@
 				<div class="service-layout">
 					<div class="service-copy">
 						<header data-motion-item>
-							<p class="service-label"><small>0{index + 1} / 03</small><span>{service.title}</span></p>
-							<h3>{service.headline.lead} <em>{service.headline.emphasis}</em></h3>
+							<h3>{service.title}</h3>
 						</header>
 
 						<div class="service-summary" data-motion-item>
@@ -89,8 +86,6 @@
 			</article>
 		{/each}
 	</div>
-
-	<p class="tool-note shell"><i></i>{consultingSite.services.toolNote}</p>
 </section>
 
 <style>
@@ -103,13 +98,14 @@
 	.eyebrow { margin: 0; color: var(--proto-brass); font: 500 9px var(--proto-mono); letter-spacing: .14em; }
 	.services-intro {
 		display: grid;
-		grid-template-columns: .64fr 1.3fr .76fr;
+		grid-template-columns: 1fr;
 		gap: 48px;
-		align-items: end;
+		align-items: center;
+		text-align: center;
 		margin-bottom: clamp(100px, 10vw, 150px);
 	}
 	.services-intro h2 { margin: 0; font: 400 clamp(62px, 6.6vw, 100px)/.87 var(--proto-display); letter-spacing: -.045em; }
-	.services-intro > p:last-child { margin: 0; color: var(--proto-muted); font-size: 15px; line-height: 1.75; }
+	.services-intro > p:last-child { margin: 0; color: var(--proto-muted); font-size: 16.5px; line-height: 1.72; }
 	.service-stack { border-bottom: 1px solid var(--proto-line); }
 	.service-chapter {
 		--chapter-accent: #6f9f8c;
@@ -126,17 +122,15 @@
 	.service-copy { position: relative; padding-left: 34px; }
 	.service-copy::before { content: ''; position: absolute; inset: 0 auto 0 0; width: 1px; background: var(--proto-line-strong); }
 	.service-copy::after { content: ''; position: absolute; left: -6px; top: 2px; width: 13px; height: 1px; background: var(--chapter-accent); }
-	.service-label { margin: 0 0 28px; display: flex; gap: 15px; align-items: center; color: var(--chapter-accent); font: 500 9px var(--proto-mono); letter-spacing: .1em; text-transform: uppercase; }
-	.service-label small { min-width: 48px; color: color-mix(in srgb, var(--chapter-accent) 58%, var(--proto-muted)); font: inherit; }
-	.service-label span { padding-left: 15px; border-left: 1px solid color-mix(in srgb, var(--chapter-accent) 55%, transparent); }
+	.service-label { margin: 0 0 28px; display: flex; align-items: center; color: var(--chapter-accent); font: 500 9px var(--proto-mono); letter-spacing: .1em; text-transform: uppercase; }
 	.service-copy h3 { max-width: 560px; margin: 0; font: 400 clamp(48px, 4.35vw, 68px)/.92 var(--proto-display); letter-spacing: -.04em; text-wrap: balance; }
-	.service-copy h3 em { color: var(--proto-paper); font-weight: 400; }
+	.service-copy h3 em { color: var(--proto-paper); font-weight: 400; font-style: normal; }
 	.service-summary { margin-top: 30px; }
-	.service-summary > p { max-width: 500px; margin: 0; color: #b2b7b2; font-size: 15px; line-height: 1.72; }
+	.service-summary > p { max-width: 520px; margin: 0; color: #bcc0bb; font-size: 16.5px; line-height: 1.7; }
 	.feature-list { margin-top: 42px; border-top: 1px solid var(--proto-line); }
 	.feature-list > div { padding: 18px 0; border-bottom: 1px solid var(--proto-line); }
-	.feature-list strong { display: block; color: #e4e4de; font-size: 13px; font-weight: 500; }
-	.feature-list p { max-width: 430px; margin: 7px 0 0; color: #7f8781; font-size: 11px; line-height: 1.62; }
+	.feature-list strong { display: block; color: #e9e9e3; font-size: 14.5px; font-weight: 500; }
+	.feature-list p { max-width: 450px; margin: 8px 0 0; color: #989e98; font-size: 12.5px; line-height: 1.62; }
 	.service-demo { min-width: 0; position: relative; contain: layout paint; }
 	.alternative-row { min-height: 58px; padding-top: 22px; display: flex; align-items: center; justify-content: space-between; gap: 22px; color: #7f8781; }
 	.alternative-row > small { font: 500 9px var(--proto-mono); letter-spacing: .08em; text-transform: uppercase; }
@@ -150,8 +144,7 @@
 	.tool-note i { position: absolute; left: 0; top: 9px; width: 9px; height: 1px; background: var(--proto-brass); }
 
 	@media (max-width: 1050px) {
-		.services-intro { grid-template-columns: 1fr 1fr; }
-		.services-intro > p:last-child { grid-column: 2; }
+		.services-intro { grid-template-columns: 1fr; }
 		.service-layout { grid-template-columns: 1fr; gap: 52px; }
 		.service-copy { max-width: 720px; }
 		.service-copy h3 { max-width: 680px; }

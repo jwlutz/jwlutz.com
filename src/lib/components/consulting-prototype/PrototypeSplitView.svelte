@@ -296,7 +296,7 @@
 	.eyebrow { margin: 0 0 24px; font: 500 9px var(--proto-mono); letter-spacing: .14em; color: var(--proto-green-light); }
 	.split-heading { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(280px, .7fr); gap: 70px; align-items: end; margin-bottom: 54px; }
 	.split-heading h2 { margin: 0; font: 400 clamp(54px, 6vw, 92px)/.9 var(--proto-display); letter-spacing: -.04em; }
-	.split-heading h2 em { font-weight: 400; color: var(--proto-paper); }
+	.split-heading h2 em { font-weight: 400; font-style: normal; color: var(--proto-paper); }
 	.split-heading > p { max-width: 470px; margin: 0; justify-self: end; color: var(--proto-muted); font-size: 15px; line-height: 1.75; }
 
 	.split-stage { position: relative; height: clamp(430px, 46vw, 620px); overflow: hidden; border: 1px solid var(--proto-line-strong); border-radius: 2px; box-shadow: 0 1px 0 rgba(255,255,255,.06) inset, 0 24px 60px rgba(0,0,0,.34), 0 60px 140px rgba(0,0,0,.3); cursor: ew-resize; touch-action: pan-y; contain: layout paint; user-select: none; -webkit-user-select: none; }

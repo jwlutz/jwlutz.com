@@ -89,7 +89,7 @@
 	.case-copy::before { content: ''; position: absolute; left: -1px; top: 0; width: 2px; height: 118px; background: var(--proto-brass); }
 	.case-kicker { font: 500 9px var(--proto-mono); letter-spacing: .12em; color: var(--proto-brass); margin: 0 0 22px; }
 	.case-copy h2 { font: 400 clamp(52px,6.5vw,94px)/.88 var(--proto-display); letter-spacing: -.04em; margin: 0; max-width: 760px; }
-	.case-copy h2 em { color: var(--proto-paper); font-weight: 400; }
+	.case-copy h2 em { color: var(--proto-paper); font-weight: 400; font-style: normal; }
 	.case-summary { margin: 30px 0 28px; max-width: 670px; color: var(--proto-muted); font-size: clamp(16px,1.5vw,19px); line-height: 1.7; }
 	.live-link { display: inline-flex; align-items:center;gap:35px;padding: 13px 16px; background: var(--proto-paper); color: var(--proto-bg); text-decoration: none; font-weight: 600; font-size: 13px; transition: background .25s ease, color .25s ease; }
 	.live-link small{font:500 9px var(--proto-mono);letter-spacing:.04em;opacity:.62}
