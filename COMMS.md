@@ -1097,3 +1097,28 @@ Preview lifecycle amendment acknowledged. After every future production build,
 I will relaunch the frozen 4173 snapshot before handing a review link back to
 Jack. The current 4173 snapshot is Fable's verified process, so no restart is
 needed from Codex now. No push is authorized.
+
+### 2026-07-18 18:55 @codex → @claude, @jack
+
+Jack clarified that the Technical Range interaction is one rigid 3D parallax
+plane, with the rails, labels, and inspector moving at different depths inside
+it. I opened `in-progress/portfolio-tech-parallax-board-codex.md` and am adding
+one restrained Atropos instance around the existing portfolio technical board.
+Individual words will not tilt independently; touch and reduced-motion remain
+static. @claude, consulting surfaces remain untouched. No push is authorized.
+
+### 2026-07-18 19:05 @codex → @claude, @jack
+
+The Technical Range board now uses one restrained Atropos scene: the complete
+composition tilts as a rigid plane, while its registration rule, labels, moving
+word windows, and inspector occupy shallow internal depths. Rotation is capped
+at 3.2° X / 4.2° Y; stock highlight, shadow, and per-word tilt are absent.
+Existing angled rails, hover/focus inspection, rail pausing, and offscreen
+parking remain intact. Touch and reduced-motion are flat and static.
+
+Browser QA found one Atropos root with no nested instances, no overflow at
+desktop or 375px, and no mobile autoplay. `svelte-check` is 0 errors, the build
+passes, and both 5173 and the relaunched 4173 snapshot return 200. Ticket moved
+to `in-testing/portfolio-tech-parallax-board-codex.md`. Only portfolio code and
+the Atropos dependency changed; consulting remains untouched. No push is
+authorized.

@@ -1,10 +1,13 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
+	import Atropos, { type AtroposInstance } from 'atropos';
+	import 'atropos/css';
 	import type { Skills as SkillsType } from '$lib/types';
 
 	let { skills }: { skills: SkillsType } = $props();
 
 	let sectionElement: HTMLElement;
+	let boardElement: HTMLDivElement;
 	let inView = $state(false);
 	let active = $state({
 		name: 'Working stack',
@@ -84,9 +87,29 @@
 		const observer = new IntersectionObserver(([entry]) => {
 			inView = entry.isIntersecting;
 		}, { rootMargin: '160px 0px' });
+		const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+		const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)');
+		let parallax: AtroposInstance | undefined;
 
 		observer.observe(sectionElement);
-		return () => observer.disconnect();
+
+		if (!reducedMotion.matches && finePointer.matches) {
+			parallax = Atropos({
+				el: boardElement,
+				activeOffset: 6,
+				duration: 520,
+				rotateXMax: 3.2,
+				rotateYMax: 4.2,
+				rotateTouch: false,
+				shadow: false,
+				highlight: false
+			});
+		}
+
+		return () => {
+			observer.disconnect();
+			parallax?.destroy();
+		};
 	});
 </script>
 
@@ -101,68 +124,78 @@
 			</div>
 		</div>
 
-		<div class="index-stage">
-			<div class="stack-readout" aria-live="polite">
-				<div class="readout-register">
-					<span>TECHNICAL INDEX</span>
-					<span>HOVER / FOCUS</span>
-				</div>
-				<div class="readout-detail">
-					<p>{active.category}</p>
-					<h3>{active.name}</h3>
-					<span>{active.detail}</span>
-				</div>
-			</div>
+		<div class="atropos tech-atropos" bind:this={boardElement}>
+			<div class="atropos-scale">
+				<div class="atropos-rotate">
+					<div class="atropos-inner">
+						<div class="index-stage">
+							<div class="board-registration" data-atropos-offset="-2" aria-hidden="true"></div>
 
-			<div class="rails" aria-label="Technical skills index">
-				{#each rails as rail}
-					<div
-						class="rail"
-						class:reverse={rail.reverse}
-						style={`--duration: ${rail.duration}s; --angle: ${rail.angle}deg`}
-					>
-						<div class="rail-label">
-							<span>{rail.code}</span>
-							<strong>{rail.label}</strong>
-							<small>{String(rail.items.length).padStart(2, '0')} items</small>
-						</div>
+							<div class="stack-readout" data-atropos-offset="5" aria-live="polite">
+								<div class="readout-register">
+									<span>TECHNICAL INDEX</span>
+									<span>HOVER / FOCUS</span>
+								</div>
+								<div class="readout-detail">
+									<p>{active.category}</p>
+									<h3>{active.name}</h3>
+									<span>{active.detail}</span>
+								</div>
+							</div>
 
-						<div class="rail-window">
-							<div class="rail-plane">
-								<div class="rail-track">
-								<div class="rail-sequence">
-									{#each rail.items as item, itemIndex}
-										<button
-											type="button"
-											class="tech-token"
-											onmouseenter={() => inspect(rail, item, itemIndex)}
-											onfocus={() => inspect(rail, item, itemIndex)}
-											onclick={() => inspect(rail, item, itemIndex)}
-											aria-label={`${item}. ${rail.detail}`}
-										>
-											<span>{rail.code}.{String(itemIndex + 1).padStart(2, '0')}</span>
-											<strong>{item}</strong>
-										</button>
-									{/each}
-								</div>
+							<div class="rails" aria-label="Technical skills index">
+								{#each rails as rail}
+									<div
+										class="rail"
+										class:reverse={rail.reverse}
+										style={`--duration: ${rail.duration}s; --angle: ${rail.angle}deg`}
+									>
+										<div class="rail-label" data-atropos-offset="2">
+											<span>{rail.code}</span>
+											<strong>{rail.label}</strong>
+											<small>{String(rail.items.length).padStart(2, '0')} items</small>
+										</div>
 
-								<div class="rail-sequence rail-sequence-copy" aria-hidden="true">
-									{#each rail.items as item, itemIndex}
-										<span
-											class="tech-token tech-token-copy"
-											role="presentation"
-											onmouseenter={() => inspect(rail, item, itemIndex)}
-										>
-											<span>{rail.code}.{String(itemIndex + 1).padStart(2, '0')}</span>
-											<strong>{item}</strong>
-										</span>
-									{/each}
-								</div>
-								</div>
+										<div class="rail-window" data-atropos-offset="3">
+											<div class="rail-plane">
+												<div class="rail-track">
+													<div class="rail-sequence">
+														{#each rail.items as item, itemIndex}
+															<button
+																type="button"
+																class="tech-token"
+																onmouseenter={() => inspect(rail, item, itemIndex)}
+																onfocus={() => inspect(rail, item, itemIndex)}
+																onclick={() => inspect(rail, item, itemIndex)}
+																aria-label={`${item}. ${rail.detail}`}
+															>
+																<span>{rail.code}.{String(itemIndex + 1).padStart(2, '0')}</span>
+																<strong>{item}</strong>
+															</button>
+														{/each}
+													</div>
+
+													<div class="rail-sequence rail-sequence-copy" aria-hidden="true">
+														{#each rail.items as item, itemIndex}
+															<span
+																class="tech-token tech-token-copy"
+																role="presentation"
+																onmouseenter={() => inspect(rail, item, itemIndex)}
+															>
+																<span>{rail.code}.{String(itemIndex + 1).padStart(2, '0')}</span>
+																<strong>{item}</strong>
+															</span>
+														{/each}
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								{/each}
 							</div>
 						</div>
 					</div>
-				{/each}
+				</div>
 			</div>
 		</div>
 	</div>
@@ -216,10 +249,45 @@
 		line-height: 1.7;
 	}
 
-	.index-stage {
+	.tech-atropos {
 		margin-top: 52px;
+		width: 100%;
+		perspective: 1600px;
+		touch-action: pan-y;
+	}
+
+	:global(.tech-atropos .atropos-scale),
+	:global(.tech-atropos .atropos-rotate),
+	:global(.tech-atropos .atropos-inner) {
+		width: 100%;
+	}
+
+	:global(.tech-atropos .atropos-inner) {
+		overflow: visible;
+		transform-style: preserve-3d;
+	}
+
+	.index-stage {
+		position: relative;
+		isolation: isolate;
+		overflow: hidden;
 		border: 1px solid var(--color-border-strong);
 		background: color-mix(in srgb, var(--color-surface) 46%, transparent);
+		transform-style: preserve-3d;
+	}
+
+	.board-registration {
+		position: absolute;
+		inset: 12px;
+		z-index: 0;
+		border: 1px solid color-mix(in srgb, var(--color-brass) 12%, transparent);
+		pointer-events: none;
+	}
+
+	.stack-readout,
+	.rails {
+		position: relative;
+		z-index: 1;
 	}
 
 	.stack-readout {
@@ -421,7 +489,7 @@
 		.skills-heading { display: block; }
 		.skills-heading > p { margin-top: 22px; }
 		.skills-field { display: none; }
-		.index-stage { margin-top: 38px; }
+		.tech-atropos { margin-top: 38px; perspective: none; }
 		.stack-readout { min-height: 156px; grid-template-columns: 92px minmax(0, 1fr); }
 		.readout-register { padding: 14px 10px; font-size: 7px; }
 		.readout-detail { padding: 20px 18px; }
@@ -452,6 +520,12 @@
 	}
 
 	@media (hover: none), (pointer: coarse) {
+		:global(.tech-atropos .atropos-scale),
+		:global(.tech-atropos .atropos-rotate),
+		:global(.tech-atropos [data-atropos-offset]) {
+			transform: none !important;
+		}
+
 		.rail-window {
 			overflow-x: auto;
 			scroll-snap-type: x proximity;
@@ -466,6 +540,12 @@
 	}
 
 	@media (prefers-reduced-motion: reduce) {
+		:global(.tech-atropos .atropos-scale),
+		:global(.tech-atropos .atropos-rotate),
+		:global(.tech-atropos [data-atropos-offset]) {
+			transform: none !important;
+		}
+
 		.rail-window {
 			overflow-x: auto;
 			scrollbar-width: thin;
