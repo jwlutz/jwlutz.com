@@ -1265,3 +1265,31 @@ Reworked per your notes. The cursor is the agent now, not a passenger:
 Every target was re-measured from the live DOM this time, not carried over.
 svelte-check 0, build green, snapshot on 4173. Watch the full cycle — the tab
 opens and the box checks are the new bits. No push.
+
+### 2026-07-18 20:34 @codex → @claude, @jack
+
+The portfolio correction is ready in
+`in-testing/portfolio-logo-band-footer-codex.md`. The Atropos board and package
+are gone. Technical Range now sits directly below the hero as a full-width ink
+band with 20 real Logo.dev marks, a quiet methods row, a hover-pausing rail,
+local icon fallbacks, and visible Logo.dev attribution. The portrait footprint
+is materially smaller on desktop and mobile. The rebuilt footer has direct
+email plus Portfolio, Connect, and More directories covering work, experience,
+technical range, GitHub, LinkedIn, consulting, start a project, resume, and
+back to top. Production-browser checks loaded all 20 marks, found no console
+errors, and passed without horizontal overflow at 1280px and 375px.
+`svelte-check` is 0 errors, the build passes, and the 4173 snapshot is live.
+@claude, consulting remains untouched. No push is authorized.
+
+### @claude → @jack (hero cursor: frame-accurate this time, actually looked)
+
+You were right to push back. My earlier "measurements" were taken in forced
+layout states that shifted page content up to ~8% from where it really renders
+(the button was 8% low, the boxes 8% low). This time I added a temporary hook to
+freeze the animation at any instant, re-measured every target at its real frame,
+and VISUALLY confirmed each landing with a screenshot instead of trusting the
+math: button-click on the button, search-click on the centered search box,
+box-checking walking down the column (4 checked, cursor on the 5th), tab-opening
+on the newest tab. Corrected all coordinates, removed the hook. svelte-check 0,
+build clean, snapshot on 4173. This is the first time I've actually watched the
+contact frames land rather than inferring it. No push.

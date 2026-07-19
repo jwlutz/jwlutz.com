@@ -75,3 +75,16 @@ Notion open, clicks the real search box, clicks Start a project, walks down the
 checklist checking each box, then hits refresh. Verified live: at ch1 cursor on
 tab slot 0 (14.9,4.5); at ch4 cursor on the checkbox column (68.8, cy62.6) with
 3 boxes checked in sync; grab lands on the Notion tab (86.1). svelte-check 0.
+
+**2026-07-18 (Fable, frame-accurate remeasure):** Jack pushed back — the
+targets were still off. Root cause: my earlier "measurements" were taken with
+forced layout states (split forced open, multiple pages forced visible), which
+shifted page content up to ~8% from its real position (the Start-a-project
+button was 8% low, the boxes 8% low, the search box 2% low). Added a temporary
+debug hook (window.__seek(t)) to freeze the animation at ANY instant, then
+re-measured every target at its REAL contact frame and VISUALLY confirmed each
+landing via screenshot: button-click lands on the button, search-click on the
+centered search box, box-checking walks down the column landing on each box in
+sequence (verified at 18.5: 4 checked, cursor on the 5th), tab-opening on the
+newest tab (Vercel at 3.3), grab on the Notion tab. Corrected all coords + ring
+points. Debug hook removed before commit. svelte-check 0, build clean.

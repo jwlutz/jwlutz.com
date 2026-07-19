@@ -102,10 +102,10 @@
 	// The three contacts never overlap, so one ring serves all. [t, x, y, maxScale, dur]
 	let ring = $derived.by(() => {
 		const hits: [number, number, number, number, number][] = [
-			[7.55, 86.1, 4.4, 1.9, 0.34],
-			[14.0, 50, 63.7, 2.4, 0.4],
-			[16.35, 11.2, 66.6, 2.7, 0.42],
-			[22.48, 4.7, 10.6, 2.5, 0.4]
+			[7.55, 86.5, 3.7, 1.9, 0.34],
+			[14.0, 50, 61.5, 2.4, 0.4],
+			[16.35, 10.6, 58.4, 2.7, 0.42],
+			[22.48, 4, 9.1, 2.5, 0.4]
 		];
 		for (const [t, x, y, mx, dur] of hits) {
 			if (story >= t && story < t + dur) {
@@ -166,40 +166,40 @@
 	// Every coordinate is % of .screen-content, MEASURED from the live DOM so
 	// the pointer lands on the real element. [story, x, y]
 	const cursorPath: [number, number, number][] = [
-		[1.5, 14.9, 4.5], // arrive at the tab strip
-		[1.8, 14.9, 4.5], // open each tool tab, left to right...
-		[2.3, 22, 4.5],
-		[2.8, 29.1, 4.5],
-		[3.3, 36.2, 4.5],
-		[3.8, 43.3, 4.5],
-		[4.3, 50.5, 4.5],
-		[4.8, 57.6, 4.5],
-		[5.3, 64.7, 4.5],
-		[5.8, 71.8, 4.5],
-		[6.3, 78.9, 4.5], // ...through the tenth
-		[7.5, 86.1, 4.4], // Notion tab — grab at 7.55
-		[8.4, 82, 22], // pull the panel open
-		[9.0, 80, 30], // settle onto the to-do list (problems appear)
-		[12.2, 80, 40], // read down the list
-		[13.4, 80, 40], // hold as the site breaks
-		[13.95, 50, 63.7], // the search box — click at 14.0
-		[15.2, 50, 63.7], // hold while the URL types
-		[16.2, 11.2, 66.6], // Start a project — click at 16.35
-		[17.0, 11.2, 66.6], // hold after the click
-		[17.3, 68.8, 47.4], // check off each to-do, top to bottom...
-		[17.61, 68.8, 54],
-		[17.92, 68.8, 60.6],
-		[18.23, 68.8, 67.3],
-		[18.54, 68.8, 73.9],
-		[18.85, 68.8, 80.5],
-		[19.16, 68.8, 87.1],
-		[19.47, 68.8, 93.7], // ...through the last
-		[20.6, 52, 56], // drift away as the tabs close
-		[21.4, 52, 56],
-		[22.4, 4.7, 10.6], // refresh — click at 22.48
-		[23.4, 4.7, 10.6], // hold after refresh
-		[24.8, 46, 50], // rest on the resolved site
-		[duration, 46, 50]
+		[1.5, 15, 3.7], // arrive at the tab strip
+		[1.8, 15, 3.7], // open each tool tab, left to right...
+		[2.3, 22.2, 3.7],
+		[2.8, 29.3, 3.7],
+		[3.3, 36.5, 3.7],
+		[3.8, 43.6, 3.7],
+		[4.3, 50.8, 3.7],
+		[4.8, 57.9, 3.7],
+		[5.3, 65.1, 3.7],
+		[5.8, 72.2, 3.7],
+		[6.3, 79.4, 3.7], // ...through the tenth
+		[7.5, 86.5, 3.7], // Notion tab — grab at 7.55
+		[8.4, 82, 24], // pull the panel open
+		[9.0, 80, 34], // settle onto the to-do list (problems appear)
+		[12.2, 78, 46], // read down the list
+		[13.4, 78, 46], // hold as the site breaks
+		[13.95, 50, 61.5], // the search box — click at 14.0
+		[15.2, 50, 61.5], // hold while the URL types
+		[16.2, 10.6, 58.4], // Start a project — click at 16.35
+		[17.0, 10.6, 58.4], // hold after the click
+		[17.3, 68.7, 39.6], // check off each to-do, top to bottom...
+		[17.61, 68.7, 45.3],
+		[17.92, 68.7, 50.9],
+		[18.23, 68.7, 56.5],
+		[18.54, 68.7, 62.1],
+		[18.85, 68.7, 67.7],
+		[19.16, 68.7, 73.3],
+		[19.47, 68.7, 78.9], // ...through the last
+		[20.6, 50, 48], // drift away as the tabs close
+		[21.4, 50, 48],
+		[22.4, 4, 9.1], // refresh — click at 22.48
+		[23.4, 4, 9.1], // hold after refresh
+		[24.8, 45, 45], // rest on the resolved site
+		[duration, 45, 45]
 	];
 	const tabTapTimes = [1.8, 2.3, 2.8, 3.3, 3.8, 4.3, 4.8, 5.3, 5.8, 6.3];
 	const boxTapTimes = [17.3, 17.61, 17.92, 18.23, 18.54, 18.85, 19.16, 19.47];
