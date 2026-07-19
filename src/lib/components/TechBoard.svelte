@@ -204,15 +204,15 @@
 			);
 			const depth = clamp(1 - normalizedDistance, 0, 1);
 			const easedDepth = Math.pow(depth, 0.72);
-			const scale = 0.48 + easedDepth * 0.52;
-			const opacity = 0.08 + Math.pow(depth, 1.12) * 0.92;
+			const scale = 0.54 + easedDepth * 0.46;
+			const opacity = 0.22 + Math.pow(depth, 1.12) * 0.78;
 			const x = columnDistance * gapX;
 			const y = rowDistance * gapY;
 
 			itemTile.style.transform = `translate(-50%, -50%) translate3d(${x.toFixed(2)}px, ${y.toFixed(2)}px, 0) scale(${scale.toFixed(3)})`;
 			itemTile.style.opacity = opacity.toFixed(3);
 			itemTile.style.zIndex = `${Math.round(depth * 100)}`;
-			itemTile.style.pointerEvents = depth < 0.08 ? 'none' : 'auto';
+			itemTile.style.pointerEvents = 'auto';
 		});
 	}
 
@@ -562,7 +562,7 @@
 		position: absolute;
 		z-index: 2;
 		inset: 0;
-		mask-image: radial-gradient(ellipse 80% 80% at 50% 51%, black 47%, rgba(0, 0, 0, .96) 65%, rgba(0, 0, 0, .3) 88%, transparent 100%);
+		mask-image: radial-gradient(ellipse 86% 88% at 50% 51%, black 48%, rgba(0, 0, 0, .96) 72%, rgba(0, 0, 0, .7) 100%);
 	}
 
 	.sphere-tile {
@@ -669,7 +669,7 @@
 		.desktop-instruction { display: none; }
 		.mobile-instruction { display: inline; }
 		.field-instruction span:last-child { display: none; }
-		.sphere-cloud { mask-image: radial-gradient(ellipse 93% 82% at 50% 51%, black 46%, rgba(0, 0, 0, .92) 67%, rgba(0, 0, 0, .2) 90%, transparent 100%); }
+		.sphere-cloud { mask-image: radial-gradient(ellipse 100% 90% at 50% 51%, black 48%, rgba(0, 0, 0, .94) 72%, rgba(0, 0, 0, .68) 100%); }
 		.sphere-tile { width: clamp(44px, 12vw, 52px); height: clamp(42px, 11vw, 48px); border-radius: 12px; }
 		.tile-face { border-radius: 12px; }
 		.sphere-tile :global(.tech-mark) { width: 29px; height: 29px; }
