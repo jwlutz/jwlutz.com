@@ -22,14 +22,24 @@
 	let activeIndex = $state(0);
 
 	let motionAllowed = false;
+	let reducedMotionActive = false;
+	let finePointerActive = false;
 	let inView = true;
 	let frame = 0;
+	let lastFrameTime = 0;
 	let currentColumnOffset = 0;
 	let currentRowOffset = 0;
 	let targetColumnOffset = 0;
 	let targetRowOffset = 0;
 	let anchorColumnOffset = 0;
 	let anchorRowOffset = 0;
+	let pointerColumnBias = 0;
+	let pointerRowBias = 0;
+	let scrollColumnBias = 0;
+	let scrollRowBias = 0;
+	let edgeColumnVelocity = 0;
+	let edgeRowVelocity = 0;
+	let pointerInside = false;
 
 	const toolkit: ToolkitItem[] = [
 		{ tech: 'Python', label: 'Python', group: 'Language', detail: 'Models, data pipelines, APIs, and automation.' },
@@ -157,9 +167,30 @@
 		});
 	}
 
-	function animateSphere() {
+	function syncTarget() {
+		targetColumnOffset = anchorColumnOffset + pointerColumnBias + scrollColumnBias;
+		targetRowOffset = anchorRowOffset + pointerRowBias + scrollRowBias;
+		requestRender();
+	}
+
+	function animateSphere(timestamp: number) {
 		frame = 0;
-		if (!inView) return;
+		if (!inView) {
+			lastFrameTime = 0;
+			return;
+		}
+
+		const elapsedFrames = lastFrameTime ? Math.min(2.5, (timestamp - lastFrameTime) / 16.667) : 1;
+		lastFrameTime = timestamp;
+		const edgeDrifting = motionAllowed && finePointerActive && pointerInside
+			&& (Math.abs(edgeColumnVelocity) > 0.0001 || Math.abs(edgeRowVelocity) > 0.0001);
+
+		if (edgeDrifting) {
+			anchorColumnOffset += edgeColumnVelocity * elapsedFrames;
+			anchorRowOffset += edgeRowVelocity * elapsedFrames;
+			targetColumnOffset = anchorColumnOffset + pointerColumnBias + scrollColumnBias;
+			targetRowOffset = anchorRowOffset + pointerRowBias + scrollRowBias;
+		}
 
 		const columnDelta = targetColumnOffset - currentColumnOffset;
 		const rowDelta = targetRowOffset - currentRowOffset;
@@ -168,8 +199,10 @@
 		currentRowOffset += rowDelta * ease;
 		renderSphere();
 
-		if (Math.abs(columnDelta) > 0.0005 || Math.abs(rowDelta) > 0.0005) {
+		if (edgeDrifting || Math.abs(columnDelta) > 0.0005 || Math.abs(rowDelta) > 0.0005) {
 			frame = requestAnimationFrame(animateSphere);
+		} else {
+			lastFrameTime = 0;
 		}
 	}
 
@@ -184,10 +217,12 @@
 		const centerColumn = (columns - 1) / 2;
 		const centerRow = (rows - 1) / 2;
 		activeIndex = index;
-		anchorColumnOffset = closestEquivalent(centerColumn - column, currentColumnOffset, columns);
-		anchorRowOffset = closestEquivalent(centerRow - row, currentRowOffset, rows);
-		targetColumnOffset = anchorColumnOffset;
-		targetRowOffset = anchorRowOffset;
+		const desiredColumnOffset = closestEquivalent(centerColumn - column, currentColumnOffset, columns);
+		const desiredRowOffset = closestEquivalent(centerRow - row, currentRowOffset, rows);
+		anchorColumnOffset = desiredColumnOffset - pointerColumnBias - scrollColumnBias;
+		anchorRowOffset = desiredRowOffset - pointerRowBias - scrollRowBias;
+		targetColumnOffset = desiredColumnOffset;
+		targetRowOffset = desiredRowOffset;
 
 		if (instant || !motionAllowed) {
 			currentColumnOffset = targetColumnOffset;
@@ -200,19 +235,49 @@
 	}
 
 	function handlePointer(event: PointerEvent) {
-		if (!motionAllowed || event.pointerType === 'touch' || !fieldElement) return;
+		if (!motionAllowed || !finePointerActive || event.pointerType === 'touch' || !fieldElement) return;
 		const rect = fieldElement.getBoundingClientRect();
 		const x = Math.max(-1, Math.min(1, ((event.clientX - rect.left) / rect.width - 0.5) * 2));
 		const y = Math.max(-1, Math.min(1, ((event.clientY - rect.top) / rect.height - 0.5) * 2));
-		targetColumnOffset = anchorColumnOffset - x * 0.34;
-		targetRowOffset = anchorRowOffset - y * 0.2;
-		requestRender();
+		const edgeX = Math.max(0, (Math.abs(x) - 0.68) / 0.32);
+		const edgeY = Math.max(0, (Math.abs(y) - 0.72) / 0.28);
+
+		pointerInside = true;
+		pointerColumnBias = -x * 0.18;
+		pointerRowBias = -y * 0.1;
+		edgeColumnVelocity = -Math.sign(x) * edgeX * edgeX * 0.026;
+		edgeRowVelocity = -Math.sign(y) * edgeY * edgeY * 0.014;
+		syncTarget();
 	}
 
 	function resetPointer() {
-		targetColumnOffset = anchorColumnOffset;
-		targetRowOffset = anchorRowOffset;
-		requestRender();
+		pointerInside = false;
+		pointerColumnBias = 0;
+		pointerRowBias = 0;
+		edgeColumnVelocity = 0;
+		edgeRowVelocity = 0;
+		syncTarget();
+	}
+
+	function handleViewportScroll() {
+		if (!fieldElement) return;
+		const isMobile = fieldElement.clientWidth < 700;
+		let nextColumnBias = 0;
+		let nextRowBias = 0;
+
+		if (isMobile && !reducedMotionActive) {
+			const rect = fieldElement.getBoundingClientRect();
+			const travel = window.innerHeight + rect.height;
+			const progress = Math.max(0, Math.min(1, (window.innerHeight - rect.top) / travel));
+			nextColumnBias = Math.sin((progress - 0.5) * Math.PI) * 0.46;
+			nextRowBias = (progress - 0.5) * 4.8;
+		}
+
+		if (Math.abs(nextColumnBias - scrollColumnBias) < 0.0005
+			&& Math.abs(nextRowBias - scrollRowBias) < 0.0005) return;
+		scrollColumnBias = nextColumnBias;
+		scrollRowBias = nextRowBias;
+		syncTarget();
 	}
 
 	function handleKeydown(event: KeyboardEvent, index: number) {
@@ -233,17 +298,30 @@
 		const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 		const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)');
 		const updateMotion = () => {
-			motionAllowed = !reducedMotion.matches && finePointer.matches;
-			if (!motionAllowed) centerItem(activeIndex, true);
+			reducedMotionActive = reducedMotion.matches;
+			finePointerActive = finePointer.matches;
+			motionAllowed = !reducedMotionActive;
+			if (!finePointerActive) resetPointer();
+			if (reducedMotionActive) {
+				scrollColumnBias = 0;
+				scrollRowBias = 0;
+				centerItem(activeIndex, true);
+			} else {
+				handleViewportScroll();
+			}
 		};
 
-		const resizeObserver = new ResizeObserver(() => centerItem(activeIndex, true));
+		const resizeObserver = new ResizeObserver(() => {
+			centerItem(activeIndex, true);
+			handleViewportScroll();
+		});
 		const intersectionObserver = new IntersectionObserver(([entry]) => {
 			inView = entry.isIntersecting;
 			if (inView) requestRender();
 			else if (frame) {
 				cancelAnimationFrame(frame);
 				frame = 0;
+				lastFrameTime = 0;
 			}
 		}, { rootMargin: '160px 0px' });
 
@@ -253,6 +331,8 @@
 		intersectionObserver.observe(sectionElement);
 		reducedMotion.addEventListener('change', updateMotion);
 		finePointer.addEventListener('change', updateMotion);
+		window.addEventListener('scroll', handleViewportScroll, { passive: true });
+		handleViewportScroll();
 
 		return () => {
 			if (frame) cancelAnimationFrame(frame);
@@ -260,6 +340,7 @@
 			intersectionObserver.disconnect();
 			reducedMotion.removeEventListener('change', updateMotion);
 			finePointer.removeEventListener('change', updateMotion);
+			window.removeEventListener('scroll', handleViewportScroll);
 		};
 	});
 </script>
@@ -281,7 +362,8 @@
 		aria-label="Interactive technology toolkit"
 	>
 		<div class="field-instruction" aria-hidden="true">
-			<span>Move to explore</span>
+			<span class="desktop-instruction">Move or hold an edge to explore</span>
+			<span class="mobile-instruction">Scroll to explore</span>
 			<span>65 technologies · select a mark to hold it</span>
 		</div>
 		<div class="sphere-cloud">
@@ -320,6 +402,18 @@
 <style>
 	.skills-sphere-section {
 		--sphere-line: rgba(240, 239, 233, .13);
+		--field-border: rgba(15, 18, 16, .12);
+		--field-background: radial-gradient(ellipse 54% 68% at 50% 51%, rgba(255, 255, 255, .98), rgba(242, 240, 235, .88) 61%, rgba(229, 227, 221, .78) 100%), #e8e6e1;
+		--field-instruction: #777872;
+		--field-instruction-accent: #775f3c;
+		--tile-background: rgba(252, 251, 248, .96);
+		--tile-background-active: #fffefb;
+		--tile-border: rgba(24, 28, 25, .08);
+		--tile-border-hover: rgba(84, 70, 49, .34);
+		--tile-shadow: 0 8px 24px rgba(29, 32, 29, .055);
+		--tile-shadow-hover: 0 12px 30px rgba(29, 32, 29, .1);
+		--tile-shadow-active: 0 15px 34px rgba(29, 32, 29, .13), inset 0 -3px #a5895e;
+		--sphere-mark-color: #151815;
 		position: relative;
 		overflow: hidden;
 		border-top: 1px solid var(--sphere-line);
@@ -327,6 +421,21 @@
 		background: #090f0c;
 		color: var(--color-cream);
 		contain: layout paint;
+	}
+
+	:global(html.dark) .skills-sphere-section {
+		--field-border: rgba(240, 239, 233, .1);
+		--field-background: radial-gradient(ellipse 56% 70% at 50% 51%, rgba(48, 57, 51, .98), rgba(21, 27, 23, .97) 62%, rgba(8, 11, 9, .99) 100%), #080b09;
+		--field-instruction: #9aa29c;
+		--field-instruction-accent: #c0a36e;
+		--tile-background: rgba(239, 237, 230, .96);
+		--tile-background-active: #fffdf7;
+		--tile-border: rgba(240, 239, 233, .14);
+		--tile-border-hover: rgba(192, 163, 110, .6);
+		--tile-shadow: 0 12px 30px rgba(0, 0, 0, .22);
+		--tile-shadow-hover: 0 16px 36px rgba(0, 0, 0, .34);
+		--tile-shadow-active: 0 18px 42px rgba(0, 0, 0, .4), inset 0 -3px #b49a67;
+		--sphere-mark-color: #101411;
 	}
 
 	.sphere-intro,
@@ -364,13 +473,12 @@
 		position: relative;
 		height: clamp(500px, 43vw, 600px);
 		overflow: hidden;
-		border-top: 1px solid rgba(15, 18, 16, .12);
-		border-bottom: 1px solid rgba(15, 18, 16, .12);
-		background:
-			radial-gradient(ellipse 54% 68% at 50% 51%, rgba(255, 255, 255, .98), rgba(242, 240, 235, .88) 61%, rgba(229, 227, 221, .78) 100%),
-			#e8e6e1;
+		border-top: 1px solid var(--field-border);
+		border-bottom: 1px solid var(--field-border);
+		background: var(--field-background);
 		isolation: isolate;
-		touch-action: manipulation;
+		touch-action: pan-y;
+		transition: background 220ms ease, border-color 220ms ease;
 	}
 
 	.field-instruction {
@@ -381,14 +489,15 @@
 		right: 40px;
 		display: flex;
 		justify-content: space-between;
-		color: #777872;
+		color: var(--field-instruction);
 		font: 600 8px var(--font-family-mono);
 		letter-spacing: .1em;
 		text-transform: uppercase;
 		pointer-events: none;
 	}
 
-	.field-instruction span:first-child { color: #775f3c; }
+	.field-instruction span:first-child { color: var(--field-instruction-accent); }
+	.mobile-instruction { display: none; }
 
 	.sphere-cloud {
 		position: absolute;
@@ -407,7 +516,7 @@
 		border: 0;
 		border-radius: 16px;
 		background: transparent;
-		color: #151815;
+		color: var(--sphere-mark-color);
 		cursor: pointer;
 		opacity: 0;
 		will-change: transform, opacity;
@@ -418,15 +527,15 @@
 		height: 100%;
 		display: grid;
 		place-items: center;
-		border: 1px solid rgba(24, 28, 25, .08);
+		border: 1px solid var(--tile-border);
 		border-radius: 16px;
-		background: rgba(252, 251, 248, .96);
-		box-shadow: 0 8px 24px rgba(29, 32, 29, .055);
+		background: var(--tile-background);
+		box-shadow: var(--tile-shadow);
 		transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease, background 180ms ease;
 	}
 
 	.sphere-tile :global(.tech-mark) {
-		--tech-brand: #151815 !important;
+		--tech-brand: var(--sphere-mark-color) !important;
 		width: 48px;
 		height: 48px;
 	}
@@ -434,14 +543,14 @@
 	.sphere-tile:hover .tile-face,
 	.sphere-tile:focus-visible .tile-face {
 		transform: scale(1.055);
-		border-color: rgba(84, 70, 49, .34);
-		box-shadow: 0 12px 30px rgba(29, 32, 29, .1);
+		border-color: var(--tile-border-hover);
+		box-shadow: var(--tile-shadow-hover);
 	}
 	.sphere-tile:focus-visible { outline: none; }
 	.sphere-tile.active .tile-face {
 		border-color: #9a7c50;
-		background: #fffefb;
-		box-shadow: 0 15px 34px rgba(29, 32, 29, .13), inset 0 -3px #a5895e;
+		background: var(--tile-background-active);
+		box-shadow: var(--tile-shadow-active);
 	}
 
 	.sphere-readout {
@@ -486,6 +595,8 @@
 		.sphere-intro > p { font-size: 12px; }
 		.sphere-field { height: 480px; }
 		.field-instruction { top: 17px; left: 16px; right: 16px; }
+		.desktop-instruction { display: none; }
+		.mobile-instruction { display: inline; }
 		.field-instruction span:last-child { display: none; }
 		.sphere-cloud { mask-image: radial-gradient(ellipse 93% 82% at 50% 51%, black 46%, rgba(0, 0, 0, .92) 67%, rgba(0, 0, 0, .2) 90%, transparent 100%); }
 		.sphere-tile { width: 68px; height: 58px; border-radius: 12px; }
