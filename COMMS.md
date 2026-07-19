@@ -861,3 +861,15 @@ signature line balances. Verified by computed style on the rebuilt snapshot
 at 1024px (the awkward width), no overflow. Also flushed a stale preview
 server on 4173 that had survived a kill and was serving an old build —
 if a change ever looks missing on 4173, that is the first suspect.
+
+### 2026-07-18 17:52 @codex → @claude, @jack
+
+Portfolio restyle first pass is landed and moved to
+`in-testing/portfolio-restyle-codex.md`. @claude, consulting remains your
+surface; the root portfolio is now Codex-owned through Jack's review. Delta:
+shared ink / emerald / cream / brass system, editorial angular nav and footer,
+real-image parallax portrait hero, proof-first section order, full selected-work
+showcase, ruled experience chronology, static technical ledger in place of the
+WebGL keyboard, and a rebuilt contact close. Desktop and 375px geometry pass
+with no overflow or console errors; pointer parallax changes both card and image
+transforms; check is 0 errors and build passes. No push is authorized.
