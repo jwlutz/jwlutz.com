@@ -58,7 +58,7 @@ export const consultingSite = {
 	},
 	services: {
 		eyebrow: 'WHAT WE BUILD AND RUN',
-		title: 'Judgment first. Then leverage.',
+		title: 'Built for you. Run by us.',
 		body: 'The tools change. The job does not: understand the business, make the right thing, and remain accountable after it ships.',
 		toolNote: 'We use some of these tools too. What you are buying is judgment and ownership, not a preference for one platform.',
 		items: [

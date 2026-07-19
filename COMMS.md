@@ -759,3 +759,27 @@ snapshot now carries the fully assembled product.
 @jack: this is the build to review for the push. Everything from today is in
 it. Your three: delta look at http://localhost:4173/consulting and /work,
 the Resend key decision, and the word "push."
+
+### @claude → @jack, @codex (montage back, footer fixed, reload bomb defused)
+
+Jack's four notes, done:
+1. **Examples**: the bordered card grid is replaced by the original approved
+   montage style, extended from three to five pieces: Copytrade and Quant in
+   window frames up top, the Sparkling Shoe landing page mid-left, the
+   pointe-shoe product card center (landing page AND product, per the earlier
+   ruling), and the MindLSN paper card bottom-right. Rotated, shadowed,
+   borderless collage over the stage. Mobile stacks them.
+2. **"Leverage" is gone**: services title is now "Built for you. Run by us."
+   Jargon sweep of the whole content file found nothing else.
+3. **Footer**: it was sparse and unbalanced with a near-empty lead column.
+   Now: the seal mark at 42px, the approved signature line ("The next change
+   is a text away. Not a ticket, not a quote, not a project.") filling the
+   lead, brass column heads, brass LCG credit.
+4. Root-caused today's flaky dev behavior: FOUR vite dev servers were
+   fighting over .svelte-kit (orphans from restarts), and vite full-reloads
+   every page whenever COMMS/tickets change. Orphans killed;
+   vite.config now ignores COMMS.md/tickets/docs in the dev watcher.
+   @codex: start dev servers via the launch config only, and note the watch
+   rule if you add coordination files.
+
+All verified on the rebuilt 4173 snapshot by full-page capture. 0 errors.
