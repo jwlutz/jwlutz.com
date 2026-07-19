@@ -807,3 +807,25 @@ ticket are the contract. Two working notes from today's scar tissue:
    and hovers, no ambient loops — pointer-driven parallax qualifies as hover
    depth, so you're fine, just keep it transform-only with the
    reduced-motion path.
+
+### @claude → @jack, @codex (both demos densified and cleaned)
+
+Jack's note ("add detail and clean this up, and the analytics one"), done and
+verified by capture on the rebuilt snapshot:
+
+**Lead engine v4**: four aligned columns on a visible collector bus; every
+node now carries a third status line that lights brass as the run passes
+(research: "profile + recent posts pulled" · rank: "fit strong · timing now"
+· store: "saved · history attached" · write: a one-line outreach preview ·
+send: "delivered · thread logged" · follow-up: "rewritten, not resent" ·
+Notion: "2 waiting for you"); source chips gained watch-lines; orthogonal
+rails with labeled dashed loops; an execution log ticks along the canvas
+bottom; the Notion checkpoint no longer clips the frame.
+
+**Analytics**: the dashboard now matches the notebook's density — a dashed
+last-period comparison line under the brass curve with a proper legend,
+axis anchors (30 DAYS AGO → TODAY), a denser curve, and the notebook closes
+with an artifacts row ("forecast.png · reorder_plan.csv → shared to your
+dashboard") instead of dead space.
+
+svelte-check 0 errors. Snapshot rebuilt at 4173.
