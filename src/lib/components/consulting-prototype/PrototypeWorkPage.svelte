@@ -10,7 +10,6 @@
 </script>
 
 <svelte:head>
-	<title>{siteMeta.work.title}</title>
 	<link rel="icon" href={siteMeta.favicon} />
 	<link rel="canonical" href={siteMeta.work.url} />
 	<meta name="description" content={siteMeta.work.description} />

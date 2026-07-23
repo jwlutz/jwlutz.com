@@ -445,7 +445,7 @@
 
 							{#each tabs as tab, index}
 								{@const open = tabAmount(index)}
-								<div class="browser-tab tool-tab" class:compact={toolCompact(index)} style={`--w:${toolWidth(index)};--tab-opacity:${clamp(open * 3)};--tab-y:${(1 - open) * 6}px;--brand-color:${tab.color}`} title={`${tab.name} — ${tab.job}`}>
+								<div class="browser-tab tool-tab" class:compact={toolCompact(index)} style={`--w:${toolWidth(index)};--tab-opacity:${clamp(open * 3)};--tab-y:${(1 - open) * 6}px;--brand-color:${tab.color}`} title={`${tab.name}: ${tab.job}`}>
 									<i class="brand-icon">
 										{#if tab.favicon}<img src={tab.favicon} alt="" />{:else if tab.icon}{@html tab.icon.svg}{/if}
 									</i>

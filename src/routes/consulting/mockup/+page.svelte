@@ -29,7 +29,6 @@
 </script>
 
 <svelte:head>
-	<title>Consulting Direction — Lutz Consulting Group</title>
 	<meta name="description" content="A cinematic consulting landing-page direction for Lutz Consulting Group." />
 	<link rel="preconnect" href="https://fonts.googleapis.com" />
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
@@ -63,7 +62,7 @@
 				<p class="eyebrow">WEBSITES / AI INTEGRATIONS / ANALYTICS</p>
 				<h1>Don’t let your website become your <em>second job.</em></h1>
 				<p class="hero-lede">
-					We build, connect, and operate the digital systems behind businesses and people—then stay around to keep them working.
+					We build, connect, and operate the digital systems behind businesses and people, then stay around to keep them working.
 				</p>
 				<div class="hero-actions">
 					<a class="primary" href={emailHref}>Tell us what you need <span>↗</span></a>

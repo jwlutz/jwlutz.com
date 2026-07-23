@@ -270,7 +270,7 @@ export const siteMeta = {
 	// system if the headline changes (see tickets/og-image-asset.md).
 	favicon: '/consulting/favicon.svg',
 	landing: {
-		title: 'Lutz Consulting Group — Websites, AI Integrations, and Analytics',
+		title: 'Lutz Consulting Group: Websites, AI Integrations, and Analytics',
 		description:
 			'Lutz Consulting Group designs, builds, and operates websites, AI integrations, analytics, and the systems behind them.',
 		ogDescription:

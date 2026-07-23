@@ -45,7 +45,7 @@
 
 <svelte:head>
 	<link rel="icon" href={favicon} />
-	<title>Jack Lutz | Portfolio</title>
+	<title>{isConsulting ? 'Lutz Consulting Group' : 'Jack Portfolio'}</title>
 	{#if !isConsulting}
 		<meta name="description" content="Jack Lutz - Building Systems that Scale, and Finding Answers that Matter. Stats & Data Science @ UCLA '27" />
 		<meta property="og:title" content="Jack Lutz | Portfolio" />

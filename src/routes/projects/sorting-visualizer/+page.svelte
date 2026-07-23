@@ -15,7 +15,6 @@
 </script>
 
 <svelte:head>
-	<title>Algorithm Visualizers | Jack Lutz</title>
 	<meta
 		name="description"
 		content="Interactive visualization of sorting and pathfinding algorithms. Compare algorithms side-by-side, adjust speed, and watch them race in real-time."

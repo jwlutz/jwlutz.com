@@ -12,7 +12,6 @@
 </script>
 
 <svelte:head>
-	<title>Maze Visualizer | Jack Lutz</title>
 	<meta
 		name="description"
 		content="Interactive visualization of maze generation and pathfinding algorithms. Watch DFS, BFS, Dijkstra, and A* solve mazes generated with Recursive Backtracking, Prim's, and Kruskal's algorithms."

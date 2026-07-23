@@ -40,7 +40,6 @@
 </script>
 
 <svelte:head>
-	<title>{siteMeta.landing.title}</title>
 	<link rel="icon" href={siteMeta.favicon} />
 	<link rel="canonical" href={siteMeta.landing.url} />
 	<meta name="description" content={siteMeta.landing.description} />
