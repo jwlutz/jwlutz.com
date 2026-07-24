@@ -23,7 +23,7 @@
 		</p>
 	</header>
 
-	<!-- ————————————————— color ————————————————— -->
+	<!-- ----------------- color ----------------- -->
 	<section>
 		<h2><i>01</i> Color tokens</h2>
 		<div class="swatches">
@@ -41,7 +41,7 @@
 		</div>
 	</section>
 
-	<!-- ————————————————— type ————————————————— -->
+	<!-- ----------------- type ----------------- -->
 	<section>
 		<h2><i>02</i> Typography</h2>
 		<div class="specimens">
@@ -54,7 +54,7 @@
 		</div>
 	</section>
 
-	<!-- ————————————————— geometry ————————————————— -->
+	<!-- ----------------- geometry ----------------- -->
 	<section>
 		<h2><i>03</i> Geometry and controls</h2>
 		<div class="geo-row">
@@ -70,7 +70,7 @@
 		</div>
 	</section>
 
-	<!-- ————————————————— registration line ————————————————— -->
+	<!-- ----------------- registration line ----------------- -->
 	<section>
 		<h2><i>04</i> The registration line</h2>
 		<div class="motif-pair">
@@ -90,7 +90,7 @@
 		</div>
 	</section>
 
-	<!-- ————————————————— motion ————————————————— -->
+	<!-- ----------------- motion ----------------- -->
 	<section>
 		<h2><i>05</i> Motion</h2>
 		<div class="rules rules-solo">
@@ -101,7 +101,7 @@
 		</div>
 	</section>
 
-	<!-- ————————————————— chrome ————————————————— -->
+	<!-- ----------------- chrome ----------------- -->
 	<section>
 		<h2><i>06</i> Navigation, framing, footer</h2>
 		<div class="rules rules-solo">
@@ -113,7 +113,7 @@
 		</div>
 	</section>
 
-	<!-- ————————————————— component specimens ————————————————— -->
+	<!-- ----------------- component specimens ----------------- -->
 	<section id="specimens">
 		<h2><i>07</i> Component specimens</h2>
 
@@ -167,7 +167,7 @@
 		</div>
 	</section>
 
-	<!-- ————————————————— logos ————————————————— -->
+	<!-- ----------------- logos ----------------- -->
 	<section id="logos">
 		<h2><i>08</i> The mark <em>(B selected, 2026-07-18)</em></h2>
 

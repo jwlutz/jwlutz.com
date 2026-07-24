@@ -1,9 +1,9 @@
 <!--
-	ANALYTICS/ML OFFERING DEMO — traffic dashboard + an academic notebook.
+	ANALYTICS/ML OFFERING DEMO - traffic dashboard + an academic notebook.
 	Jack's directions (2026-07-18): "it should show traffic dashboard" and
 	"make the ML/analytics section better and more academic. demand
 	forecasting, optimization, etc." Left: the live traffic dashboard.
-	Right: demand_plan.ipynb runs — load orders, fit a seasonal model,
+	Right: demand_plan.ipynb runs - load orders, fit a seasonal model,
 	forecast with a confidence band, then optimize reorder points under a
 	service-level constraint. No client-attributed numbers.
 	`playing` contract per Codex's layout wiring; shell dims unchanged.
@@ -156,7 +156,7 @@
 	.sources>div:nth-child(3) i{animation-delay:.3s}
 	.sources>div:nth-child(4) i{animation-delay:.45s}
 
-	/* ————— the notebook ————— */
+	/* ----- the notebook ----- */
 	.nb-bar{flex:0 0 40px;padding:0 14px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(240,239,233,.07);color:#c9cdc5;font:500 8px var(--proto-mono)}
 	.nb-bar small{display:flex;align-items:center;gap:6px;color:#666d66;font:500 7px var(--proto-mono);letter-spacing:.06em}
 	.kdot{width:6px;height:6px;border-radius:50%;background:#4a524c;transition:background .3s ease}

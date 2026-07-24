@@ -225,7 +225,7 @@
 			const startX = -(totalWidth / 2) + BOARD_PADDING + KEY_SIZE / 2;
 			const startZ = -(totalDepth / 2) + BOARD_PADDING + KEY_SIZE / 2;
 
-			// Geometries are identical across all keycaps — create once and share.
+			// Geometries are identical across all keycaps - create once and share.
 			// Each keycap still gets its own material (color/emissive vary per skill).
 			const keycapGeometry = new RoundedBoxGeometry(KEY_SIZE * 0.96, KEY_HEIGHT, KEY_SIZE * 0.96, 6, 0.1);
 			const topSurfaceGeometry = new THREE.PlaneGeometry(KEY_SIZE * 0.88, KEY_SIZE * 0.88);
@@ -600,7 +600,7 @@
 		canvas?.removeEventListener('mouseleave', onMouseLeave);
 		window.removeEventListener('resize', onResize);
 		controls?.dispose();
-		// Materials and textures are per-keycap — dispose those via traversal.
+		// Materials and textures are per-keycap - dispose those via traversal.
 		// Skip geometry here because keycap/top/logo geometries are shared.
 		keycapMeshes.forEach(({ group }) => {
 			group.traverse((obj: any) => {

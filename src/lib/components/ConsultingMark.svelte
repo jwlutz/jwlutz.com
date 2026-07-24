@@ -2,7 +2,7 @@
 	let { size = 34, title = 'Lutz Consulting Group' }: { size?: number; title?: string } = $props();
 </script>
 
-<!-- Mark B, "the Seal" — Jack's pick 2026-07-18 (style board section 08,
+<!-- Mark B, "the Seal" - Jack's pick 2026-07-18 (style board section 08,
      tickets/completed/lcg-logo-directions.md). Serif LCG in a ruled square
      over a brass baseline. Same size/title API as the provisional mark. -->
 <svg

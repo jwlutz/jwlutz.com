@@ -1,5 +1,5 @@
 /**
- * EDIT THE CONSULTING SITE HERE — every word a visitor can read lives in
+ * EDIT THE CONSULTING SITE HERE - every word a visitor can read lives in
  * this file. Layout, motion, and timing live in the components; changing
  * wording never requires touching them. Edit the strings, keep the keys.
  *
@@ -49,7 +49,7 @@ export const consultingSite = {
 		primaryCta: 'Start a project',
 		secondaryCta: 'See our work'
 	},
-	// Approved 2026-07-18 (decisions doc §23) — do not remove; renders in PrototypeSplitView.svelte
+	// Approved 2026-07-18 (decisions doc §23) - do not remove; renders in PrototypeSplitView.svelte
 	splitView: {
 		eyebrow: 'ONE WEBSITE / TWO SIDES',
 		title: { lead: 'We watch the side you', emphasis: 'never have to.' },
@@ -291,7 +291,7 @@ export const siteMeta = {
 };
 
 /* ════════════════════════════════════════════════════════════════════
-   NAV — top bar + mobile menu
+   NAV - top bar + mobile menu
    ════════════════════════════════════════════════════════════════════ */
 
 export const navCopy = {
@@ -309,7 +309,7 @@ export const navCopy = {
 };
 
 /* ════════════════════════════════════════════════════════════════════
-   HERO SCENE — text inside the animated browser story.
+   HERO SCENE - text inside the animated browser story.
    Caption keys map to moments in the timeline; edit words, not keys.
    ════════════════════════════════════════════════════════════════════ */
 
@@ -364,7 +364,7 @@ export const heroScene = {
 };
 
 /* ════════════════════════════════════════════════════════════════════
-   SPLIT-VIEW SCENE — text inside the drag demo (service 01).
+   SPLIT-VIEW SCENE - text inside the drag demo (service 01).
    The section heading/labels live in consultingSite.splitView above.
    ════════════════════════════════════════════════════════════════════ */
 
@@ -393,7 +393,7 @@ export const splitScene = {
 };
 
 /* ════════════════════════════════════════════════════════════════════
-   LEAD-ENGINE DEMO — text inside the automation demo (service 02).
+   LEAD-ENGINE DEMO - text inside the automation demo (service 02).
    `sources` order matters: it matches the six chips top to bottom.
    Each node: LABEL (small caps), title, subtitle, and the status line
    that lights up when the run reaches it.
@@ -450,7 +450,7 @@ export const aiDemoCopy = {
 };
 
 /* ════════════════════════════════════════════════════════════════════
-   ANALYTICS DEMO — text inside the dashboard + notebook (service 03).
+   ANALYTICS DEMO - text inside the dashboard + notebook (service 03).
    ════════════════════════════════════════════════════════════════════ */
 
 export const analyticsDemoCopy = {
@@ -489,7 +489,7 @@ export const analyticsDemoCopy = {
 };
 
 /* ════════════════════════════════════════════════════════════════════
-   WORK MONTAGE — labels on the Projects collage.
+   WORK MONTAGE - labels on the Projects collage.
    Card copy (names, descriptions, links) lives in
    consultingSite.workPreview.projects above.
    ════════════════════════════════════════════════════════════════════ */
@@ -507,7 +507,7 @@ export const montageCopy = {
 };
 
 /* ════════════════════════════════════════════════════════════════════
-   CONTACT FORM — the Project Starter. The section heading and the
+   CONTACT FORM - the Project Starter. The section heading and the
    choice buttons live in consultingSite.finalCta above.
    ════════════════════════════════════════════════════════════════════ */
 
@@ -547,7 +547,7 @@ export const footerCopy = {
 };
 
 /* ════════════════════════════════════════════════════════════════════
-   WORK PAGE EXTRAS — /consulting/work strings not already covered by
+   WORK PAGE EXTRAS - /consulting/work strings not already covered by
    consultingSite.workPage / lab / finalCta above.
    ════════════════════════════════════════════════════════════════════ */
 

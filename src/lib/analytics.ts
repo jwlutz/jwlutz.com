@@ -97,7 +97,7 @@ export function initSessionTiming(page: string) {
 			tabHidden = true;
 			flush();
 		}
-		// We don't resume after flush — one summary per visit is the contract.
+		// We don't resume after flush - one summary per visit is the contract.
 	};
 
 	document.addEventListener('visibilitychange', onVisibility);

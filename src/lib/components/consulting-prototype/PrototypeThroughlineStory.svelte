@@ -203,7 +203,7 @@
 	// only just enough to fit (Jack 07-19: don't compress unless the line fills).
 	// The room for collapsible tabs is MEASURED live (stripAvailCqw): the business
 	// tab is cqw but the "+", padding and gaps are fixed px, so the real available
-	// width drifts with the screen size — a fixed cap over-compresses and leaves a
+	// width drifts with the screen size - a fixed cap over-compresses and leaves a
 	// gap. Compression is continuous (the boundary tab shrinks fractionally) so the
 	// tabs glide instead of snapping and the "+" riding at the end never lurches.
 	function toolsFullCqw() {
@@ -213,7 +213,7 @@
 	}
 	function compressUnits() {
 		// stripAvailCqw already reserves the business tab, Notion, help and the "+"
-		// (measured live), so only the tool tabs collapse — oldest first, and only
+		// (measured live), so only the tool tabs collapse - oldest first, and only
 		// just enough to fit. Continuous: the boundary tab shrinks fractionally.
 		const over = toolsFullCqw() - stripAvailCqw;
 		return Math.max(0, over) / (TAB_FULL - TAB_ICON); // tab-equivalents to shrink
@@ -251,7 +251,7 @@
 	// the address, clicks Start a project, checks the to-dos off, then hits refresh.
 	// EVERY target is measured from the live DOM (plusTarget / notionTarget /
 	// searchTarget / buttonTarget / boxTargets / refreshTarget) so the pointer
-	// lands on any viewport — clamp(...vw...) fonts shift positions per window size.
+	// lands on any viewport - clamp(...vw...) fonts shift positions per window size.
 	function taps(times: number[]) {
 		let s = 0;
 		for (const t of times) s += pressAmt(t);
@@ -383,8 +383,8 @@
 					const bx = [...screenContentEl.querySelectorAll('.notion-pane .task > i')].map(pct).filter(Boolean) as { x: number; y: number }[];
 					if (bx.length === boxTapTimes.length) boxTargets = bx;
 						// Live room for the tool tabs: strip inner width minus every fixed
-						// item — the business tab, Notion, help and the "+" (all measured,
-						// so their real px reserve tracks the screen size) — minus padding
+						// item - the business tab, Notion, help and the "+" (all measured,
+						// so their real px reserve tracks the screen size) - minus padding
 						// and inter-tab gaps. Reserving Notion/help keeps the "+" from ever
 						// being clipped by the strip's overflow.
 						const strip = screenContentEl.querySelector('.tab-strip') as HTMLElement | null;

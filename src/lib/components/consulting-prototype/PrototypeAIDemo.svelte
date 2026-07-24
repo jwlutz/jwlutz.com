@@ -1,5 +1,5 @@
 <!--
-	AI OFFERING DEMO — the full lead engine, built then run (v4: dense).
+	AI OFFERING DEMO - the full lead engine, built then run (v4: dense).
 	Jack (2026-07-18): "add detail and clean this up." Four aligned columns,
 	an explicit collector bus, status lines inside every node that light as
 	the run passes, output previews, orthogonal rails, and an execution log.

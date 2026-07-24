@@ -1,5 +1,5 @@
 <!--
-	APPROVED SECTION — do not remove in refactors.
+	APPROVED SECTION - do not remove in refactors.
 	Jack's Q1 ruling (docs/consulting-decisions.md §25, 2026-07-18): this swipe
 	is the demo element of the Websites service section. It auto-replays
 	(partial split → slides fully to the polished site, bounces, returns, loops)
@@ -100,7 +100,7 @@
 		return p < 0.5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2;
 	}
 
-	// Accelerate into the edge, then two decaying rebounds — the §25 bounce.
+	// Accelerate into the edge, then two decaying rebounds - the §25 bounce.
 	function slideBounce(p: number) {
 		if (p < 0.5) {
 			const q = p / 0.5;
@@ -307,7 +307,7 @@
 	.label-ours { left: 16px; color: var(--proto-paper); background: #0b0e0c; border: 1px solid rgba(180, 154, 103, .55); }
 	.label-yours { right: 16px; color: #40392c; background: #fffdf7; border: 1px solid rgba(23, 25, 20, .22); }
 
-	/* ————— Your side: a real storefront in real layout ————— */
+	/* ----- Your side: a real storefront in real layout ----- */
 	.pane-yours { background: linear-gradient(160deg, #efe9dd 0%, #e6dfd2 55%, #ddd4c4 100%); color: #171914; }
 	.client-world { position: absolute; inset: 0; display: flex; flex-direction: column; will-change: transform; transform: translate3d(calc(var(--seam) * 0.045%), 0, 0); }
 	.client-world nav { flex: 0 0 auto; height: 60px; padding: 0 4.5%; display: flex; align-items: center; gap: 24px; border-bottom: 1px solid rgba(17,19,15,.12); background: rgba(244,239,229,.85); font-size: 11px; color: #4d4f47; }
@@ -337,7 +337,7 @@
 	.client-world footer { flex: 0 0 auto; height: 34px; padding: 0 4.5%; display: flex; align-items: center; justify-content: space-between; color: #9a978c; background: #171914; font: 7px var(--proto-mono); letter-spacing: .09em; }
 	.client-world footer b { color: #d8c49a; font-weight: 500; }
 
-	/* ————— Our side: the working screen ————— */
+	/* ----- Our side: the working screen ----- */
 	.pane-ours { background: linear-gradient(180deg, #0d100e 0%, #0a0d0b 100%); color: #b8bdb7; }
 	.dev-world { position: absolute; inset: 0; padding: 3.5% 3.5% 0; display: grid; grid-template-columns: 1.05fr .95fr; grid-template-rows: 1fr auto; gap: 13px; }
 	.dev-editor, .dev-dash { min-height: 0; display: flex; flex-direction: column; overflow: hidden; border: 1px solid rgba(240,239,233,.13); border-radius: 2px; background: linear-gradient(180deg, #12160f0d, transparent), #101411; box-shadow: 0 1px 0 rgba(255,255,255,.07) inset, 0 18px 40px rgba(0,0,0,.35); }
@@ -391,7 +391,7 @@
 	.dev-statusline i { width: 3px; height: 3px; border-radius: 50%; background: #454b46; }
 	.dev-statusline em { margin-left: auto; font-style: normal; color: #8a6d3f; }
 
-	/* ————— The seam: a physical edge, not a glow ————— */
+	/* ----- The seam: a physical edge, not a glow ----- */
 	.seam-shadow { position: absolute; z-index: 4; top: 0; bottom: 0; left: clamp(0px, var(--seam) * 1%, 100%); width: 52px; background: linear-gradient(90deg, rgba(6,8,6,.38), rgba(6,8,6,.14) 40%, transparent); opacity: clamp(0, (var(--seam) - 1) * 1, 1); pointer-events: none; }
 	.seam { position: absolute; z-index: 5; top: 0; bottom: 0; left: clamp(1px, var(--seam) * 1%, calc(100% - 1px)); width: 2px; margin-left: -1px; background: linear-gradient(180deg, #cbb384, var(--proto-brass) 30%, #8a6d3f 85%); box-shadow: 1px 0 0 rgba(0,0,0,.35); pointer-events: none; }
 	.seam-handle { position: absolute; z-index: 6; left: clamp(48px, var(--seam) * 1%, calc(100% - 48px)); top: 50%; transform: translate(-50%, -50%); display: flex; align-items: center; gap: 8px; padding: 11px 13px; border: 1px solid var(--proto-brass); border-radius: 2px; background: linear-gradient(180deg, #14171412, transparent), rgba(10, 13, 11, .94); color: var(--proto-paper); font: 500 8px var(--proto-mono); letter-spacing: .1em; cursor: ew-resize; touch-action: none; box-shadow: 0 1px 0 rgba(255,255,255,.1) inset, 0 10px 26px rgba(0,0,0,.45); }
