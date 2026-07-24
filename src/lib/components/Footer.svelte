@@ -63,7 +63,8 @@
 	<div class="footer-utility">
 		<span>© {year} Jack Lutz</span>
 		<span>Las Vegas / Los Angeles</span>
-		<a href="/#home">Back to top</a>
+		<span class="utility-legal"><a href="/privacy">Privacy</a><a href="/terms">Terms</a></span>
+		<a class="to-top" href="/#home">Back to top</a>
 	</div>
 </footer>
 
@@ -113,15 +114,16 @@
 	.footer-socials a:hover { border-color: var(--color-brass); color: var(--footer-hover); }
 	.footer-socials a:focus-visible { outline: 2px solid var(--color-brass); outline-offset: 3px; }
 	.footer-socials :global(svg) { width: 18px; height: 18px; }
-	.footer-utility { min-height: 70px; display: grid; grid-template-columns: 1fr 1fr auto; gap: 28px; align-items: center; border-top: 1px solid var(--footer-line); font: 500 8px var(--font-family-mono); letter-spacing: .07em; text-transform: uppercase; }
+	.footer-utility { min-height: 70px; display: flex; flex-wrap: wrap; align-items: center; gap: 12px 26px; border-top: 1px solid var(--footer-line); font: 500 8px var(--font-family-mono); letter-spacing: .07em; text-transform: uppercase; }
 	.footer-utility a { color: var(--footer-muted); text-decoration: none; }
 	.footer-utility a:hover { color: var(--footer-hover); }
+	.utility-legal { display: flex; gap: 20px; }
+	.footer-utility .to-top { margin-left: auto; }
 
 	@media (max-width: 820px) {
 		.footer-shell { padding: 52px 0; grid-template-columns: 1fr; gap: 55px; }
 		.footer-directory { max-width: 600px; }
-		.footer-utility { min-height: 104px; padding: 20px 0; grid-template-columns: 1fr auto; gap: 12px 24px; }
-		.footer-utility > :nth-child(even) { justify-self: end; }
+		.footer-utility { min-height: auto; padding: 20px 0; gap: 12px 20px; }
 	}
 
 	@media (max-width: 520px) {
